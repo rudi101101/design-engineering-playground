@@ -1,59 +1,62 @@
-# Seline Analytics — Style Reference
-> Quiet analyst's desk on warm paper
+# Meetcan — Vendor Dashboard & Productivity Style Reference
+> Friendly SaaS control room with soft gradient signals
 
 **Theme:** light
 
-Seline sits on a warm-stone canvas (#fafaf9) with a single vivid cyan as its only chromatic accent — every other color is a neutral pulled from the Tailwind stone scale. Headlines use a custom geometric sans (roobert) at weight 400 with tight negative tracking, giving display copy an unhurried, almost whispered authority that contrasts with the usual SaaS shout. UI surfaces are flat white cards floating over the warm background via a single soft 16px-blur shadow; borders are 1px stone hairlines used generously as the primary structural device instead of heavy dividers or panels. The layout breathes: max-width content centered on generous vertical rhythm, with pill-shaped interactive controls, a mascot sticker illustration for personality, and data dashboard screenshots as proof-of-product. The overall feel is editorial analytics — calm, monochrome, confident — where the blue CTA is the loudest thing on the page by deliberate restraint of everything else.
+Meetcan sits on a cool-lavender canvas (#f6f7fb) with a single vivid indigo (#3e5eea) as its primary chromatic voice, layered against a family of soft pastel washes — coral, amber, and mint — reserved strictly for status communication, never for primary actions. Headlines and UI type share one geometric sans (Plus Jakarta Sans) run across a wide weight range, from 800-weight stat numbers that shout at a glance to 500-weight labels that whisper metadata; the effect is authoritative-but-approachable, built for a vendor checking their pipeline between meetings. Elevation is shadow-first rather than border-first: white cards float on the lavender canvas with a soft diffused shadow, and the primary button and active navigation state get a signature *tinted* shadow — the accent color bleeding softly into the shadow itself, a small but deliberate premium touch. Corners are generously rounded throughout (16–24px on cards, full pill on badges and buttons), and every status — under review, submitted, expired, scheduled — gets its own color-coded pill so the eye can triage a table without reading a single word. On mobile, the same language continues into a companion productivity surface: an inbox-style list with an illustrated avatar for personality, a gradient-filled active-view pill, and count badges that keep dense information scannable. The overall feel is "friendly enterprise" — colorful enough to feel human, structured enough to feel like a serious operating tool.
 
 ## Tokens — Colors
 
 | Name | Value | Token | Role |
 |------|-------|-------|------|
-| Stone Canvas | `#fafaf9` | `--color-stone-canvas` | Page background — warm off-white that reads as paper, not screen-white |
-| Pure White | `#ffffff` | `--color-pure-white` | Card surfaces, elevated panels, input fills — flat and shadowless by default |
-| Stone Border | `#e8e6e5` | `--color-stone-border` | Hairline borders on cards, nav, inputs — the primary structural device, not dividers |
-| Stone Muted | `#d6d3d1` | `--color-stone-muted` | Secondary borders, subtle background tints, decorative separators |
-| Ash Gray | `#a8a29e` | `--color-ash-gray` | Muted helper text, icon strokes, disabled states — readable but recessive |
-| Warm Gray | `#78716c` | `--color-warm-gray` | Body text, nav links, secondary copy — warm-tinted neutral that softens body type |
-| Ink Black | `#0c0a09` | `--color-ink-black` | Primary headings, emphasized body, strong icons — near-black with a warm cast |
-| Soot | `#1c1917` | `--color-soot` | Dark surface backgrounds for inverted sections, dark dashboard tabs |
-| Sky Wash | `#c1e1f7` | `--color-sky-wash` | Soft highlight wash behind highlighted text spans, decorative blue tint |
-| Cyan Signal | `#3ba6f1` | `--color-cyan-signal` | Primary CTA fill, active links, brand icon strokes — the only chromatic voice on the page, used sparingly to make actions feel switched on |
-| Cyan Edge | `#3398e1` | `--color-cyan-edge` | Blue accent for outlined action borders, linked labels, and lightweight interactive emphasis. Do not promote it to the primary CTA color |
+| Lavender Canvas | `#f6f7fb` | `--color-lavender-canvas` | Page background — cool, faintly tinted off-white that separates from pure-white cards |
+| Pure White | `#ffffff` | `--color-pure-white` | Card surfaces, sidebar, table rows, input fills |
+| Hairline Border | `#ecedf3` | `--color-hairline-border` | Card outlines, table dividers, sidebar separators — secondary to shadow, not primary structure |
+| Ink | `#14161f` | `--color-ink` | Primary headings, stat numbers, strong body text |
+| Slate Gray | `#6b7280` | `--color-slate-gray` | Secondary text, table meta, helper copy, timestamps |
+| Faint Gray | `#9ca3af` | `--color-faint-gray` | Placeholder text, disabled state, decorative icon strokes |
+| Indigo Primary | `#3e5eea` | `--color-indigo-primary` | Primary CTA fill, logo mark, active nav pill, link accent — the only chromatic voice used for actions |
+| Indigo Deep | `#2a44c7` | `--color-indigo-deep` | Gradient end-stop for primary button/active pill, pressed/hover state |
+| Indigo Wash | `#e6ecff` | `--color-indigo-wash` | Info-status pill background ("Schedule"), soft selected-row tint |
+| Success Green | `#16a34a` | `--color-success-green` | Positive status text — "Submitted", "Live Now", positive delta arrows |
+| Success Wash | `#e3f9ea` | `--color-success-wash` | Positive status pill background, mint stat-card wash |
+| Warning Amber | `#c9821a` | `--color-warning-amber` | Caution status text — "Under review", "Pending Schedule" |
+| Warning Wash | `#fff4de` | `--color-warning-wash` | Caution status pill background, amber stat-card wash |
+| Danger Red | `#e0393e` | `--color-danger-red` | Negative status text — "Expired", destructive actions |
+| Danger Wash | `#fde8e8` | `--color-danger-wash` | Negative status pill background, coral stat-card wash |
+| Lavender Tag | `#7c5cfc` | `--color-lavender-tag` | Secondary categorical tag — "Needs Review" style labels on mobile |
+| Lavender Tag Wash | `#ede9fe` | `--color-lavender-tag-wash` | Background for lavender categorical tags |
+| Coral Chip | `#f1495b` | `--color-coral-chip` | Solid icon-chip fill (decorative, status-tied — not for buttons) |
+| Amber Chip | `#ffa53d` | `--color-amber-chip` | Solid icon-chip fill (decorative, status-tied — not for buttons) |
+| Emerald Chip | `#22c55e` | `--color-emerald-chip` | Solid icon-chip fill (decorative, status-tied — not for buttons) |
 
 ## Tokens — Typography
 
-### Roobert — Display and heading typeface — custom geometric sans with tight negative tracking (-0.025em at 32px, -0.021em at 52px). Weight 400 at 52px is the signature: anti-convention whisper-weight that creates authority through restraint. Headlines occupy their space without shouting. · `--font-roobert`
-- **Substitute:** Inter Tight or Satoshi
-- **Weights:** 400, 500
-- **Sizes:** 18px, 20px, 32px, 52px
-- **Line height:** 1.12, 1.22, 1.25, 1.69
-- **Letter spacing:** -0.025em at 32px, -0.021em at 52px, -0.017em at 18px
-- **Role:** Display and heading typeface — custom geometric sans with tight negative tracking (-0.025em at 32px, -0.021em at 52px). Weight 400 at 52px is the signature: anti-convention whisper-weight that creates authority through restraint. Headlines occupy their space without shouting.
-
-### Inter — Body, nav, UI, and caption typeface — neutral workhorse for all non-display copy. 14px weight 400 at 1.64 line-height is the dominant body size (freq 1174). Positive tracking (0.004em) at small sizes keeps dense UI legible. · `--font-inter`
-- **Substitute:** Inter
-- **Weights:** 400, 500, 600
-- **Sizes:** 10px, 12px, 13px, 14px, 15px, 16px, 18px
-- **Line height:** 1.33, 1.53, 1.64, 1.69, 2.3
-- **Letter spacing:** 0.0030em, 0.0040em, 0.0250em
-- **Role:** Body, nav, UI, and caption typeface — neutral workhorse for all non-display copy. 14px weight 400 at 1.64 line-height is the dominant body size (freq 1174). Positive tracking (0.004em) at small sizes keeps dense UI legible.
+### Plus Jakarta Sans — Single-family system spanning display, heading, body, and UI. A geometric sans with rounded terminals that reads as professional without being cold. Weight does the hierarchy work: 800 for stat numbers and hero greetings, 700 for section titles, 600 for card titles and buttons, 500 for labels and metadata, 400 for dense table body copy. · `--font-jakarta`
+- **Substitute:** Inter or General Sans
+- **Weights:** 400, 500, 600, 700, 800
+- **Sizes:** 11px, 12px, 14px, 16px, 18px, 28px, 36px
+- **Line height:** 1.1, 1.2, 1.3, 1.4, 1.5
+- **Letter spacing:** -0.02em at 36px, -0.01em at 28px, 0.01em at 12px and below
+- **Role:** Display, heading, body, and UI typeface in one family — weight and size carry hierarchy instead of font-switching, keeping dashboard and mobile surfaces feeling like one product.
 
 ### Type Scale
 
-| Role | Size | Line Height | Letter Spacing | Token |
-|------|------|-------------|----------------|-------|
-| caption | 10px | 2.3 | — | `--text-caption` |
-| body-lg | 16px | 1.69 | 0.048px | `--text-body-lg` |
-| subheading | 20px | 1.2 | -0.1px | `--text-subheading` |
-| heading-sm | 32px | 1.25 | -0.8px | `--text-heading-sm` |
-| display | 52px | 1.12 | -1.092px | `--text-display` |
+| Role | Size | Weight | Line Height | Letter Spacing | Token |
+|------|------|--------|-------------|----------------|-------|
+| caption / badge | 11px | 600 | 1.3 | 0.02em | `--text-caption` |
+| label / meta | 12px | 500 | 1.4 | 0.01em | `--text-label` |
+| body | 14px | 400 | 1.5 | — | `--text-body` |
+| card-title | 16px | 600 | 1.4 | — | `--text-card-title` |
+| section-title | 18px | 700 | 1.3 | — | `--text-section-title` |
+| heading | 28px | 700 | 1.2 | -0.01em | `--text-heading` |
+| stat-display | 36px | 800 | 1.1 | -0.02em | `--text-stat-display` |
 
 ## Tokens — Spacing & Shapes
 
 **Base unit:** 4px
 
-**Density:** compact
+**Density:** balanced
 
 ### Spacing Scale
 
@@ -63,188 +66,182 @@ Seline sits on a warm-stone canvas (#fafaf9) with a single vivid cyan as its onl
 | 8 | 8px | `--spacing-8` |
 | 12 | 12px | `--spacing-12` |
 | 16 | 16px | `--spacing-16` |
+| 20 | 20px | `--spacing-20` |
 | 24 | 24px | `--spacing-24` |
 | 32 | 32px | `--spacing-32` |
 | 40 | 40px | `--spacing-40` |
 | 48 | 48px | `--spacing-48` |
 | 64 | 64px | `--spacing-64` |
 | 80 | 80px | `--spacing-80` |
-| 96 | 96px | `--spacing-96` |
-| 160 | 160px | `--spacing-160` |
 
 ### Border Radius
 
 | Element | Value |
 |---------|-------|
-| tags | 9999px |
-| cards | 10px |
-| icons | 4px |
-| inputs | 6px |
-| buttons | 9999px |
-| feature-card | 16px |
+| badges / pills | 9999px |
+| buttons | 12px |
+| avatars | 9999px |
+| icon-chips | 12px |
+| inputs | 10px |
+| stat-cards | 20px |
+| notification-cards | 24px |
 
 ### Shadows
 
 | Name | Value | Token |
 |------|-------|-------|
-| md | `rgba(0, 0, 0, 0.05) 0px 4px 16px 0px` | `--shadow-md` |
-| sm | `rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0...` | `--shadow-sm` |
-| subtle | `rgba(0, 0, 0, 0.05) 0px 1px 2px 0px` | `--shadow-subtle` |
-| xl | `rgba(17, 12, 46, 0.12) 0px 12px 45px 0px` | `--shadow-xl` |
+| card | `rgba(20, 23, 31, 0.06) 0px 8px 24px -4px` | `--shadow-card` |
+| card-hover | `rgba(20, 23, 31, 0.10) 0px 16px 32px -8px` | `--shadow-card-hover` |
+| button-tinted | `rgba(62, 94, 234, 0.35) 0px 8px 16px -6px` | `--shadow-button-tinted` |
+| nav-active-tinted | `rgba(62, 94, 234, 0.30) 0px 6px 14px -4px` | `--shadow-nav-active-tinted` |
 
 ### Layout
 
-- **Page max-width:** 1200px
-- **Section gap:** 96px
-- **Card padding:** 24px
-- **Element gap:** 8px
+- **Dashboard content max-width:** 1280px
+- **Sidebar width:** 240px
+- **Section gap:** 32px
+- **Card padding:** 20px–24px
+- **Card gap:** 16px
 
 ## Components
 
-### Primary CTA Button (filled cyan)
-**Role:** Highest-priority conversion action — 'Start free trial', primary sign-ups
+### Gradient Stat Card
+**Role:** Top-row dashboard metrics — 'New Request', 'New Feedback', 'Meeting Request', 'Schedule'
 
-Pill shape (9999px radius), fill #3ba6f1, 1px border #3398e1, white text (#ffffff) weight 500, padding 8px 16px. The only chromatic filled element on the page — use once per viewport maximum.
+White base with a soft diagonal wash of a status-tied pastel (coral, amber, mint) fading to white, 20px radius, 20px padding, `--shadow-card`. A 40px rounded-12px icon-chip in a solid semantic color (coral/amber/emerald) sits top-left beside the label and a small "View All" link. The metric itself is 36px weight 800 Ink, with a small delta row below in 12px weight 500 (green up-arrow + "vs. last week" in Slate Gray).
 
-### Secondary Ghost Button
-**Role:** Lower-priority action beside primary — 'View live demo', secondary navigation
+### Primary Filled Button
+**Role:** Highest-priority action — 'Create campaign', primary form submits
 
-Pill shape (9999px radius), transparent fill, 1px border #e8e6e5, text #0c0a09 weight 400, padding 8px 16px. Quiet companion to the cyan CTA.
+12px-radius rectangle, gradient fill from Indigo Primary to Indigo Deep, white text at weight 600, 10px 20px padding, leading plus-icon. Carries the signature tinted shadow (`--shadow-button-tinted`) so it visually lifts off the page even without a hairline border. Use once per viewport maximum.
 
-### Navigation Link
-**Role:** Top-nav menu items — Pricing, About us, Platform, Resources
+### Status Pill Badge
+**Role:** Inline status marker in tables and cards — 'Under review', 'Submitted', 'Expired', 'Schedule', 'Pending Schedule', 'Live Now'
 
-No fill, no border, 14px Inter weight 400, color #78716c, padding 0 12px, height 32px. Hovers to #0c0a09. Dropdown caret inline at end.
+Fully rounded (9999px) pill, 4px 10px padding, 11px weight 600 text, small leading status dot or icon. Background is the wash tone, text is the saturated tone of the same semantic color (never color alone — always paired with the status word, per accessibility guidance). Never use for anything but status communication.
 
-### Signed-in Avatar Link
-**Role:** Top-nav social proof cluster — stack of 4 overlapping circular avatars
+### Data Table Row
+**Role:** 'Recent Meeting Request' list — Title, Company, Status, Requested columns
 
-24px circles with 2px ring offset, -8px overlap spacing. Sits inline between nav items as proof-of-community. Avatars are real photos, no border.
+No card chrome per row — 14px weight 400 Ink text on white background, `--color-hairline-border` 1px divider between rows, 12px vertical padding. Status column renders a Status Pill Badge; Requested column renders relative time in 12px Slate Gray. Rows get a subtle Indigo Wash background on hover.
 
-### Flat Content Card
-**Role:** Feature blocks, dashboard previews, testimonial cards
+### Upcoming Meeting Card
+**Role:** Sidebar meeting preview — 'Director of IT — Debox Agency'
 
-White (#ffffff) fill, 10px radius, 1px border #e8e6e5 (not shadow-dependent), 24px padding. Subtle shadow rgba(0,0,0,0.05) 0px 4px 16px 0px adds lift without weight. The border IS the structure.
+White fill, 16px radius, 16px padding, thin `--color-hairline-border` outline, no shadow (secondary-priority surface). Title in 14px weight 600, company in 12px Slate Gray, then a date pill and duration pill (Indigo Wash background, 11px weight 600 Indigo Primary text) side by side, and a small overlapping avatar stack (24px circles, 2px white ring, -8px overlap) at the bottom.
 
-### Floating Dashboard Preview
-**Role:** Hero product screenshot — the dashboard mockup
+### Campaign Card
+**Role:** 'Active Campaigns' grid — feature/status preview tiles
 
-16px radius, white fill, shadow rgba(17,12,46,0.12) 0px 12px 45px 0px — the one card allowed to feel elevated/3D. 8px padding internally so the dashboard UI sits within a frame. Grayscale(1) contrast(0.94) filter applied for muted product photography feel.
+White fill over a faint pastel gradient wash matching the card's dominant status color, 20px radius, `--shadow-card`, 20px padding. Status Pill Badge top-left, date top-right in 12px Slate Gray. 16px weight 600 title, 14px weight 400 description (2-line clamp), then a row of outline category tags (11px weight 600, 1px hairline border, 9999px radius) and a 'View All' link with trailing arrow at the bottom edge.
 
-### Highlighted Text Span
-**Role:** Inline emphasis within headlines — 'simple & actionable', 'saves us time'
+### Sidebar Nav Item
+**Role:** Primary navigation — Dashboard, Business Profile, Campaigns, Availability, Request, Schedule, Completed
 
-Text in #3398e1 with a soft #c1e1f7 background highlight (pill-shaped background behind the word). Weight 400. The only inline color treatment — every headline gets one.
+40px height, 12px radius, icon (20px, Faint Gray stroke) + 14px weight 500 label. Active state fills with Indigo Wash background and Indigo Primary text/icon, no border. Grouped under uppercase 11px weight 600 Slate Gray section labels ('BUSINESS', 'MEETINGS', 'ACCOUNT') with 16px gap above each group.
 
-### Text Input
-**Role:** Newsletter signup, form fields
+### Meeting Credits Widget
+**Role:** Sidebar usage meter — 'Meeting Credits — 24/50'
 
-White fill, 6px radius, 1px border #d6d3d1, placeholder #78716c, padding 4px 12px. Focus ring: 2px #3ba6f1. Minimal, inline with label.
+Rounded-20px card with a soft indigo-to-lavender gradient background (distinct from the neutral sidebar), 20px padding. Large 'Available' figure at 28px weight 800, then a segmented progress bar (rounded-full track, Indigo Primary fill, 6px height) with a 'Used / Available' legend row in 12px weight 500.
 
-### Mascot Sticker Illustration
-**Role:** Brand personality element — the hooded character peeking from behind cards
+### Illustrated Avatar
+**Role:** Personality element on the mobile productivity surface — sender avatars in notification cards
 
-Grayscale illustration with drop-shadow filter (rgba(0,0,0,0.25) 0px 2px 4px). SVG outline-only treatment. Used once per section as a playful counterweight to the monochrome data UI.
+Semi-flat illustrated character portrait (not a photo, not a generic initial-circle), 40–48px, fully rounded, no border. Used once per notification card as the human touchpoint against otherwise flat UI chrome — the mobile equivalent of the dashboard's avatar-stack proof-of-people.
 
-### Logo Wordmark
-**Role:** Top-left brand identifier
+### Active View Pill (Mobile)
+**Role:** Selected sidebar view on the mobile productivity surface — 'Inbox' with unread count
 
-Small black flame/spark glyph + 'Seline' wordmark in Inter weight 500, 14px, #0c0a09. Compact, sits left of nav.
+Full-width rounded-14px pill, gradient fill Indigo Primary → Indigo Deep, white icon + label at weight 600, count badge in a translucent white circle at trailing edge. Carries `--shadow-nav-active-tinted`. Inactive views sit directly on white with a plain Faint Gray icon and a neutral gray count pill (no fill, no shadow).
 
-### Star Rating Display
-**Role:** Trust signal above testimonials — '★★★★★ on G2'
+### Notification / Task Card
+**Role:** Mobile inbox card — 'Marcus Novak proposed a new component', 'Reviewing the Q3 deck'
 
-Five small star glyphs in #0c0a09 (or warm gray), inline with platform name in 14px Inter #78716c. No card chrome — sits inline in copy flow.
-
-### Testimonial Card
-**Role:** Customer quote with attribution
-
-No card chrome. Star row (★ in #0c0a09), 16px quote text in #0c0a09 with inline cyan highlights for emphasized phrases, 32px avatar circle + name (14px weight 500) + role (14px #78716c). Vertical gap 16px between elements.
-
-### Tab Pill Group
-**Role:** Feature navigation — Dashboard / Visitors / Journeys / Funnels
-
-Horizontal row of 4 pill-shaped tabs at bottom of dashboard preview. Active tab: #1c1917 fill, white text, 9999px radius. Inactive: transparent, #0c0a09 text, 1px #e8e6e5 border. Switches the dashboard view above.
+White fill, 24px radius (the most generous radius in the system — mobile cards read softer than dashboard cards), 20px padding, `--shadow-card`. Illustrated Avatar + sender name + a small Lavender Tag ('Needs Review') on the header row, 16px weight 700 title, 14px weight 400 body copy, then a single inline action button (Indigo Wash pill background, Indigo Primary text + check icon) — never more than one primary action per card.
 
 ## Do's and Don'ts
 
 ### Do
-- Use Roobert at weight 400 for all display and heading sizes — never bump to 600/700 for emphasis, rely on size and the cyan highlight span instead
-- Use #fafaf9 as the page background and #ffffff only for card surfaces — never invert this (white on canvas, not the other way around)
-- Apply exactly one cyan highlight span (#3398e1 text + #c1e1f7 pill background) per headline to mark the value proposition keyword
-- Use 1px #e8e6e5 borders as the primary structural separator inside cards — reserve shadows for product-preview cards only
-- Keep buttons pill-shaped (9999px radius) with 8px 16px padding — the cyan filled CTA must be the only chromatic filled element on any screen
-- Set body copy at 14px Inter weight 400 with 1.64 line-height — this is the dominant UI rhythm, do not break it
-- Let the mascot sticker appear once per section as a personality beat — do not repeat or animate it
+- Keep Indigo Primary (#3e5eea) as the only color used for actionable buttons and links — every other saturated color in the palette is reserved for status communication, never for actions
+- Pair every status color with a text label, not color alone — 'Submitted' in green text, never a bare green dot
+- Use the tinted shadow (accent color bleeding into the shadow) on exactly two elements per screen: the primary button and the active navigation state — this is the signature move, don't dilute it by applying it everywhere
+- Let card radius scale with intimacy: 16px for low-priority sidebar cards, 20px for dashboard stat/campaign cards, 24px for mobile notification cards
+- Run Plus Jakarta Sans across the full weight range (400–800) instead of switching typefaces — hierarchy comes from weight and size, not font-mixing
+- Use the pastel gradient wash on stat and campaign cards sparingly — it should read as a soft tint behind white, never a fully saturated background
+- Give every notification/task card exactly one primary action button — resist stacking multiple CTAs in a single card
 
 ### Don't
-- Do not introduce new accent colors — the entire palette is stone neutrals plus one cyan; adding green, purple, or red breaks the editorial restraint
-- Do not use heavy drop shadows on content cards — the 16px-blur floating preview shadow is reserved for exactly one element per page
-- Do not set headlines in Inter — Roobert at the 32px/52px sizes is the brand voice; mixing fonts breaks hierarchy
-- Do not use #ffffff as the page background — always #fafaf9; pure white belongs only on elevated card surfaces
-- Do not fill buttons with dark/neutral colors for primary actions — the cyan #3ba6f1 is the only correct filled-button color
-- Do not add gradients, glassmorphism, or decorative color washes — the design is deliberately flat and paper-textured
-- Do not stack multiple cyan highlight spans in one headline — one per headline maximum, the restraint is the point
+- Do not use Indigo Primary for destructive actions — Danger Red is reserved for that semantic meaning exclusively
+- Do not add a second saturated accent color alongside Indigo — coral, amber, emerald, and lavender are status/decorative tones only, not additional brand accents
+- Do not outline every card with a heavy border in addition to its shadow — pick one elevation device per card (shadow for stat/campaign cards, hairline border for low-priority sidebar cards)
+- Do not use pure black (#000000) anywhere — Ink (#14161f) is the darkest value in the system
+- Do not render status information as color-only dots or bars — always pair with the status word for accessibility
+- Do not use generic circular spinners for loading states — use skeleton placeholders matching the card's real dimensions
+- Do not let the illustrated-avatar personality element appear more than once per card — one human touchpoint per unit of content is the rule
 
 ## Surfaces
 
 | Level | Name | Value | Purpose |
 |-------|------|-------|---------|
-| 0 | Canvas | `#fafaf9` | Full-page warm-stone background |
-| 1 | Card | `#ffffff` | Flat content cards, nav, input fills — sits one elevation step above canvas |
-| 2 | Floating Preview | `#ffffff` | Hero dashboard screenshot — only surface allowed the deep 45px-blur shadow |
-| 3 | Inverted Section | `#1c1917` | Dark accent surfaces for tab pills or inverted panels (sparingly used) |
+| 0 | Canvas | `#f6f7fb` | Full-page lavender-tinted background |
+| 1 | Sidebar / Low-priority Card | `#ffffff` | Nav rail, upcoming-meeting cards — hairline border, no shadow |
+| 2 | Elevated Card | `#ffffff` | Stat cards, campaign cards, notification cards — `--shadow-card` |
+| 3 | Gradient Widget | `linear-gradient(135deg, #e6ecff, #f6f7fb)` | Meeting Credits widget, active nav pill — indigo-tinted surfaces |
 
 ## Elevation
 
-- **Content card:** `rgba(0, 0, 0, 0.05) 0px 4px 16px 0px`
-- **Floating dashboard preview:** `rgba(17, 12, 46, 0.12) 0px 12px 45px 0px`
-- **Small icon / decorative chip:** `rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px`
-- **Nav / button hairline:** `rgba(0, 0, 0, 0.05) 0px 1px 2px 0px`
+- **Low-priority card (sidebar, upcoming meeting):** none — `1px solid #ecedf3` only
+- **Elevated card (stat, campaign, notification):** `rgba(20, 23, 31, 0.06) 0px 8px 24px -4px`
+- **Elevated card, hover:** `rgba(20, 23, 31, 0.10) 0px 16px 32px -8px`
+- **Primary button:** `rgba(62, 94, 234, 0.35) 0px 8px 16px -6px`
+- **Active nav pill:** `rgba(62, 94, 234, 0.30) 0px 6px 14px -4px`
 
 ## Imagery
 
-Visual language is dominated by product UI screenshots — the dashboard preview is treated as photography, rendered with a grayscale(1) contrast(0.94) filter that mutes the data colors to monochrome. The only human figure is a line-art mascot sticker (hooded character) drawn in outline-only SVG style, placed once per section as a playful counterweight to the analytical content, with a soft drop-shadow for sticker-like depth. Logo and brand glyphs are small black spark/flame marks. Photography is absent — no lifestyle, no team shots, no environment imagery. The object (the dashboard) IS the hero. All decorative icons are 1px-stroke outline style in either #0c0a09 or #3ba6f1, never filled.
+Visual language avoids photography entirely on the dashboard surface — the only "faces" are small circular avatar photos in overlapping stacks (proof-of-people on meeting cards). The mobile productivity surface introduces one illustrated character avatar per notification as a personality beat, semi-flat digital-illustration style, never photographic and never a generic initial-circle. All functional icons are simple outline-style SVGs at 1.5px stroke in Faint Gray or Indigo Primary — never emoji, never filled/solid icon sets except inside the solid-color icon-chips on stat cards. Decorative color is delivered entirely through soft gradient washes behind cards, not through illustration or texture.
 
 ## Layout
 
-Page is max-width centered at ~1200px with generous vertical breathing room. Hero is a two-row text block left-aligned with a single highlighted phrase ('simple & actionable') in cyan, followed by a dual-CTA row (cyan pill + ghost pill), then a row of grayscale partner logos, then a star-rating trust line, then a full-width floating dashboard preview that overlaps slightly into the next section. Below the fold: alternating single-column testimonial rows in a 2-column grid, then full-width feature sections with left-aligned text and centered product visuals. Navigation is a minimal top bar — logo left, centered nav links, sign-in + cyan CTA right — with a floating avatar cluster mid-nav as social proof. Section gaps are wide (96px) to create editorial pacing rather than dense information stacking.
+Dashboard is a fixed 240px sidebar plus fluid content area, content capped near 1280px. Top row is a 4-up grid of equal-width Gradient Stat Cards (collapses to 2-up on tablet, 1-up on mobile). Below, a 2:1 split — a wide 'Recent Meeting Request' table on the left, a narrow 'Upcoming Meetings' stack on the right — then a full-width 4-up 'Active Campaigns' grid at the bottom (collapses the same way as the stat row). Section gaps are 32px; card gaps within a grid are 16px. The mobile productivity surface uses a single-column list: a slim left rail of view names with count badges (Inbox as the filled active pill), and a main column of full-width Notification/Task Cards stacked with 12px gaps, topped by an 'AI priority' filter chip and a compact '+ New' primary button.
 
 ## Agent Prompt Guide
 
 Quick Color Reference:
-- page background: #fafaf9
+- page background: #f6f7fb
 - card surface: #ffffff
-- primary text: #0c0a09
-- secondary text: #78716c
-- border / hairline: #e8e6e5
-- accent (text highlight + icons): #3ba6f1
-- primary action: #3ba6f1 (filled action)
-- highlight wash: #c1e1f7
+- primary text: #14161f
+- secondary text: #6b7280
+- border / hairline: #ecedf3
+- primary action + links: #3e5eea (gradient to #2a44c7)
+- success status: text #16a34a on #e3f9ea
+- warning status: text #c9821a on #fff4de
+- danger status: text #e0393e on #fde8e8
+- info status: text #3e5eea on #e6ecff
 
 Example Component Prompts:
 
-1. Hero headline: 52px roobert weight 400, #0c0a09, line-height 1.12, letter-spacing -1.092px. Inline the phrase 'simple & actionable' as a span with #3398e1 text on a #c1e1f7 pill background highlight. Subheadline at 16px Inter weight 400, #78716c, line-height 1.69.
+1. Gradient stat card: white fill over a faint coral-to-white diagonal wash, 20px radius, shadow rgba(20,23,31,0.06) 0px 8px 24px -4px, 20px padding. 40px rounded-12px coral icon-chip top-left. Metric at 36px Plus Jakarta Sans weight 800 #14161f. Delta row below at 12px weight 500 with green up-arrow and #6b7280 "vs. last week" text.
 
-2. Create a Primary Action Button: #3ba6f1 background, #0c0a09 text, 9999px radius, compact pill padding. Use this filled treatment for the main CTA.
+2. Primary button: 12px radius rectangle, gradient fill #3e5eea to #2a44c7, white text weight 600 14px, 10px 20px padding, leading plus icon, shadow rgba(62,94,234,0.35) 0px 8px 16px -6px. One per viewport maximum.
 
-3. Feature card: white (#ffffff) fill, 10px radius, 1px border #e8e6e5, 24px padding, shadow rgba(0,0,0,0.05) 0px 4px 16px 0px. Heading 32px roobert weight 400 #0c0a09, body 14px Inter #78716c.
+3. Status pill badge: 9999px radius, 4px 10px padding, 11px weight 600 text. For warning: #fff4de background with #c9821a text. Always pair the color with the status word.
 
-4. Dashboard preview card: white fill, 16px radius, shadow rgba(17,12,46,0.12) 0px 12px 45px 0px, 8px internal padding. Apply CSS filter grayscale(1) contrast(0.94) to mute the dashboard to monochrome.
+4. Data table row: 14px weight 400 #14161f text, 1px #ecedf3 bottom divider, 12px vertical padding, status column renders a Status Pill Badge, relative-time column at 12px #6b7280. Row background tints to #e6ecff on hover.
 
-5. Testimonial block: star row of 5 small ★ glyphs in #0c0a09, quote text 16px Inter #0c0a09 line-height 1.69 with inline cyan highlight span on the emphasized phrase, 32px circular avatar below with name 14px Inter weight 500 #0c0a09 and role 14px Inter #78716c. No card chrome — copy flows directly on canvas.
+5. Mobile notification card: white fill, 24px radius, shadow rgba(20,23,31,0.06) 0px 8px 24px -4px, 20px padding. Illustrated avatar (40px, fully rounded) + sender name + lavender tag (#ede9fe background, #7c5cfc text) on header row. Title 16px weight 700, body 14px weight 400 #6b7280. Single action button: #e6ecff background pill, #3e5eea text + check icon.
 
-## Highlight Span Pattern
+## Gradient Icon-Chip Pattern
 
-The signature typographic move is the inline highlight: one phrase per headline receives #3398e1 text color with a #c1e1f7 pill-shaped background behind it (padding ~2px 8px, radius 4px). This is the brand's voice marker — it always lands on the value-prop keyword. Rules: exactly one per headline, never inside body paragraphs, never on nav items. The highlight carries the entire chromatic budget of the headline; everything else stays #0c0a09.
+The signature move of this system is the paired icon-chip + pastel wash: every stat and campaign card gets a small solid-color icon-chip (coral, amber, or emerald, 40px, 12px radius) that names its semantic category at a glance, echoed by a much softer version of the same hue washing diagonally across the card background behind the white surface. Rules: exactly one chip color per card, the wash must stay under ~15% opacity-equivalent lightness so white content stays fully legible on top, and the chip color must match the card's Status Pill Badge color when one is present — the two should never disagree about what state the card is communicating.
 
 ## Similar Brands
 
-- **Plausible Analytics** — Same single-accent-on-warm-canvas approach with privacy-focused analytics positioning; both use one vivid color against an almost-monochrome palette
-- **Linear** — Same weight-400-at-large-size headline restraint and tight negative letter-spacing on a custom geometric sans
-- **Fathom Analytics** — Same minimal analytics-alternative visual language with warm-neutral canvas and one accent color, editorial vertical rhythm
-- **Vercel** — Same restrained monochrome palette with a single chromatic accent and pill-shaped interactive controls
-- **Cal.com** — Same warm-stone canvas with cyan accent, mascot sticker personality element, and flat product-screenshot hero
+- **ClickUp** — Same colorful, status-pill-driven dashboard language with pastel card washes and dense-but-friendly information design
+- **Notion** — Same illustrated-avatar personality touch against otherwise flat, functional UI chrome
+- **Cal.com** — Same soft-shadow card system with a single indigo/blue accent carrying all primary actions
+- **Linear** — Same weight-driven typographic hierarchy within a single font family, no font-mixing for emphasis
+- **Superhuman** — Same calm, high-density inbox list pattern with a single filled active-view state on mobile
 
 ## Quick Start
 
@@ -253,42 +250,56 @@ The signature typographic move is the inline highlight: one phrase per headline 
 ```css
 :root {
   /* Colors */
-  --color-stone-canvas: #fafaf9;
+  --color-lavender-canvas: #f6f7fb;
   --color-pure-white: #ffffff;
-  --color-stone-border: #e8e6e5;
-  --color-stone-muted: #d6d3d1;
-  --color-ash-gray: #a8a29e;
-  --color-warm-gray: #78716c;
-  --color-ink-black: #0c0a09;
-  --color-soot: #1c1917;
-  --color-sky-wash: #c1e1f7;
-  --color-cyan-signal: #3ba6f1;
-  --color-cyan-edge: #3398e1;
+  --color-hairline-border: #ecedf3;
+  --color-ink: #14161f;
+  --color-slate-gray: #6b7280;
+  --color-faint-gray: #9ca3af;
+  --color-indigo-primary: #3e5eea;
+  --color-indigo-deep: #2a44c7;
+  --color-indigo-wash: #e6ecff;
+  --color-success-green: #16a34a;
+  --color-success-wash: #e3f9ea;
+  --color-warning-amber: #c9821a;
+  --color-warning-wash: #fff4de;
+  --color-danger-red: #e0393e;
+  --color-danger-wash: #fde8e8;
+  --color-lavender-tag: #7c5cfc;
+  --color-lavender-tag-wash: #ede9fe;
+  --color-coral-chip: #f1495b;
+  --color-amber-chip: #ffa53d;
+  --color-emerald-chip: #22c55e;
 
-  /* Typography — Font Families */
-  --font-roobert: 'Roobert', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-inter: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  /* Typography — Font Family */
+  --font-jakarta: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Typography — Scale */
-  --text-caption: 10px;
-  --leading-caption: 2.3;
-  --text-body-lg: 16px;
-  --leading-body-lg: 1.69;
-  --tracking-body-lg: 0.048px;
-  --text-subheading: 20px;
-  --leading-subheading: 1.2;
-  --tracking-subheading: -0.1px;
-  --text-heading-sm: 32px;
-  --leading-heading-sm: 1.25;
-  --tracking-heading-sm: -0.8px;
-  --text-display: 52px;
-  --leading-display: 1.12;
-  --tracking-display: -1.092px;
+  --text-caption: 11px;
+  --leading-caption: 1.3;
+  --tracking-caption: 0.02em;
+  --text-label: 12px;
+  --leading-label: 1.4;
+  --tracking-label: 0.01em;
+  --text-body: 14px;
+  --leading-body: 1.5;
+  --text-card-title: 16px;
+  --leading-card-title: 1.4;
+  --text-section-title: 18px;
+  --leading-section-title: 1.3;
+  --text-heading: 28px;
+  --leading-heading: 1.2;
+  --tracking-heading: -0.01em;
+  --text-stat-display: 36px;
+  --leading-stat-display: 1.1;
+  --tracking-stat-display: -0.02em;
 
   /* Typography — Weights */
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
 
   /* Spacing */
   --spacing-unit: 4px;
@@ -296,46 +307,40 @@ The signature typographic move is the inline highlight: one phrase per headline 
   --spacing-8: 8px;
   --spacing-12: 12px;
   --spacing-16: 16px;
+  --spacing-20: 20px;
   --spacing-24: 24px;
   --spacing-32: 32px;
   --spacing-40: 40px;
   --spacing-48: 48px;
   --spacing-64: 64px;
   --spacing-80: 80px;
-  --spacing-96: 96px;
-  --spacing-160: 160px;
 
   /* Layout */
-  --page-max-width: 1200px;
-  --section-gap: 96px;
-  --card-padding: 24px;
-  --element-gap: 8px;
+  --dashboard-max-width: 1280px;
+  --sidebar-width: 240px;
+  --section-gap: 32px;
+  --card-padding: 20px;
+  --card-gap: 16px;
 
   /* Border Radius */
-  --radius-md: 4px;
-  --radius-lg: 10px;
-  --radius-2xl: 16px;
-  --radius-full: 9999px;
-
-  /* Named Radii */
-  --radius-tags: 9999px;
-  --radius-cards: 10px;
-  --radius-icons: 4px;
-  --radius-inputs: 6px;
-  --radius-buttons: 9999px;
-  --radius-feature-card: 16px;
+  --radius-pill: 9999px;
+  --radius-button: 12px;
+  --radius-icon-chip: 12px;
+  --radius-input: 10px;
+  --radius-stat-card: 20px;
+  --radius-notification-card: 24px;
 
   /* Shadows */
-  --shadow-md: rgba(0, 0, 0, 0.05) 0px 4px 16px 0px;
-  --shadow-sm: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px;
-  --shadow-subtle: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
-  --shadow-xl: rgba(17, 12, 46, 0.12) 0px 12px 45px 0px;
+  --shadow-card: rgba(20, 23, 31, 0.06) 0px 8px 24px -4px;
+  --shadow-card-hover: rgba(20, 23, 31, 0.10) 0px 16px 32px -8px;
+  --shadow-button-tinted: rgba(62, 94, 234, 0.35) 0px 8px 16px -6px;
+  --shadow-nav-active-tinted: rgba(62, 94, 234, 0.30) 0px 6px 14px -4px;
 
   /* Surfaces */
-  --surface-canvas: #fafaf9;
-  --surface-card: #ffffff;
-  --surface-floating-preview: #ffffff;
-  --surface-inverted-section: #1c1917;
+  --surface-canvas: #f6f7fb;
+  --surface-low-priority-card: #ffffff;
+  --surface-elevated-card: #ffffff;
+  --surface-gradient-widget: linear-gradient(135deg, #e6ecff, #f6f7fb);
 }
 ```
 
@@ -344,62 +349,71 @@ The signature typographic move is the inline highlight: one phrase per headline 
 ```css
 @theme {
   /* Colors */
-  --color-stone-canvas: #fafaf9;
+  --color-lavender-canvas: #f6f7fb;
   --color-pure-white: #ffffff;
-  --color-stone-border: #e8e6e5;
-  --color-stone-muted: #d6d3d1;
-  --color-ash-gray: #a8a29e;
-  --color-warm-gray: #78716c;
-  --color-ink-black: #0c0a09;
-  --color-soot: #1c1917;
-  --color-sky-wash: #c1e1f7;
-  --color-cyan-signal: #3ba6f1;
-  --color-cyan-edge: #3398e1;
+  --color-hairline-border: #ecedf3;
+  --color-ink: #14161f;
+  --color-slate-gray: #6b7280;
+  --color-faint-gray: #9ca3af;
+  --color-indigo-primary: #3e5eea;
+  --color-indigo-deep: #2a44c7;
+  --color-indigo-wash: #e6ecff;
+  --color-success-green: #16a34a;
+  --color-success-wash: #e3f9ea;
+  --color-warning-amber: #c9821a;
+  --color-warning-wash: #fff4de;
+  --color-danger-red: #e0393e;
+  --color-danger-wash: #fde8e8;
+  --color-lavender-tag: #7c5cfc;
+  --color-lavender-tag-wash: #ede9fe;
+  --color-coral-chip: #f1495b;
+  --color-amber-chip: #ffa53d;
+  --color-emerald-chip: #22c55e;
 
   /* Typography */
-  --font-roobert: 'Roobert', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-inter: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-jakarta: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Typography — Scale */
-  --text-caption: 10px;
-  --leading-caption: 2.3;
-  --text-body-lg: 16px;
-  --leading-body-lg: 1.69;
-  --tracking-body-lg: 0.048px;
-  --text-subheading: 20px;
-  --leading-subheading: 1.2;
-  --tracking-subheading: -0.1px;
-  --text-heading-sm: 32px;
-  --leading-heading-sm: 1.25;
-  --tracking-heading-sm: -0.8px;
-  --text-display: 52px;
-  --leading-display: 1.12;
-  --tracking-display: -1.092px;
+  --text-caption: 11px;
+  --leading-caption: 1.3;
+  --text-label: 12px;
+  --leading-label: 1.4;
+  --text-body: 14px;
+  --leading-body: 1.5;
+  --text-card-title: 16px;
+  --leading-card-title: 1.4;
+  --text-section-title: 18px;
+  --leading-section-title: 1.3;
+  --text-heading: 28px;
+  --leading-heading: 1.2;
+  --text-stat-display: 36px;
+  --leading-stat-display: 1.1;
 
   /* Spacing */
   --spacing-4: 4px;
   --spacing-8: 8px;
   --spacing-12: 12px;
   --spacing-16: 16px;
+  --spacing-20: 20px;
   --spacing-24: 24px;
   --spacing-32: 32px;
   --spacing-40: 40px;
   --spacing-48: 48px;
   --spacing-64: 64px;
   --spacing-80: 80px;
-  --spacing-96: 96px;
-  --spacing-160: 160px;
 
   /* Border Radius */
-  --radius-md: 4px;
-  --radius-lg: 10px;
-  --radius-2xl: 16px;
-  --radius-full: 9999px;
+  --radius-pill: 9999px;
+  --radius-button: 12px;
+  --radius-icon-chip: 12px;
+  --radius-input: 10px;
+  --radius-stat-card: 20px;
+  --radius-notification-card: 24px;
 
   /* Shadows */
-  --shadow-md: rgba(0, 0, 0, 0.05) 0px 4px 16px 0px;
-  --shadow-sm: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px;
-  --shadow-subtle: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
-  --shadow-xl: rgba(17, 12, 46, 0.12) 0px 12px 45px 0px;
+  --shadow-card: rgba(20, 23, 31, 0.06) 0px 8px 24px -4px;
+  --shadow-card-hover: rgba(20, 23, 31, 0.10) 0px 16px 32px -8px;
+  --shadow-button-tinted: rgba(62, 94, 234, 0.35) 0px 8px 16px -6px;
+  --shadow-nav-active-tinted: rgba(62, 94, 234, 0.30) 0px 6px 14px -4px;
 }
 ```
