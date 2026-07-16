@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Data Engineering 101</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+:root{--bg:#060910;--sf:#0c1420;--bd:rgba(255,255,255,.06);--tx:#e2e8f0;--mt:#475569}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:'Inter',-apple-system,sans-serif;overflow-x:hidden}
+.hero{position:relative;padding:44px 20px 30px;border-bottom:1px solid var(--bd);overflow:hidden}
+.hbg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 90% at 5% 50%,rgba(99,102,241,.2) 0%,transparent 55%),radial-gradient(ellipse 60% 80% at 95% 40%,rgba(168,85,247,.16) 0%,transparent 55%),linear-gradient(170deg,#0b0f1a,#060910)}
+.hgr{position:absolute;inset:0;background-image:linear-gradient(rgba(99,102,241,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.04) 1px,transparent 1px);background-size:36px 36px;mask-image:radial-gradient(ellipse 90% 100% at 50% 0%,black 30%,transparent 100%)}
+.hi{position:relative;max-width:1040px;margin:0 auto}
+.hbadge{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.hdot{width:7px;height:7px;border-radius:50%;background:#6366f1;box-shadow:0 0 14px #6366f1;animation:pd 2.5s ease-in-out infinite}
+@keyframes pd{0%,100%{box-shadow:0 0 8px #6366f1}50%{box-shadow:0 0 24px #6366f1,0 0 48px rgba(99,102,241,.4)}}
+.hlbl{font-size:10px;color:#6366f1;font-weight:700;letter-spacing:3px;text-transform:uppercase}
+.hero h1{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2;margin-bottom:8px}
+.grad{background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hsub{color:var(--mt);font-size:13px;margin-bottom:14px}
+.pstrip{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pbadge{display:flex;align-items:center;gap:6px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);border-radius:20px;padding:5px 14px;font-size:11px;color:#a5b4fc;font-weight:600}
+.pbarw{flex:1;min-width:160px;height:4px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+.pbar{height:100%;background:linear-gradient(90deg,#6366f1,#a855f7);border-radius:4px;transition:width .6s ease;width:0%}
+.xpb{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);border-radius:20px;padding:4px 12px;font-size:11px;color:#fbbf24;font-weight:700}
+.main{max-width:1040px;margin:0 auto;padding:20px 14px 80px}
+.ctrl{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap}
+.sw{flex:1;min-width:200px;position:relative}
+.sw svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--mt);pointer-events:none}
+.si{width:100%;padding:9px 13px 9px 34px;background:var(--sf);border:1px solid var(--bd);border-radius:9px;color:var(--tx);font-size:12px;outline:none;transition:border-color .2s}
+.si:focus{border-color:rgba(99,102,241,.5)}
+.bexp{padding:9px 16px;border-radius:9px;border:1px solid var(--bd);background:var(--sf);color:var(--mt);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+.bexp.on{background:rgba(99,102,241,.2);border-color:#6366f1;color:#a5b4fc}
+.cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.cp{padding:4px 11px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--mt);font-size:10px;font-weight:700;cursor:pointer;transition:all .2s}
+.cp:hover{border-color:rgba(255,255,255,.12);color:#94a3b8}
+.cp.on{background:rgba(99,102,241,.18);border-color:rgba(99,102,241,.5);color:#a5b4fc}
+.sbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.sc{display:flex;align-items:center;gap:4px;padding:4px 9px;background:var(--sf);border-radius:6px;border:1px solid var(--bd);font-size:9px}
+.sdot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.snum{font-weight:700;font-size:10px}
+.rc{font-size:11px;color:var(--mt);margin-bottom:10px}
+.rc strong{color:#94a3b8}
+.cards{display:flex;flex-direction:column;gap:6px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;overflow:hidden;transition:border-color .3s,box-shadow .3s;position:relative}
+.card.open{border-color:var(--cc);box-shadow:0 4px 30px color-mix(in srgb,var(--cc) 12%,transparent)}
+.card.seen::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--cc);border-radius:2px 0 0 2px}
+.chdr{display:flex;align-items:center;gap:9px;padding:10px 13px;cursor:pointer;user-select:none;transition:background .15s}
+.chdr:hover{background:rgba(255,255,255,.015)}
+.cnum{font-size:9px;color:var(--mt);font-weight:700;min-width:22px;text-align:right}
+.cico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid color-mix(in srgb,var(--cc) 40%,transparent);background:color-mix(in srgb,var(--cc) 10%,transparent)}
+.cico svg{width:13px;height:13px;stroke:var(--cc);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ctitle{font-weight:700;font-size:12px;flex:1;color:var(--cc)}
+.ccat{font-size:8px;font-weight:700;padding:2px 7px;border-radius:7px;border:1px solid color-mix(in srgb,var(--cc) 35%,transparent);background:color-mix(in srgb,var(--cc) 8%,transparent);color:var(--cc);white-space:nowrap}
+.cunlk{display:none;font-size:9px;color:#22c55e;font-weight:700;align-items:center;gap:2px;white-space:nowrap}
+.card.seen .cunlk{display:flex}
+.cchev{color:var(--mt);flex-shrink:0;transition:transform .3s}
+.card.open .cchev{transform:rotate(180deg)}
+.cbody{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1)}
+.card.open .cbody{max-height:14000px}
+.cbi{padding:0 13px 13px}
+.illus{width:100%;border-radius:9px;margin-bottom:11px;background:rgba(0,0,0,.45);border:1px solid var(--bd);overflow:hidden;height:120px;position:relative}
+.illus svg{position:absolute;inset:0;width:100%;height:100%}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}
+@media(max-width:540px){.dgrid{grid-template-columns:1fr}}
+.db{background:rgba(0,0,0,.32);border-radius:7px;padding:9px 11px;border:1px solid var(--bd)}
+.dbl{font-size:9px;font-weight:700;margin-bottom:4px;color:var(--cc);display:flex;align-items:center;gap:3px}
+.dbt{font-size:11px;color:#94a3b8;line-height:1.65}
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:3px;margin-top:3px}
+.fs{padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);color:#334155;transition:all .25s}
+.fs.a{color:#fff;border-color:var(--cc);background:color-mix(in srgb,var(--cc) 18%,transparent);box-shadow:0 0 7px color-mix(in srgb,var(--cc) 30%,transparent)}
+.fa{color:#1e293b;font-size:10px;transition:color .2s}
+.fa.a{color:var(--cc)}
+.trow{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.tbg{font-size:9px;padding:2px 7px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid color-mix(in srgb,var(--cc) 20%,transparent);color:#64748b}
+.empty{text-align:center;padding:50px 0;color:var(--mt)}
+.toast{position:fixed;top:16px;right:16px;background:linear-gradient(135deg,#1e1b4b,#312e81);border:1px solid #6366f1;border-radius:12px;padding:12px 18px;color:#fff;font-weight:700;font-size:13px;z-index:1000;pointer-events:none;opacity:0;transform:translateY(-16px)}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hbg"></div><div class="hgr"></div>
+  <div class="hi">
+    <div class="hbadge"><div class="hdot"></div><span class="hlbl">Data Engineering 101</span></div>
+    <h1>Architecture, Engineering &<br><span class="grad">Database Fundamentals</span></h1>
+    <p class="hsub">101 konsep · Animasi simulasi interaktif · Gamified learning</p>
+    <div class="pstrip">
+      <div class="pbadge">📚 <span id="sc">0</span> / 101 dipelajari</div>
+      <div class="pbarw"><div class="pbar" id="pb"></div></div>
+      <div class="xpb" id="xp">0 XP</div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="main">
+  <div class="ctrl">
+    <div class="sw">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="si" id="search" placeholder="Cari 101 term, konsep, tools..." autocomplete="off"/>
+    </div>
+    <button class="bexp" id="btnexp">Expand All</button>
+  </div>
+  <div class="cats" id="cats"></div>
+  <div class="sbar" id="sbar"></div>
+  <div class="rc" id="rc"></div>
+  <div class="cards" id="cards"></div>
+  <div class="empty" id="empty" style="display:none"><div style="font-size:32px;margin-bottom:8px">🔍</div><div>Tidak ada term yang cocok</div></div>
+</div>
+<script>
+// ═══════════════════════════════════════════
+// TERM DATA — 101 terms
+// ═══════════════════════════════════════════
+const T=[
+// ARSITEKTUR
+{id:1,cat:"Arsitektur",color:"#818cf8",term:"Medallion Architecture",icon:"M12 3L2 8l10 5 10-5-10-5zM2 13l10 5 10-5M2 18l10 5 10-5",
+konsep:"Tiga layer kualitas data: Bronze (raw as-is), Silver (cleaned & validated), Gold (aggregated mart). Tiap layer tambah kualitas.",
+met:"Bronze: ingest apa adanya. Silver: deduplicate, validate, normalize. Gold: aggregate, join, bentuk mart untuk BI & ML.",
+proses:"Source → Bronze (raw) → Silver (clean/validate) → Gold (mart) → BI / ML",
+contoh:"Klaim AHM: Bronze=raw PDF/JSON, Silver=parsed & validated, Gold=fact_klaim + dim tables untuk dashboard.",
+tools:["Databricks","Delta Lake","Apache Iceberg","dbt","BigQuery"],sim:"medallion"},
+{id:2,cat:"Arsitektur",color:"#6366f1",term:"Data Lakehouse",icon:"M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
+konsep:"Gabungan Data Lake (storage murah, format bebas) + Data Warehouse (structured, query-ready). Satu platform analitik & ML.",
+met:"Raw data di object storage, terapkan ACID + schema via Iceberg/Delta. Query langsung tanpa copy ke DWH terpisah.",
+proses:"Ingest → Object Storage → Iceberg Layer → Query Engine → BI / ML",
+contoh:"AHM simpan raw klaim PDF di GCS, Iceberg layer di atasnya untuk analitik BigQuery tanpa ETL terpisah.",
+tools:["Databricks","Apache Iceberg","Delta Lake","BigQuery","Snowflake"],sim:"lakehouse"},
+{id:3,cat:"Arsitektur",color:"#8b5cf6",term:"Lambda Architecture",icon:"M22 12h-4l-3 9L9 3l-3 9H2",
+konsep:"Batch Layer (akurat, lambat) + Speed Layer (cepat, approximate) berjalan paralel. Digabung di Serving Layer.",
+met:"Batch reprocess histori periodik untuk akurasi. Speed layer handle real-time dengan data terbaru. Serving merge keduanya.",
+proses:"Source → Batch Layer (Spark) + Speed Layer (Flink) → Serving Layer → Query",
+contoh:"Telemetri kendaraan Astra: Flink alert real-time overheat, Spark batch laporan efisiensi harian.",
+tools:["Apache Spark","Apache Flink","Kafka","Hadoop","BigQuery"],sim:"lambda"},
+{id:4,cat:"Arsitektur",color:"#a855f7",term:"Kappa Architecture",icon:"M22 12h-4l-3 9L9 3l-3 9H2",
+konsep:"Satu stream processing layer saja. Semua data diperlakukan sebagai stream — reprocessing via replay event log.",
+met:"Retain events di Kafka jangka panjang. Reprocessing = replay dari offset awal dengan consumer baru.",
+proses:"Event Log (Kafka long-retention) → Stream Processor → Serving Store → Query",
+contoh:"Astra Digital: semua transaksi sebagai Kafka event, Flink process untuk fraud detection & billing.",
+tools:["Apache Kafka","Apache Flink","Google Pub/Sub","Dataflow"],sim:"stream"},
+{id:5,cat:"Arsitektur",color:"#ec4899",term:"Data Mesh",icon:"M12 2L2 7l10 5 10-5-10-5M2 17l10 5 10-5M2 12l10 5 10-5",
+konsep:"Desentralisasi ownership: tiap domain bisnis punya data product sendiri. Kebalikan satu tim data central yang bottleneck.",
+met:"4 prinsip: Domain ownership, Data as a product, Self-serve platform, Federated governance.",
+proses:"Domain Team → Build Data Product → Publish to Catalog → Consumer Domain",
+contoh:"AHM, ACC, Astra Digital punya domain data sendiri — publish ke shared Dataplex Catalog Astra Group.",
+tools:["Dataplex","Collibra","DataHub","Apache Atlas","dbt"],sim:"mesh"},
+{id:6,cat:"Arsitektur",color:"#f43f5e",term:"Data Fabric",icon:"M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z",
+konsep:"Intelligence layer berbasis AI/metadata yang menghubungkan data dari berbagai sumber otomatis. Bukan arsitektur fisik.",
+met:"AI/ML untuk auto-discovery metadata, lineage otomatis, rekomendasi akses. Knowledge graph sebagai fondasi.",
+proses:"Multi-Source → Metadata Crawl → Knowledge Graph → AI Recommendation → Unified Access",
+contoh:"Microsoft Purview di Astra untuk unified catalog lintas GCP dan Azure tanpa pindah data.",
+tools:["Microsoft Purview","Google Dataplex","Informatica","Talend"],sim:"fabric"},
+{id:7,cat:"Arsitektur",color:"#06b6d4",term:"HTAP",icon:"M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 0 3-3h7z",
+konsep:"Hybrid Transactional/Analytical Processing. Satu DB engine handle OLTP (write) dan OLAP (analitik) sekaligus tanpa ETL.",
+met:"Row store untuk write (OLTP), columnar store untuk read (OLAP) di satu engine. Real-time analytics on live operational data.",
+proses:"Transactional Write → Row Store (OLTP) + async sync → Column Store (OLAP) → Real-time Analytics",
+contoh:"TiDB di Astra: insert transaksi penjualan real-time sekaligus query laporan agregat tanpa delay ETL.",
+tools:["TiDB","SingleStore","SAP HANA","Google AlloyDB","CockroachDB"],sim:"htap"},
+{id:8,cat:"Arsitektur",color:"#14b8a6",term:"Data Warehouse vs Data Lake",icon:"M21 5c0 1.66-4 3-9 3S3 6.66 3 5m18 0c0-1.66-4-3-9-3S3 3.34 3 5m18 0v14c0 1.66-4 3-9 3s-9-1.34-9-3V5",
+konsep:"DWH: structured, schema-on-write, SQL, akurat tapi rigid. Data Lake: format bebas, schema-on-read, semua data, fleksibel tapi perlu governance.",
+met:"DWH: ETL → defined schema → load. Lake: ingest dulu → schema defined saat query. Lake lebih fleksibel, DWH lebih reliable.",
+proses:"DWH: ETL → Schema → Load → Query | Lake: Ingest Raw → Schema-on-read → Query",
+contoh:"BigQuery DWH untuk laporan keuangan Astra. GCS Data Lake untuk raw data semua sumber sebelum diproses.",
+tools:["BigQuery (DWH)","Snowflake (DWH)","GCS (Lake)","S3 (Lake)","ADLS (Lake)"],sim:"dwlake"},
+// PIPELINE
+{id:9,cat:"Pipeline",color:"#22d3ee",term:"ETL — Extract Transform Load",icon:"M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3",
+konsep:"Classic pattern: Extract dari source, Transform (clean/enrich/reshape) di staging, LALU Load ke target. Transform sebelum load.",
+met:"Transform di ETL engine/staging server, bukan di target DB. Lebih kontrol tapi butuh compute tersendiri.",
+proses:"Source → Extract → Staging Transform (clean/join/agg) → Validate → Load to DWH",
+contoh:"SSIS/Talend extract data HR AHM, transform di server staging, load ke SQL Server DWH tiap malam.",
+tools:["Apache Spark","SSIS","Talend","Informatica","Pentaho"],sim:"etl"},
+{id:10,cat:"Pipeline",color:"#0ea5e9",term:"ELT — Extract Load Transform",icon:"M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3",
+konsep:"Modern approach: Load raw dulu ke cloud DWH, transform di dalam DWH menggunakan compute-nya. Raw selalu tersimpan.",
+met:"Manfaatkan compute BigQuery/Snowflake. Raw selalu ada sebagai fallback. Transform via dbt — versioned, testable SQL.",
+proses:"Source → Extract → Load Raw to DWH → Transform in-DWH (dbt) → Mart → Analytics",
+contoh:"Fivetran extract MySQL klaim AHM → load raw BigQuery → dbt transform staging→intermediate→mart.",
+tools:["dbt","Fivetran","Airbyte","BigQuery","Snowflake"],sim:"elt"},
+{id:11,cat:"Pipeline",color:"#06b6d4",term:"CDC — Change Data Capture",icon:"M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z",
+konsep:"Tangkap perubahan DB (INSERT/UPDATE/DELETE) real-time dari transaction log — bukan full table scan yang mahal.",
+met:"Baca binlog MySQL / WAL PostgreSQL. Setiap change jadi event ke downstream. Zero performance impact ke source DB.",
+proses:"DB Transaction → Write Binlog/WAL → CDC reads log → Event to Kafka → Sink to Target",
+contoh:"Debezium baca binlog MySQL klaim AHM → Kafka → GCP Datastream → BigQuery, sync real-time.",
+tools:["Debezium","GCP Datastream","Striim","Fivetran","Kafka Connect"],sim:"cdc"},
+{id:12,cat:"Pipeline",color:"#14b8a6",term:"Stream Processing",icon:"M22 12h-4l-3 9L9 3l-3 9H2",
+konsep:"Pemrosesan data real-time saat mengalir — bukan kumpulkan dulu, proses nanti. Low latency, continuous computation.",
+met:"Windowing: tumbling (fixed), sliding (overlap), session (activity). Watermark untuk late data. Stateful/stateless ops.",
+proses:"Event Source → Message Queue → Window → Aggregate/Join/Filter → Emit → Sink",
+contoh:"GPS kendaraan → Pub/Sub → Dataflow → alert real-time jika keluar geofence atau kecepatan anomali.",
+tools:["Apache Flink","Google Dataflow","Spark Streaming","Kafka Streams","Bytewax"],sim:"stream"},
+{id:13,cat:"Pipeline",color:"#10b981",term:"Batch Processing",icon:"M2 7h20M2 12h20M2 17h20",
+konsep:"Kumpulkan data dalam periode tertentu (harian/jam-an), proses sekaligus satu job besar. Akurat tapi ada latency.",
+met:"Trigger by schedule atau data size. Spark/Hive proses seluruh dataset. Efisien untuk large volume tapi bukan real-time.",
+proses:"Accumulate Data (hour/day) → Schedule Trigger → Spark Job reads all → Transform → Write Output",
+contoh:"Laporan klaim AHM: Spark job jalan tiap jam 01.00, proses semua transaksi hari itu, load ke mart.",
+tools:["Apache Spark","Apache Hive","Hadoop MapReduce","Dataproc","AWS Glue"],sim:"batch"},
+{id:14,cat:"Pipeline",color:"#84cc16",term:"Orchestration — DAG",icon:"M12 22V12M12 12L4 7M12 12l8-5",
+konsep:"Manajemen dependency, scheduling, retry, alerting antar task pipeline. DAG = Directed Acyclic Graph.",
+met:"DAG: node=task, edge=dependency. Handle retry logic, SLA alerting, backfill histori, cross-pipeline dependency.",
+proses:"Schedule Trigger → Parse DAG → Task A → Task B (waits A) → C (waits A+B) → Success/Alert",
+contoh:"Cloud Composer orchestrate: ingest PDF → LLM extract → DQ check → load BQ → notify Slack.",
+tools:["Apache Airflow","Cloud Composer","Prefect","Dagster","Mage.ai"],sim:"dag"},
+{id:15,cat:"Pipeline",color:"#f59e0b",term:"Message Queue & Event Streaming",icon:"M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6",
+konsep:"Sistem async untuk kirim/terima event antar service. Kafka: high-throughput log, replay-able. RabbitMQ: routing-based.",
+met:"Producer → topic/queue. Consumer baca independen. Kafka retain event (replay). RabbitMQ ACK-based (consumed=gone).",
+proses:"Producer → Publish to Topic → Broker stores → Consumer Group reads → Process → ACK",
+contoh:"Pub/Sub di Astra Digital: payment events dipublish, multiple consumer (fraud, notif, analytics) baca paralel.",
+tools:["Apache Kafka","Google Pub/Sub","RabbitMQ","AWS SQS","Azure Service Bus"],sim:"mqueue"},
+{id:16,cat:"Pipeline",color:"#fb923c",term:"Reverse ETL",icon:"M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3",
+konsep:"Data dari DWH → kembali ke operational tools (CRM, Ads, Support). Aktivasi data analitik ke dalam alur bisnis.",
+met:"Sync segment/metric dari DWH ke downstream SaaS. Operationalize analytics supaya sales/marketing pakai data DWH.",
+proses:"DWH → Define Sync Model → Reverse ETL → CRM / Ads / Support Tool → Action",
+contoh:"Churn risk score tinggi di BigQuery → Hightouch → Salesforce, sales team AHM direct outreach.",
+tools:["Hightouch","Census","Polytomic","Grouparoo","Omnata"],sim:"stream"},
+{id:17,cat:"Pipeline",color:"#e879f9",term:"Schema-on-Read vs Schema-on-Write",icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6",
+konsep:"SoW (DWH): schema didefinisikan SEBELUM data masuk — reject jika tidak sesuai. SoR (Lake): schema diterapkan SAAT query.",
+met:"SoW: data quality tinggi, rigid. SoR: accept semua format, flexible. Trade-off quality vs flexibility.",
+proses:"SoW: Define Schema → Validate on ingest → Reject mismatch | SoR: Accept all → Apply schema at query",
+contoh:"BigQuery (SoW): tabel klaim harus sesuai schema. GCS Parquet (SoR): bisa query field baru tanpa alter table.",
+tools:["BigQuery (SoW)","Snowflake (SoW)","Parquet on GCS (SoR)","Hive (SoR)","Iceberg (hybrid)"],sim:"schemrw"},
+// STORAGE
+{id:18,cat:"Storage & Format",color:"#f59e0b",term:"Columnar Storage",icon:"M3 3h18M3 9h18M3 15h18",
+konsep:"Data disimpan per kolom, bukan per baris. Query analitik hanya butuh beberapa kolom — skip kolom lain. Kompresi jauh lebih baik.",
+met:"Nilai sejenis di satu kolom → kompresi tinggi (RLE, dictionary). Predicate pushdown: filter di storage level.",
+proses:"Write: Row → Transpose → Compress per Column → Store | Read: SELECT cols → Decompress only target cols",
+contoh:"Parquet klaim 50 kolom — SELECT claim_amount hanya baca 1 kolom, hemat 98% I/O vs row storage.",
+tools:["Apache Parquet","Apache ORC","BigQuery","Snowflake","DuckDB"],sim:"columnar"},
+{id:19,cat:"Storage & Format",color:"#a78bfa",term:"Row Storage vs Columnar",icon:"M3 3h18v4H3zM3 10h18v4H3zM3 17h18v4H3z",
+konsep:"Row: simpan satu baris penuh berdampingan — optimal OLTP (insert/update satu record). Columnar: optimal OLAP (scan jutaan baris).",
+met:"Row: fast single-row lookup. Columnar: fast aggregation. OLTP=row, OLAP=columnar.",
+proses:"OLTP Write: INSERT → Row heap (full row together) | OLAP Read: SELECT agg → Column scan (target cols only)",
+contoh:"MySQL (row) untuk input klaim oleh petugas. BigQuery (columnar) untuk laporan agregat ribuan klaim.",
+tools:["MySQL/PostgreSQL (row)","InnoDB","BigQuery (col)","Parquet","Cassandra (row)"],sim:"rowcol"},
+{id:20,cat:"Storage & Format",color:"#f97316",term:"Open Table Format — Iceberg/Delta/Hudi",icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8",
+konsep:"Standar open-source tabel analitik di data lake: ACID transactions, schema evolution, time travel, concurrent access.",
+met:"Metadata layer di atas object storage. Snapshot history, file manifests. Tiap write = snapshot baru (atomic commit).",
+proses:"Write → New Snapshot → Update Manifest → Atomic Commit | Read → Latest Snapshot → Resolve Files",
+contoh:"Iceberg di GCS tabel histori klaim AHM — time travel ke snapshot 6 bulan lalu untuk audit OJK.",
+tools:["Apache Iceberg","Delta Lake","Apache Hudi","BigLake","Nessie Catalog"],sim:"iceberg"},
+{id:21,cat:"Storage & Format",color:"#ef4444",term:"Partitioning — Date, Range, List, Hash",icon:"M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z",
+konsep:"Bagi tabel ke segmen fisik berdasarkan kolom. Date: by month/day. Range: value range. List: explicit values. Hash: distribusi merata.",
+met:"Query optimizer skip partisi irrelevan (partition pruning). Date paling umum di DWH. Hash untuk distribusi merata tanpa natural key.",
+proses:"INSERT → Determine partition key → Route to partition | Query → Check WHERE → Prune irrelevant → Scan matching only",
+contoh:"BigQuery tabel klaim: PARTITION BY DATE(tanggal_klaim) — query WHERE bulan=Jan hanya scan 1/12 data.",
+tools:["BigQuery","Snowflake","PostgreSQL","Apache Iceberg","MySQL"],sim:"partitioning"},
+{id:22,cat:"Storage & Format",color:"#f43f5e",term:"Clustering & Sorting",icon:"M18 20V10M12 20V4M6 20v-6",
+konsep:"Sort data dalam partisi berdasarkan kolom tertentu untuk percepat filter. BigQuery: CLUSTER BY. Snowflake: micro-partition sorting.",
+met:"Clustering co-locate rows dengan nilai kolom yang sama. Query filter by cluster key → skip banyak blocks.",
+proses:"Write → Sort by cluster key within partition → Store co-located blocks | Query → Prune blocks by cluster key stats",
+contoh:"BigQuery: CLUSTER BY kode_cabang. Query cabang tertentu skip 95% blocks dalam partisi hari itu.",
+tools:["BigQuery","Snowflake","Apache Iceberg","DuckDB","Redshift"],sim:"clustering"},
+{id:23,cat:"Storage & Format",color:"#fb923c",term:"Compaction & Vacuum",icon:"M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2",
+konsep:"Compaction: merge ribuan small files jadi file optimal. Vacuum: hapus versi data lama setelah retention window.",
+met:"Streaming writes buat many small files. Compaction merge → 128MB-1GB optimal. Vacuum reclaim storage, remove dead rows.",
+proses:"Monitor file sizes → Compaction: merge small → write optimal → update manifest | Vacuum: expire old snapshots",
+contoh:"Iceberg klaim: 30 hari streaming → 10K small files → compaction → 50 optimal. Vacuum hapus snapshot > 7 hari.",
+tools:["Apache Iceberg","Delta Lake OPTIMIZE+VACUUM","PostgreSQL VACUUM","Spark","Hudi"],sim:"compaction"},
+{id:24,cat:"Storage & Format",color:"#22d3ee",term:"Data Tiering — Hot, Warm, Cold",icon:"M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6",
+konsep:"Simpan data di storage tier berbeda berdasarkan frekuensi akses. Hot (SSD, mahal) → Warm (HDD) → Cold (archive, murah).",
+met:"Lifecycle policy otomatis pindahkan data berdasarkan usia/akses. Hot: BigQuery active. Warm: GCS Standard. Cold: GCS Archive.",
+proses:"Data created → Hot storage → Aged → Move to Warm → Aged more → Move to Cold archive",
+contoh:"Klaim 0-30 hari: BigQuery hot. 30-365 hari: GCS Standard. >1 tahun: GCS Archive (lebih murah 90%).",
+tools:["GCS Lifecycle","AWS S3 Intelligent-Tiering","Azure Blob Tiers","BigQuery Long-term"],sim:"tiering"},
+{id:25,cat:"Storage & Format",color:"#4ade80",term:"Object vs Block vs File Storage",icon:"M2 2h8v8H2zM14 2h8v8h-8zM2 14h8v8H2zM14 14h8v8h-8z",
+konsep:"Object: flat namespace, unlimited scale (GCS/S3) — untuk data lake. Block: raw blocks untuk DB. File: POSIX filesystem (NFS).",
+met:"Object: no random write, tapi unlimited scale. Block: low latency random I/O untuk DB. File: shared access legacy apps.",
+proses:"Object: PUT/GET by key (HTTP) | Block: sector-level read/write (kernel driver) | File: open/read/write by path (POSIX)",
+contoh:"GCS (object) untuk data lake. Persistent Disk (block) untuk PostgreSQL. Filestore (file) untuk legacy app NFS.",
+tools:["GCS (object)","AWS S3","Persistent Disk (block)","Cloud Filestore (file)","Azure Blob"],sim:"storagetypes"},
+// MODELING
+{id:26,cat:"Modeling",color:"#3b82f6",term:"Star Schema",icon:"M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z",
+konsep:"Fact Table (metrics) di tengah, dikelilingi Dimension Tables (atribut). Paling umum di DWH. Simple, BI-friendly, query cepat.",
+met:"Dimension denormalized (no JOIN chain). Fact table: FKs + numeric measures. Define grain (1 baris = 1 apa?). Kimball.",
+proses:"Define grain → Choose facts → Choose dims → Build fact table → Connect dims with FK",
+contoh:"fact_klaim(jumlah, tanggal_sk, pasien_sk, cabang_sk) + dim_pasien + dim_tanggal + dim_cabang.",
+tools:["BigQuery","dbt","Looker","Power BI","Tableau"],sim:"star"},
+{id:27,cat:"Modeling",color:"#1d4ed8",term:"Snowflake Schema",icon:"M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z",
+konsep:"Seperti Star Schema tapi dimension tables di-normalize lebih lanjut. Sub-dimension mengurangi redundansi tapi perlu lebih JOIN.",
+met:"dim_kota di-normalize dari dim_pasien. Hemat storage, tapi query lebih lambat karena extra JOIN chain.",
+proses:"Star Schema → Normalize Dimensions → Create sub-dimension tables → FK from dim to sub-dim",
+contoh:"dim_pasien → dim_kota → dim_provinsi. Lebih normalized tapi query JOIN chain lebih panjang dari Star.",
+tools:["BigQuery","PostgreSQL","dbt","Snowflake","SQL Server"],sim:"snowflake"},
+{id:28,cat:"Modeling",color:"#6366f1",term:"Data Vault 2.0",icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+konsep:"Hub (entity/business key) + Link (relationship) + Satellite (attributes + history). Insert-only. Full audit trail.",
+met:"Hub: business keys only. Link: many-to-many relations. Satellite: descriptive attrs + load_date. Semua INSERT.",
+proses:"Source → Hub (BK only) → Link (relationships) → Satellite (attrs + load_date) → Business Vault",
+contoh:"Hub_Pasien(NIK) → Link_Klaim(NIK + claim_id) → Sat_Pasien(nama, alamat, load_date). Setiap perubahan → row baru.",
+tools:["dbt","datavault4dbt","WhereScape","BigQuery","Snowflake"],sim:"datavault"},
+{id:29,cat:"Modeling",color:"#8b5cf6",term:"SCD — Slowly Changing Dimension",icon:"M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zM12 6v6l4 2",
+konsep:"Handle perubahan atribut dimension. Type 1: overwrite. Type 2: row baru + history. Type 3: tambah kolom prev_value.",
+met:"Type 2 paling umum: tambah row baru dengan effective_date, expiry_date, is_current. Preserve full history.",
+proses:"Detect change → Type 2: SET old row is_current=false → INSERT new row (is_current=true, effective=today)",
+contoh:"dim_pasien: alamat pindah → row lama expire, row baru diinsert. Laporan JOIN ke alamat yang benar waktu itu.",
+tools:["dbt Snapshots","Apache Spark","BigQuery MERGE","Dataflow","Informatica"],sim:"scd"},
+{id:30,cat:"Modeling",color:"#a855f7",term:"Semantic Layer",icon:"M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z",
+konsep:"Abstraction layer antara data fisik dan user bisnis. Definisikan metric & business logic SEKALI — konsisten di semua BI tools.",
+met:"Single source of truth: 'Revenue' = SUM(amount) WHERE status=settled — definisi sekali, dipakai Looker/Excel/Python.",
+proses:"Raw Data → dbt Transform → Semantic Layer (metric defs) → Any BI Tool / API → Consistent results",
+contoh:"dbt Semantic Layer: definisi klaim_valid sekali → dashboard Looker, Power BI, dan Jupyter — sama semua.",
+tools:["dbt Semantic Layer","Cube.js","LookML","AtScale","Metriql"],sim:"semantic"},
+{id:31,cat:"Modeling",color:"#c084fc",term:"Fact Table Types",icon:"M12 2l7 4v8l-7 4-7-4V6z",
+konsep:"4 tipe: Transaction (per event), Periodic Snapshot (snapshot periodik), Accumulating Snapshot (milestones), Factless (kehadiran).",
+met:"Transaction: paling umum. Snapshot: balance per hari. Accumulating: pipeline claim dengan timestamp tiap stage.",
+proses:"Transaction: per event → INSERT | Snapshot: end of period → INSERT all state | Accumulating: → UPDATE milestones",
+contoh:"fact_klaim (transaction). fact_saldo_harian (periodic). fact_proses_klaim (accumulating: submitted→verified→paid).",
+tools:["BigQuery","dbt","Snowflake","Power BI","Tableau"],sim:"facttypes"},
+// GOVERNANCE
+{id:32,cat:"Governance",color:"#0ea5e9",term:"Data Catalog",icon:"M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z",
+konsep:"Metadata repository terpusat: apa itu data, dari mana, siapa yang pakai, artinya apa secara bisnis. Data discovery engine.",
+met:"Auto-crawl metadata. Classify & tag (PII, sensitivity). Business glossary. Search & discovery. Kolaborasi anotasi.",
+proses:"Crawl Sources → Extract Metadata → Business Enrichment → Tag/Classify → Publish → Search → Discovery",
+contoh:"Dataplex Catalog Astra: semua tabel BQ terdokumentasi — owner, PII tags, freshness, business definition.",
+tools:["Google Dataplex","Apache Atlas","Collibra","DataHub","Alation"],sim:"catalog"},
+{id:33,cat:"Governance",color:"#06b6d4",term:"Data Lineage",icon:"M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3",
+konsep:"Track perjalanan data end-to-end: source → transformasi → destination. Column-level lineage untuk impact analysis & debug.",
+met:"Auto via SQL parsing atau OpenLineage instrumentation. Build dependency graph. Impact: jika source berubah, apa terpengaruh?",
+proses:"Parse SQL/Pipeline → Extract column mappings → Build Lineage DAG → Store → Visualize → Impact query",
+contoh:"Kolom total_klaim di mart — trace ke raw PDF melalui 3 layer dbt. Debug data issue 10x lebih cepat.",
+tools:["OpenLineage","dbt Lineage","Google Dataplex","Marquez","Monte Carlo"],sim:"lineage"},
+{id:34,cat:"Governance",color:"#14b8a6",term:"Data Quality (DQ)",icon:"M20 6L9 17l-5-5",
+konsep:"Validasi otomatis: completeness, accuracy, consistency, timeliness, uniqueness. DQ as Code — tidak ada manual check.",
+met:"Define expectations as code → Run setelah setiap load → Pass: proceed | Fail: quarantine + alert + block downstream.",
+proses:"Data arrives → Run DQ rules → Pass: next layer | Fail: quarantine + alert",
+contoh:"Great Expectations cek klaim AHM: null check NIK, jumlah > 0, format tanggal ISO, no duplicate claim_id.",
+tools:["Great Expectations","dbt Tests","Soda Core","Monte Carlo","Lightup"],sim:"dq"},
+{id:35,cat:"Governance",color:"#22c55e",term:"Master Data Management (MDM)",icon:"M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z",
+konsep:"Satu sumber kebenaran untuk entitas master (customer, product, vendor). Eliminasi duplikasi dan inkonsistensi lintas sistem.",
+met:"Entity resolution & matching, deduplication, golden record creation, distribution ke semua systems.",
+proses:"Multi-source → Entity matching & dedup → Create golden record → Distribute to all downstream systems",
+contoh:"Satu definisi 'customer' Astra Group dengan NIK sebagai master key — dipakai AHM, ACC, Astra Life konsisten.",
+tools:["Informatica MDM","Reltio","Semarchy","Stibo Systems","Talend MDM"],sim:"mdm"},
+{id:36,cat:"Governance",color:"#84cc16",term:"Data Classification",icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+konsep:"Kategorisasi data: Public, Internal, Confidential, Restricted. Menentukan siapa boleh akses dan bagaimana data dilindungi.",
+met:"Auto-classify via DLP (scan content, detect PII). Manual tagging oleh Data Steward. Policy enforcement by classification.",
+proses:"Ingest Data → DLP Scan → Detect PII/PHI → Auto-tag → Apply access policies → Audit trail",
+contoh:"NIK → Restricted. Nama → Confidential. Jumlah klaim aggregate → Internal. Public dashboard → Public.",
+tools:["Google DLP","Microsoft Purview","AWS Macie","BigQuery Policy Tags","Collibra"],sim:"classification"},
+{id:37,cat:"Governance",color:"#fb923c",term:"Data Stewardship",icon:"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+konsep:"Peran/tanggung jawab manusia dalam menjaga kualitas dan definisi data di suatu domain. Bukan tools, tapi orang & proses.",
+met:"Steward: define business glossary, approve metadata, resolve DQ issues, set access policies untuk domainnya.",
+proses:"Steward assigned → Define business terms → Curate metadata → Monitor DQ → Resolve issues → Certify data",
+contoh:"Finance Data Steward AHM bertanggung jawab atas definisi 'net_revenue', approve akses ke tabel keuangan.",
+tools:["Collibra","Atlan","DataHub","Alation","Microsoft Purview"],sim:"steward"},
+// PERFORMA
+{id:38,cat:"Performa",color:"#f59e0b",term:"Materialized View",icon:"M2 3h20v14H2zM8 21h8M12 17v4",
+konsep:"View yang hasilnya di-precompute dan disimpan fisik — tidak dihitung ulang tiap query. Trade-off: storage vs query speed.",
+met:"Refresh incremental (delta only) atau full rebuild. Query optimizer auto-route ke MV jika cocok (transparan ke user).",
+proses:"Define MV → Initial build → Schedule incremental refresh → Query hits MV → Return pre-computed result",
+contoh:"BigQuery MV: agregasi harian klaim per cabang — auto-refresh tiap jam, dashboard instant vs 10 detik.",
+tools:["BigQuery Materialized View","Snowflake Dynamic Tables","PostgreSQL MV","dbt incremental"],sim:"mv"},
+{id:39,cat:"Performa",color:"#f97316",term:"Query Optimization & EXPLAIN",icon:"M13 2L3 14h9l-1 8 10-12h-9z",
+konsep:"Buat query efisien: partition pruning, predicate pushdown, column pruning, join order, index. EXPLAIN ANALYZE untuk diagnosa.",
+met:"EXPLAIN plan: Seq Scan → tambah index. Full partition scan → tambah WHERE filter. Nested loop large N → Hash Join.",
+proses:"Write Query → EXPLAIN ANALYZE → Identify bottleneck → Optimize → Measure → Iterate",
+contoh:"BigQuery: tambah WHERE date >= '2024-01' → hemat 95% bytes. JOIN ke small lookup table dulu.",
+tools:["BigQuery Query Plan","Snowflake Query Profile","EXPLAIN ANALYZE","DBeaver","pgMustard"],sim:"queryopt"},
+{id:40,cat:"Performa",color:"#ef4444",term:"Caching — Redis, BI Engine, CDN",icon:"M2 2h20v8H2zM2 14h20v8H2zM6 6h.01M6 18h.01",
+konsep:"Simpan hasil komputasi di storage lebih cepat. Cache hit = tidak perlu compute ulang. L1/L2/Redis/CDN hierarchy.",
+met:"Cache-aside: check cache → miss → fetch DB → store. Write-through: tulis ke cache + DB sekaligus. TTL-based expiry.",
+proses:"Request → Check Cache → HIT: return cached | MISS: query DB → Store in cache → Return → Next req hits cache",
+contoh:"Redis cache hasil query dashboard BigQuery. TTL 5 menit → 1000 user lihat dashboard, DB hanya di-query 1x/5mnt.",
+tools:["Redis","Memcached","BigQuery BI Engine","CloudFlare CDN","Varnish"],sim:"caching"},
+{id:41,cat:"Performa",color:"#22d3ee",term:"Bloom Filter",icon:"M21 21l-4.35-4.35M17 11a6 6 0 1 1-12 0 6 6 0 0 1 12 0z",
+konsep:"Probabilistic data structure: cek apakah element MUNGKIN ada atau PASTI tidak ada. False positive possible, false negative TIDAK.",
+met:"k hash functions → set bits in bit array. Lookup: any 0 = definitely NOT in set. All 1 = PROBABLY in set.",
+proses:"INSERT: hash k times → set k bits. LOOKUP: hash k times → any bit=0: NOT PRESENT | all 1: PROBABLY PRESENT",
+contoh:"Parquet bloom filter: sebelum scan file, check apakah claim_id=X mungkin ada — skip file jika tidak. 90% I/O saved.",
+tools:["Apache Parquet (bloom)","Apache Kafka","Cassandra","Redis","PostgreSQL"],sim:"bloom"},
+{id:42,cat:"Performa",color:"#a855f7",term:"Statistics & Cost-Based Optimizer",icon:"M18 20V10M12 20V4M6 20v-6",
+konsep:"DB kumpulkan statistik distribusi data (row count, distinct values, histogram) untuk pilih query plan paling murah.",
+met:"ANALYZE koleksi stats. CBO evaluate semua possible plans, estimasi cost (I/O + CPU), pilih minimum cost plan.",
+proses:"ANALYZE → Collect stats (rows, distinct, histogram) → Query → CBO enumerate plans → Estimate costs → Choose min",
+contoh:"PostgreSQL: ANALYZE setelah load data besar. Stale stats → bad query plan → bisa 100x lebih lambat.",
+tools:["PostgreSQL ANALYZE","BigQuery (auto)","Snowflake (auto)","MySQL ANALYZE TABLE","Oracle DBMS_STATS"],sim:"cbo"},
+// SECURITY
+{id:43,cat:"Security",color:"#ef4444",term:"Data Masking & Anonymization",icon:"M17.94 17.94A10 10 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9 9 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22",
+konsep:"Static masking: replace PII sebelum copy ke non-prod. Dynamic masking: mask real-time saat query berdasarkan role.",
+met:"Format-preserving masking: NIK 12 digit → 12 digit random (jaga referential integrity). Anonymization: irreversible.",
+proses:"Identify PII cols → Define mask policy per role → Query → Policy evaluation → Return masked (analyst) or real (admin)",
+contoh:"BigQuery Dynamic Masking: analyst lihat NIK → ••••••••. Admin lihat full NIK. Policy di level column.",
+tools:["BigQuery Dynamic Masking","Google DLP","Delphix","Snowflake DDM","Informatica"],sim:"masking"},
+{id:44,cat:"Security",color:"#dc2626",term:"RBAC & Column/Row-Level Security",icon:"M3 11l19-9-9 19-2-8-8-2z",
+konsep:"RBAC: akses berdasarkan role. CLS: sembunyikan kolom sensitif. RLS: filter baris — user hanya lihat data miliknya.",
+met:"CLS: policy tag di kolom, bind role. RLS: inject WHERE clause otomatis berdasarkan user identity.",
+proses:"User Query → IAM Auth → Column filter (CLS) → Row filter (RLS: WHERE branch=user.branch) → Return filtered",
+contoh:"Analyst hanya lihat data cabang sendiri (RLS), tidak bisa lihat kolom NIK (CLS). BigQuery IAM + Policy Tags.",
+tools:["BigQuery IAM","Dataplex Policy Tags","Snowflake RLS","Apache Ranger"],sim:"rbac"},
+{id:45,cat:"Security",color:"#b91c1c",term:"Encryption — At-Rest & In-Transit",icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+konsep:"At-rest: data di storage dienkripsi (AES-256). In-transit: data saat transfer dienkripsi (TLS 1.3). CMEK: customer-managed keys.",
+met:"At-rest: DB/storage encrypt files. In-transit: TLS layer. CMEK: bawa key sendiri ke cloud provider (GCP KMS).",
+proses:"Write data → Encrypt with key → Store ciphertext | Read → Decrypt with key → Plaintext | Key rotation periodic",
+contoh:"BigQuery CMEK: kunci enkripsi tabel klaim AHM di Cloud KMS yang dikontrol Astra, bukan Google.",
+tools:["GCP KMS","AWS KMS","BigQuery CMEK","TLS 1.3","HashiCorp Vault"],sim:"encryption"},
+{id:46,cat:"Security",color:"#991b1b",term:"Audit Logging",icon:"M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z",
+konsep:"Catat semua aktivitas akses data: siapa, apa, kapan, dari mana. Immutable audit trail untuk compliance dan forensics.",
+met:"Intercept semua DB operations. Log: user, timestamp, query, rows_accessed, IP. Immutable. SIEM integration untuk alerting.",
+proses:"User action → Intercept → Log event (who, what, when, where) → Immutable store → SIEM → Alert if anomaly",
+contoh:"BigQuery Audit Logs: setiap query ke tabel klaim ter-log. Compliance OJK: buktikan siapa akses data kapan.",
+tools:["BigQuery Audit Logs","Cloud Logging","AWS CloudTrail","Splunk","Elastic SIEM"],sim:"audit"},
+{id:47,cat:"Security",color:"#7f1d1d",term:"Data Tokenization",icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+konsep:"Ganti data sensitif dengan token random yang tidak punya makna. Berbeda dari enkripsi: token tidak bisa di-reverse tanpa token vault.",
+met:"Token vault maps real_value ↔ token. Hanya vault yang tahu mapping. Systems simpan token saja. PCI-DSS standard.",
+proses:"Sensitive value → Tokenization service → Generate random token → Store mapping in vault → Return token to system",
+contoh:"Nomor kartu kredit nasabah ACC disimpan sebagai token di semua systems. Hanya payment processor akses vault.",
+tools:["Protegrity","Voltage Security","AWS Payment Cryptography","HashiCorp Vault"],sim:"tokenization"},
+// MODERN/ML
+{id:48,cat:"Modern/ML",color:"#8b5cf6",term:"Feature Store",icon:"M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zM12 8v4l3 3",
+konsep:"Platform simpan & serving ML features — konsisten antara training dan serving, reusable lintas model, no training-serving skew.",
+met:"Offline store (training, BigQuery/Parquet) + Online store (inference, Redis/Bigtable, low latency). Feature pipeline sync keduanya.",
+proses:"Raw Data → Feature Pipeline → Offline Store (batch training) + Online Store (real-time serving) → ML Models",
+contoh:"avg_transaksi_30d dihitung sekali di Vertex Feature Store, dipakai model fraud, churn, recommendation — konsisten.",
+tools:["Vertex AI Feature Store","Feast","Tecton","Hopsworks","AWS SageMaker FS"],sim:"featurestore"},
+{id:49,cat:"Modern/ML",color:"#7c3aed",term:"Schema Registry",icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8",
+konsep:"Central registry untuk schema event/message Kafka. Garantikan producer & consumer pakai schema compatible. Versioning.",
+met:"BACKWARD: consumer baru baca data lama. FORWARD: consumer lama baca data baru. FULL: keduanya. Avro/Protobuf.",
+proses:"Producer → Register/check schema compatibility → Serialize → Kafka → Consumer → Fetch schema → Deserialize",
+contoh:"Kafka events Astra Digital: schema Avro di-register. Tambah field baru → harus backward-compatible.",
+tools:["Confluent Schema Registry","AWS Glue Schema Registry","Apicurio","Karapace"],sim:"schemareg"},
+{id:50,cat:"Modern/ML",color:"#6d28d9",term:"Data Observability",icon:"M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z",
+konsep:"Monitor kesehatan data pipeline: freshness, volume, distribution, schema, lineage. Detect anomali sebelum user terasa.",
+met:"5 pillars: Freshness (data up-to-date?), Volume (jumlah wajar?), Distribution (normal?), Schema (ada perubahan?), Lineage.",
+proses:"Continuous monitoring → Detect anomaly (volume drop, freshness late, schema change) → Alert → Root cause via lineage",
+contoh:"Monte Carlo detect: volume tabel klaim drop 90% jam 03.00 → alert sebelum laporan pagi rusak.",
+tools:["Monte Carlo","Bigeye","Acceldata","dbt tests","Datafold"],sim:"observability"},
+{id:51,cat:"Modern/ML",color:"#5b21b6",term:"Vector Database",icon:"M18 20V10M12 20V4M6 20v-6",
+konsep:"DB untuk menyimpan dan mencari embedding vectors (representasi numerik teks/image). Query by similarity, bukan exact match.",
+met:"ANN indexing: HNSW, IVF. Similarity: cosine, dot product, euclidean. Fast million-scale approximate nearest neighbor search.",
+proses:"Text/Image → Embedding Model → Vector [0.2, 0.8, ...] → Store → Query vector → ANN search → Top-K similar",
+contoh:"Astra Digital chatbot: pertanyaan user → embed → search VectorDB → temukan FAQ mirip → jawaban relevan.",
+tools:["Pinecone","Weaviate","Qdrant","pgvector (PostgreSQL)","BigQuery Vector Search"],sim:"vectordb"},
+{id:52,cat:"Modern/ML",color:"#4c1d95",term:"LLM + Data Pipeline",icon:"M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z",
+konsep:"Integrasi LLM ke dalam data pipeline: extract structured dari unstructured (PDF, email), DQ check, auto-documentation.",
+met:"LLM sebagai transformation step. Input: raw text/PDF. Output: structured JSON. Validate output, handle hallucination.",
+proses:"Raw PDF/Text → LLM API (extract fields) → Validate JSON output → DQ check → Load to structured table",
+contoh:"Pipeline klaim AHM: LLM extract diagnosis, obat, jumlah dari PDF dokter → JSON terstruktur → BigQuery.",
+tools:["Vertex AI Gemini","OpenAI API","LangChain","Instructor","Pydantic"],sim:"llmpipeline"},
+// DB FUNDAMENTALS
+{id:53,cat:"DB Fundamentals",color:"#22d3ee",term:"ACID",icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+konsep:"Atomicity (all-or-nothing), Consistency (valid state), Isolation (concurrent aman), Durability (tidak hilang saat crash). Fondasi DB reliability.",
+met:"Atomicity: rollback log. Consistency: constraints. Isolation: MVCC/locks. Durability: WAL flush sebelum ACK.",
+proses:"BEGIN → Execute ops → Validate → COMMIT (WAL flush + ACK) | CRASH → Rollback via undo log",
+contoh:"Transfer saldo: debit Andi + kredit Budi harus atomic. Jika kredit gagal → debit di-rollback otomatis.",
+tools:["PostgreSQL","MySQL InnoDB","Oracle","BigQuery DML","Apache Iceberg"],sim:"acid"},
+{id:54,cat:"DB Fundamentals",color:"#34d399",term:"BASE",icon:"M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2",
+konsep:"Basically Available, Soft state, Eventually consistent. Kebalikan ACID. Prefer availability daripada strict consistency.",
+met:"Write → ACK langsung, propagate async ke replicas. Data akan konsisten pada akhirnya setelah propagation.",
+proses:"Write primary → ACK immediately → Async propagate to N replicas → Nodes converge → Eventually consistent",
+contoh:"Cassandra notifikasi Astra: write super cepat, user mungkin lihat delay 1-2 detik sebelum semua replika sinkron.",
+tools:["Cassandra","DynamoDB","MongoDB","CouchDB","Redis"],sim:"base"},
+{id:55,cat:"DB Fundamentals",color:"#f472b6",term:"CAP Theorem",icon:"M12 2l10 18H2z",
+konsep:"Distributed system hanya bisa pilih 2 dari 3: Consistency, Availability, Partition Tolerance.",
+met:"P hampir wajib di distributed system. Pilihan nyata: CP (reject request saat partition) vs AP (serve stale data).",
+proses:"Network partition → CP: block until consistent | AP: continue serving stale data",
+contoh:"BigQuery/Spanner: CP (strong consistency). Cassandra/DynamoDB: AP (always available).",
+tools:["Zookeeper (CP)","Cassandra (AP)","DynamoDB (tunable)","etcd (CP)","CouchDB (AP)"],sim:"cap"},
+{id:56,cat:"DB Fundamentals",color:"#fb923c",term:"Write-Ahead Log (WAL)",icon:"M3 6h18M3 12h18M3 18h18",
+konsep:"Setiap perubahan ditulis ke sequential log DULU sebelum ke storage utama. Dasar ACID durability, crash recovery, CDC.",
+met:"Append-only sequential file (fast I/O). Crash → replay WAL dari last checkpoint → zero data loss.",
+proses:"Write req → Append WAL (sequential, fast) → ACK to client → Apply to heap (async) → Checkpoint periodic",
+contoh:"PostgreSQL WAL di-baca Debezium untuk CDC → BigQuery. Crash server → replay WAL, data kembali.",
+tools:["PostgreSQL WAL","MySQL binlog","Oracle Redo Log","Debezium","GCP Datastream"],sim:"wal"},
+{id:57,cat:"DB Fundamentals",color:"#a78bfa",term:"MVCC — Multi-Version Concurrency Control",icon:"M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z",
+konsep:"Tiap write buat versi data baru — reader tidak block writer. Reader lihat snapshot konsisten tanpa lock. High concurrency.",
+met:"Setiap row: xmin (created by), xmax (deleted/updated by). Reader lihat versi visible berdasarkan txn snapshot.",
+proses:"Writer: INSERT new row version (old version retained) | Reader: see snapshot of visible versions → no blocking",
+contoh:"PostgreSQL: 100 reader + 10 writer berjalan tanpa saling block. Reader lihat data sebelum UPDATE selesai.",
+tools:["PostgreSQL","Oracle","MySQL InnoDB","CockroachDB","Snowflake"],sim:"mvcc"},
+{id:58,cat:"DB Fundamentals",color:"#fbbf24",term:"Index — B-tree, Hash, Bitmap, GiST",icon:"M18 20V10M12 20V4M6 20v-6",
+konsep:"Struktur data tambahan untuk mempercepat lookup. B-tree: O(log n) range. Hash: O(1) equality. Bitmap: low cardinality. GiST: geospatial.",
+met:"B-tree: balanced tree, fast range. Hash: hash table, equality only. Bitmap: 1 bit per row, low cardinality. GiST: extensible.",
+proses:"CREATE INDEX → Build structure | INSERT/UPDATE: maintain index | Query → Index lookup O(log n) → Fetch rows",
+contoh:"B-tree index on claim_date → range query cepat. Bitmap index on status (5 values) → OR/AND bitwise filter.",
+tools:["PostgreSQL","MySQL","BigQuery Clustering","MongoDB","Elasticsearch"],sim:"btree"},
+{id:59,cat:"DB Fundamentals",color:"#4ade80",term:"Deadlock",icon:"M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zM4.93 4.93l14.14 14.14",
+konsep:"Dua transaksi saling menunggu lock satu sama lain — tidak ada yang bisa lanjut. DB detect dan kill salah satu (victim).",
+met:"Deadlock detection: wait-for graph (cycle = deadlock). Prevention: acquire locks in consistent order. Timeout-based.",
+proses:"Txn A locks Row1 → Txn B locks Row2 → A waits Row2 → B waits Row1 → Cycle → DB kills one → Rollback → Retry",
+contoh:"Dua proses update order bersamaan dengan urutan tabel berbeda → deadlock → salah satu di-rollback, retry.",
+tools:["PostgreSQL","MySQL","SQL Server","Oracle","CockroachDB"],sim:"deadlock"},
+{id:60,cat:"DB Fundamentals",color:"#67e8f9",term:"Connection Pooling",icon:"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+konsep:"Pool koneksi DB yang di-reuse antar requests. Membuka koneksi baru itu mahal (TCP + auth) — pool menghindari overhead.",
+met:"Pool maintain N koneksi aktif. Request: ambil dari pool → pakai → kembalikan. Queue jika semua busy.",
+proses:"App request → Get idle connection from pool → Execute query → Return connection to pool → Next req reuses",
+contoh:"PgBouncer pool 20 koneksi ke PostgreSQL. 1000 concurrent API requests → masuk antrian, tidak buat 1000 koneksi baru.",
+tools:["PgBouncer","HikariCP","SQLAlchemy Pool","pgpool-II","Supabase Pooler"],sim:"connpool"},
+{id:61,cat:"DB Fundamentals",color:"#c084fc",term:"Sharding — Horizontal Partitioning",icon:"M21 5c0 1.66-4 3-9 3S3 6.66 3 5m18 0c0-1.66-4-3-9-3S3 3.34 3 5m18 0v14c0 1.66-4 3-9 3s-9-1.34-9-3V5",
+konsep:"Pecah database secara horizontal ke multiple nodes (shards) berdasarkan shard key. Scale-out horizontal ketika satu server tidak cukup.",
+met:"Shard key tentukan distribusi. Consistent hashing: avoid resharding. Cross-shard query mahal (scatter-gather).",
+proses:"Write → Hash(shard_key) → Route to shard N → Execute local | Cross-shard: scatter all → gather → merge",
+contoh:"User_id 0-1M di shard 1, 1M-2M di shard 2. Query selalu include user_id untuk single-shard routing.",
+tools:["MongoDB","Cassandra","MySQL Vitess","CockroachDB","PostgreSQL Citus"],sim:"sharding"},
+{id:62,cat:"DB Fundamentals",color:"#fb7185",term:"Replication — Sync vs Async",icon:"M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2",
+konsep:"Copy data dari primary ke replica. Sync: tunggu semua replica ACK (strong consistency). Async: ACK langsung (eventual).",
+met:"Sync: zero data loss, tapi latency = slowest replica. Async: low latency, tapi failover bisa kehilangan data.",
+proses:"Write primary → Sync: wait all replicas ACK then return | Async: return immediately, replicate in background",
+contoh:"PostgreSQL: 1 sync replica (DR guarantee), 1 async (read replica). MySQL: async replication default.",
+tools:["PostgreSQL Streaming Rep","MySQL Group Replication","Galera Cluster","Cloud Spanner","Patroni"],sim:"replication"},
+{id:63,cat:"DB Fundamentals",color:"#38bdf8",term:"Checkpoint",icon:"M20 6L9 17l-5-5",
+konsep:"Flush semua dirty pages dari buffer pool ke disk periodik. Batasi seberapa jauh WAL harus di-replay saat crash recovery.",
+met:"Checkpoint record LSN (Log Sequence Number). Crash: hanya replay WAL setelah last checkpoint. Lebih sering = faster recovery.",
+proses:"Buffer accumulates dirty pages → Checkpoint trigger → Flush all dirty to disk → Record LSN → Truncate old WAL",
+contoh:"PostgreSQL checkpoint_timeout=5min. Crash → hanya replay 5 menit WAL terakhir, bukan dari awal.",
+tools:["PostgreSQL","MySQL InnoDB","Oracle","SQL Server","RocksDB"],sim:"checkpoint"},
+{id:64,cat:"DB Fundamentals",color:"#86efac",term:"Two-Phase Commit (2PC)",icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4",
+konsep:"Protokol distributed transaction: semua participant commit atau semua rollback secara atomik. Coordinator mengkoordinasi.",
+met:"Phase 1 (Prepare): tanya semua 'ready?'. Phase 2 (Commit/Abort): semua ready → commit all, ada NO → abort all.",
+proses:"Coordinator: PREPARE → Each participant: vote YES/NO → All YES: COMMIT all | Any NO: ABORT all",
+contoh:"Transfer lintas DB AHM dan ACC: 2PC garantikan debit AHM + kredit ACC commit atomik atau keduanya rollback.",
+tools:["PostgreSQL XA","MySQL XA","JTA","Google Spanner","Saga Pattern (alt)"],sim:"twopc"},
+{id:65,cat:"DB Fundamentals",color:"#fcd34d",term:"Normalization 1NF–3NF–BCNF",icon:"M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z",
+konsep:"Eliminasi redundansi. 1NF: atomic values, unique rows. 2NF: no partial dependency. 3NF: no transitive dependency. BCNF: stricter.",
+met:"1NF: no repeating groups, atomic. 2NF: non-key attrs fully depend on entire PK. 3NF: no non-key → non-key dependency.",
+proses:"Unnormalized → 1NF (atomic) → 2NF (remove partial deps) → 3NF (remove transitive deps) → BCNF",
+contoh:"MySQL klaim AHM: normalized 3NF (no redundancy). BigQuery DWH mart: sengaja denormalized Star Schema.",
+tools:["MySQL","PostgreSQL","Oracle","SQL Server","ERwin"],sim:"normalization"},
+{id:66,cat:"DB Fundamentals",color:"#a3e635",term:"Primary Key & Composite Key",icon:"M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4",
+konsep:"Primary Key: unik identifikasi tiap row, NOT NULL. Composite Key: PK dari 2+ kolom (kombinasi unik). Max 1 PK per tabel.",
+met:"PK: DB creates unique index automatically. Composite PK: untuk junction tables (many-to-many). FK references all PK columns.",
+proses:"Define PK/Composite → DB creates unique index → INSERT: validate uniqueness → FK: validate all PK columns",
+contoh:"pasien(patient_id PK). link_klaim_dokter(claim_id, doctor_id: Composite PK). order_item(order_id, item_id: Composite PK).",
+tools:["MySQL","PostgreSQL","Oracle","BigQuery","SQLite"],sim:"primarykey"},
+{id:67,cat:"DB Fundamentals",color:"#f0abfc",term:"Foreign Key & Referential Integrity",icon:"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
+konsep:"FK garantikan nilai di child table SELALU ada di parent table. Mencegah orphan records. ON DELETE CASCADE/RESTRICT/SET NULL.",
+met:"DB enforce referential integrity pada INSERT/UPDATE/DELETE. CASCADE: delete child saat parent. RESTRICT: tolak hapus parent.",
+proses:"INSERT child (FK val) → DB checks parent table → PK exists: ALLOW | Not exists: ERROR FK violation",
+contoh:"fact_klaim.pasien_sk FK ke dim_pasien.patient_sk. Insert klaim tanpa pasien valid → FK constraint error.",
+tools:["PostgreSQL","MySQL","Oracle","SQL Server","SQLite"],sim:"foreignkey"},
+{id:68,cat:"DB Fundamentals",color:"#93c5fd",term:"Unique Constraint & Check Constraint",icon:"M20 6L9 17l-5-5",
+konsep:"UNIQUE: tidak ada duplikat nilai di kolom/kombinasi. CHECK: validasi nilai harus memenuhi kondisi (range, enum).",
+met:"UNIQUE: DB buat index hidden di baliknya. CHECK: evaluated on INSERT/UPDATE. Combinable multiple constraints.",
+proses:"INSERT/UPDATE → Check UNIQUE (index lookup) → Check CHECK constraint → Both pass: ALLOW | Any fail: ERROR",
+contoh:"NIK UNIQUE (tidak boleh duplikat). jumlah_klaim CHECK (> 0). status CHECK IN ('pending','approved','rejected').",
+tools:["PostgreSQL","MySQL","Oracle","BigQuery","SQLite"],sim:"unique"},
+{id:69,cat:"DB Fundamentals",color:"#6ee7b7",term:"Cardinality",icon:"M18 20V10M12 20V4M6 20v-6",
+konsep:"Jumlah unique values di kolom. High card (ID: jutaan unique) vs Low card (status: 5 unique). Menentukan index & partition strategy.",
+met:"High card: B-tree index, cluster key. Low card: bitmap index, partition column. Penting untuk query optimizer estimation.",
+proses:"Analyze column → COUNT(DISTINCT col) → High: use B-tree/clustering | Low: bitmap index or partition column",
+contoh:"BigQuery CLUSTER BY kode_cabang (50 values, low) lebih efektif dari CLUSTER BY claim_id (high cardinality).",
+tools:["BigQuery","Snowflake","PostgreSQL","DuckDB","Apache Spark"],sim:"cardinality"},
+{id:70,cat:"DB Fundamentals",color:"#fca5a5",term:"Surrogate Key vs Natural Key",icon:"M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5",
+konsep:"Natural Key: ID dari bisnis (NIK) — meaningful tapi bisa berubah. Surrogate: ID buatan sistem (UUID/BIGINT) — stable, meaningless.",
+met:"DWH best practice: surrogate key di dimension tables. Natural key tetap disimpan untuk business lookup & CDC dedup.",
+proses:"Source Natural Key (NIK) → Lookup in dim → exists: return SK | not exists: generate new SK → store both",
+contoh:"dim_pasien: patient_sk BIGINT (surrogate) + nik VARCHAR (natural). fact JOIN via SK, lookup via NIK.",
+tools:["dbt","BigQuery","Snowflake","Data Vault Hub","PostgreSQL SEQUENCE"],sim:"surrogatekey"},
+{id:71,cat:"DB Fundamentals",color:"#d8b4fe",term:"NULL Handling",icon:"M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zM12 8v4M12 16h.01",
+konsep:"NULL = unknown/missing, bukan 0 atau empty string. NULL != NULL. Aggregate functions ignore NULL. Source of many bugs.",
+met:"NULL propagation: 1 + NULL = NULL. COUNT(*) hitung semua, COUNT(col) skip NULL. COALESCE(val, default). IS NULL.",
+proses:"NULL in column → Aggregation ignores it → Comparison: NULL != NULL → Use IS NULL / COALESCE → Handle in query",
+contoh:"SUM(jumlah_klaim) ignore NULL rows. COUNT(diagnosis) skip rows tanpa diagnosis. COALESCE(phone, 'N/A') untuk display.",
+tools:["PostgreSQL","MySQL","BigQuery","Snowflake","DuckDB"],sim:"null"},
+{id:72,cat:"DB Fundamentals",color:"#fdba74",term:"Transaction & Savepoint",icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+konsep:"Transaction: unit atomik dari operasi DB. Savepoint: checkpoint di dalam transaction — bisa rollback ke titik tertentu.",
+met:"BEGIN → ops → SAVEPOINT sp1 → more ops → ROLLBACK TO sp1 (undo only after sp1) → COMMIT.",
+proses:"BEGIN → Op1 → SAVEPOINT sp1 → Op2 fails → ROLLBACK TO sp1 (Op2 undone, Op1 retained) → COMMIT",
+contoh:"Insert batch 1000 klaim: SAVEPOINT tiap 100. Jika batch ke-7 gagal → rollback ke savepoint-6, retry hanya batch ke-7.",
+tools:["PostgreSQL","MySQL","Oracle","SQL Server","SQLite"],sim:"savepoint"},
+{id:73,cat:"DB Fundamentals",color:"#6ee7b7",term:"Lock Types — Shared, Exclusive, Row, Table",icon:"M3 11l19-9-9 19-2-8-8-2z",
+konsep:"Shared lock (S): multiple reader ok, no writer. Exclusive lock (X): only this txn reads and writes. Row: fine-grained. Table: coarse.",
+met:"S + S = compatible. S + X = incompatible (wait). X + X = incompatible. Row lock preferred. Table lock saat DDL.",
+proses:"Txn requests lock → Lock manager checks compatibility → Compatible: grant | Incompatible: wait → Timeout/Deadlock",
+contoh:"SELECT FOR UPDATE: exclusive row lock. Normal SELECT: shared lock. ALTER TABLE: table lock (blocks all).",
+tools:["PostgreSQL","MySQL","Oracle","SQL Server","MariaDB"],sim:"locks"},
+{id:74,cat:"DB Fundamentals",color:"#fbbf24",term:"VACUUM & AUTOVACUUM",icon:"M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2",
+konsep:"VACUUM bersihkan dead tuples (sisa MVCC) di PostgreSQL. Tanpa VACUUM → table bloat → query lambat. AUTOVACUUM = otomatis.",
+met:"UPDATE/DELETE di PG tidak hapus row langsung (MVCC). Dead tuples menumpuk. VACUUM reclaim. VACUUM FULL compact (lock).",
+proses:"UPDATE/DELETE → Row marked dead (xmax set) → VACUUM → Find dead tuples → Mark free space → ANALYZE → Update stats",
+contoh:"Tabel klaim AHM: banyak UPDATE status → dead tuples → autovacuum trigger → reclaim space → query cepat kembali.",
+tools:["PostgreSQL VACUUM","pg_stat_user_tables","pganalyze","Supabase","RDS PostgreSQL"],sim:"vacuum"},
+{id:75,cat:"DB Fundamentals",color:"#e879f9",term:"Table Bloat",icon:"M2 2h20v8H2zM2 14h20v8H2z",
+konsep:"Tabel jauh lebih besar dari actual data karena dead tuples (MVCC) atau fragmented free space yang tidak bisa di-reuse efisien.",
+met:"Monitor bloat: pg_bloat_check. Dead tuples > threshold → VACUUM. Index bloat → REINDEX. VACUUM FULL reclaim tapi lock.",
+proses:"Many UPDATE/DELETE → Dead tuples accumulate → Table size grows → Query slower (more pages) → VACUUM reclaims",
+contoh:"Tabel klaim setelah 1 juta UPDATE status → bloat 3x dari actual size → VACUUM ANALYZE → kembali normal.",
+tools:["pgstattuple","pg_bloat_check","pganalyze","VACUUM FULL","REINDEX CONCURRENTLY"],sim:"bloat"},
+{id:76,cat:"DB Fundamentals",color:"#818cf8",term:"Sequence & Auto-increment",icon:"M3 6h18M3 12h18M3 18h18",
+konsep:"Sequence: object DB yang generate nilai integer unik berurutan. Gap mungkin terjadi (rollback, crash). Thread-safe.",
+met:"Sequence pre-allocate batch values dari shared counter. AUTOINCREMENT MySQL, SERIAL/BIGSERIAL PostgreSQL, IDENTITY SQL Server.",
+proses:"INSERT row → DB calls NEXTVAL(sequence) → Returns next unique integer → Assign to id column → Sequence advances",
+contoh:"patient_id BIGSERIAL di PostgreSQL: insert pasien baru → auto generate 1,2,3... Gap ok, uniqueness guaranteed.",
+tools:["PostgreSQL SERIAL/BIGSERIAL","MySQL AUTO_INCREMENT","Oracle SEQUENCE","SQL Server IDENTITY","UUID alt"],sim:"sequence"},
+{id:77,cat:"DB Fundamentals",color:"#f9a8d4",term:"UUID vs BIGSERIAL — ID Strategy",icon:"M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5",
+konsep:"UUID (128-bit, globally unique): no coordination needed, good distributed. BIGSERIAL (64-bit sequential): compact, fast index.",
+met:"UUID v4: random (bad B-tree ordering). UUID v7: time-ordered (better). BIGSERIAL: sequential, great B-tree, requires coordination.",
+proses:"UUID: generate random 128-bit → globally unique, no coordination | BIGSERIAL: NEXTVAL sequence → sequential, local DB",
+contoh:"Microservice Astra Digital: UUID v7 sebagai event_id (distributed). PostgreSQL monolith: BIGSERIAL patient_id.",
+tools:["PostgreSQL BIGSERIAL","UUID v4 (gen_random_uuid)","UUID v7","ULID","NanoID"],sim:"uuid"},
+{id:78,cat:"DB Fundamentals",color:"#fde68a",term:"View vs Materialized View",icon:"M2 3h20v14H2zM8 21h8M12 17v4",
+konsep:"View: virtual table, query dijalankan tiap kali (no storage, always fresh). MV: hasil disimpan fisik (fast tapi mungkin stale).",
+met:"View: always fresh, no performance gain. MV: fast tapi perlu refresh. Use MV untuk expensive queries yang sering dipakai.",
+proses:"View: query → execute underlying SQL → return fresh | MV: query → return stored result (fast, may be stale)",
+contoh:"View laporan klaim: always fresh tapi 10 detik. MV agregasi harian: instant (pre-computed), refresh tiap jam.",
+tools:["PostgreSQL MV","BigQuery MV","Snowflake Dynamic Tables","Oracle MV","MySQL (no native MV)"],sim:"viewmv"},
+{id:79,cat:"DB Fundamentals",color:"#86efac",term:"Trigger",icon:"M22 12h-4l-3 9L9 3l-3 9H2",
+konsep:"Prosedur otomatis dijalankan saat event DB terjadi (INSERT/UPDATE/DELETE). BEFORE atau AFTER event, per-row atau per-statement.",
+met:"Register trigger function ke table + event + timing. Untuk audit logging, auto-populate derived columns, enforce business rules.",
+proses:"INSERT/UPDATE/DELETE on table → DB fires trigger → Execute trigger function → Can modify NEW/OLD row → Continue",
+contoh:"Trigger AFTER UPDATE status_klaim → INSERT audit_log(claim_id, old_status, new_status, changed_by, changed_at).",
+tools:["PostgreSQL","MySQL","Oracle","SQL Server","SQLite"],sim:"trigger"},
+{id:80,cat:"DB Fundamentals",color:"#67e8f9",term:"Stored Procedure & Function",icon:"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z",
+konsep:"Stored Procedure: blok SQL precompiled, execute dengan CALL. Function: returns value, bisa di SELECT. Logic di DB layer.",
+met:"Pros: less network round-trips, pre-compiled. Cons: hard to version, logic di DB sulit di-test, tight coupling.",
+proses:"CALL proc(params) → Load compiled plan → Execute body (multiple SQL) → Return result set",
+contoh:"proc_process_klaim(claim_id): validate → update status → insert audit → notify. Satu call, 4 operations.",
+tools:["PostgreSQL (PL/pgSQL)","MySQL","Oracle (PL/SQL)","SQL Server (T-SQL)","Snowflake"],sim:"storedproc"},
+{id:81,cat:"DB Fundamentals",color:"#c4b5fd",term:"CTE — Common Table Expression",icon:"M4 6h16M4 12h16M4 18h7",
+konsep:"Named temporary result set yang bisa dipakai dalam query yang sama. Membuat query kompleks lebih readable. Recursive CTE untuk hierarchy.",
+met:"WITH clause mendefinisikan CTE. Dibaca sekali, bisa direferensikan multiple times. Recursive: anchor + recursive member.",
+proses:"WITH cte AS (SELECT ...) → Use cte in main query | Recursive: anchor UNION ALL recursive_member until no rows",
+contoh:"WITH monthly AS (SELECT month, SUM(amount) FROM klaim GROUP BY month) SELECT * FROM monthly WHERE amount > 1M.",
+tools:["PostgreSQL","BigQuery","Snowflake","MySQL 8+","SQL Server"],sim:"cte"},
+{id:82,cat:"DB Fundamentals",color:"#a5f3fc",term:"Window Function",icon:"M3 3h18v18H3z",
+konsep:"Fungsi analitik pada set rows terkait (window) tanpa collapse seperti GROUP BY. ROW_NUMBER, RANK, LAG, LEAD, SUM OVER.",
+met:"OVER(PARTITION BY ... ORDER BY ... ROWS/RANGE ...). Running total, rank per group, lag/lead untuk time series.",
+proses:"Define window OVER() → For each row: apply function over window → Return value alongside original row (no collapse)",
+contoh:"ROW_NUMBER() OVER(PARTITION BY pasien_id ORDER BY tanggal DESC) → latest claim per patient in one query.",
+tools:["PostgreSQL","BigQuery","Snowflake","MySQL 8+","DuckDB"],sim:"window"},
+{id:83,cat:"DB Fundamentals",color:"#fda4af",term:"Upsert — INSERT ON CONFLICT",icon:"M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14",
+konsep:"INSERT jika tidak ada, UPDATE jika sudah ada. Atomic operation, tidak ada race condition. Critical untuk idempotent pipeline.",
+met:"PostgreSQL: INSERT ... ON CONFLICT (key) DO UPDATE. MySQL: INSERT ... ON DUPLICATE KEY UPDATE. BigQuery: MERGE.",
+proses:"INSERT attempt → Key conflict? → ON CONFLICT: UPDATE specific columns | No conflict: normal INSERT → Atomic",
+contoh:"Pipeline klaim retry: INSERT ... ON CONFLICT(id) DO UPDATE SET status=EXCLUDED.status — safe retry, no duplicate.",
+tools:["PostgreSQL ON CONFLICT","MySQL ON DUPLICATE KEY","BigQuery MERGE","Snowflake MERGE","SQLite UPSERT"],sim:"upsert"},
+{id:84,cat:"DB Fundamentals",color:"#bbf7d0",term:"EXPLAIN ANALYZE — Query Plan",icon:"M13 2L3 14h9l-1 8 10-12h-9z",
+konsep:"Jalankan query + tunjukkan actual execution plan dengan actual time dan rows. Diagnosa bottleneck, identify full scan.",
+met:"Baca dari dalam ke luar. Seq Scan: add index. Nested Loop large N: → Hash Join. High row estimation error: ANALYZE.",
+proses:"EXPLAIN ANALYZE query → Execute + collect stats → Plan tree (node type, cost, actual time, rows) → Identify bottleneck",
+contoh:"Seq Scan 10M rows (cost 50000) → Index Scan 100 rows (cost 500) setelah add index. 100x speed improvement.",
+tools:["PostgreSQL EXPLAIN","pgMustard","explain.dalibo.com","BigQuery Execution Plan","Snowflake Query Profile"],sim:"explainplan"},
+{id:85,cat:"DB Fundamentals",color:"#ddd6fe",term:"Schema & Namespace",icon:"M2 2h20v8H2zM2 14h20v8H2z",
+konsep:"Schema: logical namespace untuk organisasi objek DB (tables, views, functions). Isolasi akses per schema, logical separation.",
+met:"Access control per schema: GRANT ON SCHEMA. Naming convention: raw, staging, mart, analytics. BigQuery: dataset as schema.",
+proses:"CREATE SCHEMA analytics → CREATE TABLE analytics.klaim → GRANT SELECT ON SCHEMA analytics TO analyst_role",
+contoh:"PostgreSQL: schema 'raw', 'staging', 'mart'. BigQuery: dataset 'raw_klaim', 'staging_klaim', 'mart_klaim'.",
+tools:["PostgreSQL","MySQL","BigQuery (dataset)","Oracle","Snowflake"],sim:"schema_ns"},
+{id:86,cat:"DB Fundamentals",color:"#fef08a",term:"ORM vs Raw SQL",icon:"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z",
+konsep:"ORM: petakan objek program ke tabel DB, auto-generate SQL. Raw SQL: tulis langsung. ORM = productivity. Raw = performance control.",
+met:"ORM pros: type-safe, no SQL injection, migration. Cons: N+1 query problem, less control. Raw SQL: optimal tapi verbose.",
+proses:"ORM: Model class → ORM generates SQL → Execute → Map result to objects | Raw: Write SQL → Execute → Manual map",
+contoh:"SQLAlchemy ORM untuk CRUD klaim (simple). Raw SQL + psycopg2 untuk query analitik kompleks (performance).",
+tools:["SQLAlchemy","Django ORM","Prisma","TypeORM","Hibernate"],sim:"orm"},
+// CONSISTENCY
+{id:87,cat:"Consistency",color:"#c084fc",term:"Eventual Consistency",icon:"M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2",
+konsep:"Data akan konsisten pada akhirnya — bukan langsung setelah write. Replicas sync async, reader mungkin dapat stale data sementara.",
+met:"Write ke primary, ACK langsung, propagate async. Konflik: Last Write Wins (LWW) atau vector clock.",
+proses:"Write primary → Immediate ACK → Async propagate → All nodes converge → Eventually consistent",
+contoh:"BigQuery streaming: data tertulis tapi belum available SELECT langsung. MySQL read replicas: ~100ms lag.",
+tools:["Cassandra","DynamoDB","BigQuery Streaming","MongoDB","CouchDB"],sim:"eventual"},
+{id:88,cat:"Consistency",color:"#fb7185",term:"Isolation Levels",icon:"M3 11l19-9-9 19-2-8-8-2z",
+konsep:"READ UNCOMMITTED (dirty read ok) → READ COMMITTED → REPEATABLE READ → SERIALIZABLE (strictest). Makin ketat = makin aman, makin lambat.",
+met:"Makin ketat = makin aman, makin lambat. PG default: READ COMMITTED. MySQL InnoDB default: REPEATABLE READ. MVCC implement ini.",
+proses:"Txn starts → Isolation level determines visible snapshot → Execute → Commit/Rollback → Release",
+contoh:"Laporan finansial bulanan Astra: REPEATABLE READ — garantikan consistent snapshot selama query berjalan.",
+tools:["PostgreSQL","MySQL InnoDB","Oracle","SQL Server","BigQuery"],sim:"isolation"},
+{id:89,cat:"Consistency",color:"#34d399",term:"Idempotency",icon:"M20 6L9 17l-5-5",
+konsep:"Operasi yang dijalankan berkali-kali menghasilkan hasil sama dengan sekali. Critical untuk safe retry di pipeline.",
+met:"Design: MERGE/UPSERT bukan INSERT. Unique event_id untuk deduplication. Idempotency key di API.",
+proses:"Event arrives → Check idempotency key → Already processed: SKIP & return same result | New: Process → Store key",
+contoh:"Airflow retry pipeline klaim: MERGE BigQuery ON claim_id (bukan INSERT) — tidak ada duplikat meski dijalankan 10x.",
+tools:["BigQuery MERGE","Kafka exactly-once","Flink EOS","Pub/Sub","Airflow"],sim:"idempotency"},
+{id:90,cat:"Consistency",color:"#38bdf8",term:"PACELC Theorem",icon:"M12 2l10 18H2z",
+konsep:"Extends CAP: saat Partition → pilih A atau C. saat Else (normal) → pilih Latency atau Consistency. Lebih realistis.",
+met:"PA/EL: always available, low latency (DynamoDB). PC/EC: strong consistency always (Spanner). Tunable di beberapa systems.",
+proses:"Partition? → AP: serve stale | CP: block until consistent | Normal? → EL: async (low lat) | EC: sync (high lat)",
+contoh:"DynamoDB: PA/EL (default eventual). Google Spanner: PC/EC (sync replication, always consistent).",
+tools:["DynamoDB (PA/EL)","Google Spanner (PC/EC)","HBase (PC/EC)","Cassandra (tunable)"],sim:"pacelc"},
+{id:91,cat:"Consistency",color:"#a78bfa",term:"Read-Your-Writes Consistency",icon:"M22 12h-4l-3 9L9 3l-3 9H2",
+konsep:"User selalu lihat data yang dia tulis sendiri. Monotonic Reads: tidak pernah lihat data lebih lama dari sebelumnya (no time travel back).",
+met:"RYW: route user reads ke same replica yang menerima write (sticky session), atau always read from primary for own data.",
+proses:"Write by user → Sticky to same replica for reads → Read returns own write | Monotonic: track last version → no older",
+contoh:"User update profil Astra app → langsung lihat perubahan (RYW via session affinity). Tidak lihat profil versi lama.",
+tools:["DynamoDB (session)","MongoDB (read pref)","Redis","Cassandra","CockroachDB"],sim:"ryw"},
+// ADVANCED SQL
+{id:92,cat:"Advanced SQL",color:"#22d3ee",term:"Lateral Join",icon:"M4 6h16M4 12h16M4 18h7",
+konsep:"LATERAL: subquery di kanan JOIN bisa referensikan kolom dari rows di kiri. Powerful untuk per-row computation & top-N per group.",
+met:"Setiap row dari left table → LATERAL subquery dijalankan dengan access ke left row columns.",
+proses:"For each row in left table → Execute LATERAL subquery with left row context → Append results → Return combined",
+contoh:"Tiap pasien: LATERAL (SELECT TOP 3 klaim ORDER BY date DESC) — 3 klaim terbaru per pasien dalam satu query.",
+tools:["PostgreSQL","BigQuery (CROSS JOIN UNNEST)","MySQL 8.0+","DuckDB","Redshift"],sim:"lateral"},
+{id:93,cat:"Advanced SQL",color:"#06b6d4",term:"Recursive CTE — Hierarchy & Graph",icon:"M4 6h16M4 12h16M4 18h7",
+konsep:"CTE yang referensikan dirinya sendiri untuk traverse hierarchy (org chart, category tree) atau graph structures.",
+met:"Anchor member: base case (root nodes). Recursive member: join CTE ke next level. Terminasi: tidak ada rows yang di-return.",
+proses:"WITH RECURSIVE cte AS (anchor UNION ALL recursive_member joining cte) SELECT * FROM cte → traverses all levels",
+contoh:"Hierarchy dealer Astra: semua sub-dealer di bawah dealer X, 5 level ke bawah. Satu recursive CTE query.",
+tools:["PostgreSQL","BigQuery","Snowflake","MySQL 8+","SQL Server"],sim:"recursive"},
+{id:94,cat:"Advanced SQL",color:"#14b8a6",term:"Partitioning in PostgreSQL",icon:"M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z",
+konsep:"PostgreSQL: RANGE, LIST, HASH partitioning. CREATE TABLE PARTITION BY ... lalu attach child tables. Query pruning otomatis.",
+met:"Declarative partitioning (PG 10+). Index dibuat per child partition. Pruning otomatis berdasarkan WHERE clause.",
+proses:"CREATE parent PARTITION BY RANGE(col) → CREATE child FOR VALUES FROM(lo) TO(hi) → INSERT routes to child → Query prunes",
+contoh:"tabel_klaim PARTITION BY RANGE(tanggal): klaim_2023, klaim_2024, klaim_2025. DROP old partition tanpa DELETE scan.",
+tools:["PostgreSQL","MySQL","Oracle","SQL Server","MariaDB"],sim:"pgpartition"},
+{id:95,cat:"Advanced SQL",color:"#10b981",term:"JSON & JSONB in SQL",icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6",
+konsep:"Modern DB support JSON natively. JSONB di PostgreSQL: binary format, indexed, fast. BigQuery: nested/repeated fields.",
+met:"JSONB: parse + store binary (fast query). GIN index untuk JSON search. Query: json_col->>'field', json_path, JSON_VALUE.",
+proses:"INSERT JSON → Store as JSONB (parse + binary) → GIN index created → Query json_col->>'key' → Fast lookup",
+contoh:"Klaim AHM: detail_pembayaran JSONB column. WHERE detail_pembayaran->>'metode'='transfer' → GIN index.",
+tools:["PostgreSQL JSONB","BigQuery JSON","Snowflake VARIANT","MySQL JSON","MongoDB"],sim:"json"},
+{id:96,cat:"Advanced SQL",color:"#84cc16",term:"Full-Text Search (FTS)",icon:"M21 21l-4.35-4.35M17 11a6 6 0 1 1-12 0 6 6 0 0 1 12 0z",
+konsep:"Cari teks dalam dokumen: tokenization, stemming, ranking. Jauh lebih powerful dari LIKE '%keyword%'. Boolean queries & relevance.",
+met:"Document → Tokenize → Stem/normalize → Inverted index. Query → Parse → Search inverted index → Rank by TF-IDF.",
+proses:"CREATE TSVECTOR index → INSERT: parse+stem+index → Query: tsvector @@ tsquery → Rank ts_rank → Return ordered",
+contoh:"Search diagnosis klaim: 'diabetes' menemukan 'diabetic', 'diabetes mellitus' lewat stemming dan inverted index.",
+tools:["PostgreSQL FTS","Elasticsearch","Solr","BigQuery Search","Typesense"],sim:"fts"},
+{id:97,cat:"Advanced SQL",color:"#f59e0b",term:"Connection String & DSN",icon:"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
+konsep:"Connection string: URL yang encode semua info untuk connect ke DB. Jangan hardcode credentials! Gunakan environment variables.",
+met:"Format: dialect://user:pass@host:port/dbname?params. Simpan credentials di Secret Manager atau environment variables.",
+proses:"App reads connection string (from env var) → Parse components → Connect to host:port → Auth → Select database",
+contoh:"postgresql://app:secret@10.0.0.1:5432/klaim_db?sslmode=require. Simpan di Secret Manager, bukan di Git!",
+tools:["PostgreSQL","SQLAlchemy","psycopg2","BigQuery connection","Cloud SQL Proxy"],sim:"connstring"},
+{id:98,cat:"Advanced SQL",color:"#ef4444",term:"Generated / Computed Column",icon:"M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z",
+konsep:"Computed/Generated column: nilai dihitung otomatis dari kolom lain. STORED: disimpan fisik, bisa di-index. VIRTUAL: hitung saat read.",
+met:"Stored: disk space lebih, tapi fast read + indexable. Virtual: no extra storage, computed on-the-fly (bisa lebih lambat).",
+proses:"INSERT/UPDATE → DB calculates expression from other cols → STORED: write computed value | VIRTUAL: compute at SELECT",
+contoh:"klaim: total_iur AS (jumlah_klaim * 0.1) STORED — langsung tersedia tanpa hitung di query, bisa di-index.",
+tools:["PostgreSQL GENERATED","MySQL GENERATED","SQL Server Computed","BigQuery (via dbt)"],sim:"computed"},
+{id:99,cat:"Advanced SQL",color:"#dc2626",term:"Partitioning in BigQuery Style",icon:"M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z",
+konsep:"BigQuery: PARTITION BY DATE/TIMESTAMP/RANGE. Setiap partisi = separate storage segment. Query filter → only scan matching.",
+met:"Date partitioning: auto buat partisi per hari/bulan/tahun. CLUSTER BY kombinasi dengan PARTITION untuk maximum pruning.",
+proses:"CREATE TABLE ... PARTITION BY DATE(col) → Data routed to date partition → Query WHERE date range → Scan only those partitions",
+contoh:"tabel_klaim PARTITION BY DATE(tanggal), CLUSTER BY cabang. Query Jan 2024 + JKT: scan 1/365 × 1/50 data total.",
+tools:["BigQuery","Snowflake","Redshift","Azure Synapse","Apache Iceberg"],sim:"bqpartition"},
+{id:100,cat:"Advanced SQL",color:"#b91c1c",term:"EXPLAIN PLAN Reading & Optimization",icon:"M13 2L3 14h9l-1 8 10-12h-9z",
+konsep:"Baca dan interpret execution plan untuk optimize. Node types: Seq Scan, Index Scan, Hash Join, Nested Loop, Sort, Aggregate.",
+met:"Identify: Seq Scan on large table (add index). Nested Loop large N (use Hash Join). Sort spill to disk (add work_mem).",
+proses:"EXPLAIN ANALYZE query → Read plan bottom-up → Find expensive nodes → Fix: index/join/stats → Re-measure → Iterate",
+contoh:"Nested Loop cost 50000 → Hash Join cost 500. Seq Scan 10M rows → Index Scan 100 rows. 100x improvement.",
+tools:["PostgreSQL EXPLAIN","pgMustard","explain.dalibo.com","BigQuery Execution","Snowflake Query Profile"],sim:"explainopt"},
+{id:101,cat:"Advanced SQL",color:"#991b1b",term:"Columnar vs Row — When to Use Which",icon:"M3 3h18M3 9h18M3 15h18",
+konsep:"Pilih storage format berdasarkan workload. Row: OLTP, single-row ops, frequent writes. Columnar: OLAP, aggregation, wide tables.",
+met:"Rule of thumb: kalau query sering SELECT * (semua kolom) → row. Kalau sering SELECT agg (beberapa kolom) → columnar.",
+proses:"Analyze query patterns → Mostly single-row CRUD? → Row storage | Mostly aggregation few cols? → Columnar",
+contoh:"Sistem input klaim (row MySQL) + sistem laporan analitik (columnar BigQuery). Gunakan CDC untuk sync keduanya.",
+tools:["MySQL (row)","PostgreSQL (row)","BigQuery (col)","DuckDB (col)","ClickHouse (col)"],sim:"rowvscol"},
+];
+
+// ═══════════════════════════════════════════
+// SVG SIMULATION ENGINE
+// ═══════════════════════════════════════════
+const FT={};// flow timers
+const ST={};// sim timers
+
+function sn(tag,a,p){const e=document.createElementNS("http://www.w3.org/2000/svg",tag);if(a)Object.entries(a).forEach(([k,v])=>e.setAttribute(k,v));if(p)p.appendChild(e);return e}
+function bx(p,x,y,w,h,c,l,s){
+  const g=sn("g",{},p);
+  sn("rect",{x,y,width:w,height:h,rx:5,fill:c+"18",stroke:c+"55","stroke-width":"1.2"},g);
+  sn("text",{x:x+w/2,y:y+h/2-(s?4:0),fill:c+"cc","font-size":"8","text-anchor":"middle","font-family":"monospace","font-weight":"600"},g).textContent=l;
+  if(s)sn("text",{x:x+w/2,y:y+h/2+8,fill:c+"66","font-size":"6.5","text-anchor":"middle","font-family":"monospace"},g).textContent=s;
+  return g;
+}
+function tx(p,t,x,y,c,sz,opts={}){
+  const e=sn("text",{x,y,fill:c,"font-size":sz,"text-anchor":opts.a||"middle","font-family":"monospace","font-weight":opts.w||"400"},p);
+  e.textContent=t;return e;
+}
+function pk(s,x,y,c,r=5){const e=sn("circle",{cx:x,cy:y,r,fill:c,opacity:.9},s);return e}
+function ln(p,x1,y1,x2,y2,c,dash=false){return sn("line",{x1,y1,x2,y2,stroke:c+"55","stroke-width":"1.3",...(dash?{"stroke-dasharray":"5,3"}:{})},p)}
+function glow(e,c){e.style.filter=`drop-shadow(0 0 4px ${c})`}
+
+function cleanup(id){if(ST[id]){ST[id].forEach(t=>clearInterval(t));delete ST[id]}}
+function addTimer(id,t){if(!ST[id])ST[id]=[];ST[id].push(t)}
+
+function makeSVG(wrap){
+  const W=wrap.offsetWidth||600,H=120;
+  const s=sn("svg",{width:W,height:H,viewBox:`0 0 ${W} ${H}`},wrap);
+  return {s,W,H};
+}
+
+// ── MEDALLION ──
+function simMedallion(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  const cols=["#cd7f32","#94a3b8","#fbbf24"];
+  const lbs=["🥉 Bronze","🥈 Silver","🥇 Gold"];
+  const sbs=["Raw as-is","Clean+Valid","Mart/Agg"];
+  const bw=(W-40)/3;
+  const rects=[];
+  lbs.forEach((l,i)=>{
+    const x=10+i*(bw+5);
+    const g=bx(s,x,18,bw,70,cols[i],l,sbs[i]);
+    rects.push(g.querySelector("rect"));
+    if(i<2)ln(s,x+bw,52,x+bw+5,52,cols[i]);
+  });
+  const statusL=tx(s,"",W/2,108,c+"77",7.5);
+  const msgs=[
+    ["Bronze: raw data arrives → unvalidated, may have nulls",0],
+    ["Bronze → Silver: cleaning, dedup, validation applied",1],
+    ["Silver → Gold: aggregation, joins, ready for BI/ML",2],
+    ["Gold layer served to dashboard & ML models ✓",2],
+  ];
+  let phase=0;
+  const t=setInterval(()=>{
+    const [msg,hi]=msgs[phase%msgs.length];
+    statusL.textContent=msg;
+    rects.forEach((r,i)=>gsap.to(r,{attr:{fill:i<=hi?cols[i]+"44":cols[i]+"0a"},duration:.4}));
+    if(phase%msgs.length>0){
+      const pi=(phase%msgs.length)-1;
+      const px=10+pi*(bw+5)+bw;
+      const p=pk(s,px,52,cols[pi]);glow(p,cols[pi]);
+      gsap.to(p,{attr:{cx:px+5+bw/2},duration:.5,onComplete:()=>p.remove()});
+    }
+    phase++;
+  },1100);
+  addTimer(id,t);
+}
+
+// ── ACID ──
+function simAcid(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  const rows=[{l:"Account A",v:1000},{l:"Account B",v:500}];
+  const rR=[],vT=[];
+  rows.forEach((r,i)=>{
+    const rect=sn("rect",{x:8,y:10+i*28,width:160,height:22,rx:4,fill:c+"0e",stroke:c+"30","stroke-width":"1"},s);
+    tx(s,r.l,55,22+i*28,c+"88",8);
+    const v=tx(s,`${r.v}`,140,22+i*28,c+"cc",8,{w:"700"});
+    rR.push(rect);vT.push(v);
+  });
+  bx(s,W-170,8,155,50,c,"Transaction","");
+  const txL=tx(s,"BEGIN",W-93,30,c+"cc",8,{w:"700"});
+  const stL=tx(s,"",W-93,46,c+"66",7);
+  const walL=tx(s,"📝 WAL: ",10,75,c+"66",7,{a:"start"});
+  walL.setAttribute("opacity","0");
+  let phase=0,vals=[1000,500];
+  const flow=[
+    ()=>{txL.textContent="BEGIN TXN";stL.textContent="";walL.setAttribute("opacity","0");
+      rows.forEach((_,i)=>{vT[i].textContent=vals[i];gsap.to(rR[i],{attr:{fill:c+"0e"},duration:.3})});},
+    ()=>{txL.textContent="DEBIT A -300";gsap.to(rR[0],{attr:{fill:c+"33",stroke:c},duration:.3});vT[0].textContent="700";walL.setAttribute("opacity","1");walL.textContent="📝 WAL: A=700";stL.textContent="writing...";},
+    ()=>{txL.textContent="CREDIT B +300";gsap.to(rR[1],{attr:{fill:c+"33",stroke:c},duration:.3});vT[1].textContent="800";walL.textContent="📝 WAL: A=700,B=800";},
+    ()=>{txL.textContent="COMMIT ✓";txL.setAttribute("fill","#22c55e");stL.textContent="durable!";stL.setAttribute("fill","#22c55e");
+      rR.forEach(r=>gsap.to(r,{attr:{fill:"#22c55e22",stroke:"#22c55e55"},duration:.4}));},
+    ()=>{txL.setAttribute("fill",c+"cc");rows.forEach((_,i)=>{vT[i].textContent=vals[i];gsap.to(rR[i],{attr:{fill:c+"0e",stroke:c+"30"},duration:.3})});txL.textContent="BEGIN again";stL.textContent="";walL.textContent="📝 WAL: ";},
+    ()=>{txL.textContent="DEBIT A -300";gsap.to(rR[0],{attr:{fill:c+"33",stroke:c},duration:.3});vT[0].textContent="700";walL.setAttribute("opacity","1");},
+    ()=>{txL.textContent="💥 CRASH!";txL.setAttribute("fill","#ef4444");stL.textContent="power failure";stL.setAttribute("fill","#ef4444");
+      rR.forEach(r=>gsap.to(r,{attr:{fill:"#ef444422",stroke:"#ef444455"},duration:.3}));},
+    ()=>{txL.textContent="🔄 ROLLBACK";txL.setAttribute("fill","#fbbf24");stL.textContent="replaying WAL";stL.setAttribute("fill","#fbbf24");
+      rows.forEach((_,i)=>{vT[i].textContent=vals[i]});rR.forEach(r=>gsap.to(r,{attr:{fill:c+"0e",stroke:c+"30"},duration:.5}));},
+    ()=>{txL.textContent="✅ Restored!";txL.setAttribute("fill","#22c55e");stL.textContent="no data lost";stL.setAttribute("fill","#22c55e");phase=-1;},
+  ];
+  const t=setInterval(()=>{flow[(phase+flow.length)%flow.length]();phase++;},950);
+  addTimer(id,t);
+}
+
+// ── CAP ──
+function simCap(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  const nodes=[{x:W/2,y:18,c:"#6366f1",l:"Node A"},{x:55,y:92,c:"#22d3ee",l:"Node B"},{x:W-55,y:92,c:"#a855f7",l:"Node C"}];
+  const circs=[],vers=[];
+  nodes.forEach((n)=>{
+    const ci=sn("circle",{cx:n.x,cy:n.y,r:18,fill:n.c+"22",stroke:n.c,"stroke-width":"1.5"},s);
+    glow(ci,n.c);
+    tx(s,n.l,n.x,n.y+30,n.c+"88",6.5);
+    const v=tx(s,"v=1",n.x,n.y+5,n.c+"cc",7.5,{w:"700"});
+    circs.push(ci);vers.push(v);
+  });
+  const lines=[
+    sn("line",{x1:nodes[0].x,y1:nodes[0].y+18,x2:nodes[1].x,y2:nodes[1].y-18,stroke:"#22c55e66","stroke-width":"1.5"},s),
+    sn("line",{x1:nodes[0].x,y1:nodes[0].y+18,x2:nodes[2].x,y2:nodes[2].y-18,stroke:"#22c55e66","stroke-width":"1.5"},s),
+    sn("line",{x1:nodes[1].x+18,y1:nodes[1].y,x2:nodes[2].x-18,y2:nodes[2].y,stroke:"#22c55e66","stroke-width":"1.5"},s),
+  ];
+  const stL=tx(s,"All nodes consistent ✓",W/2,114,"#22c55e",7.5);
+  let ver=1,phase=0;
+  const flow=[
+    ()=>{ver++;vers[0].textContent=`v=${ver}`;stL.textContent=`Write v=${ver} to primary...`;stL.setAttribute("fill","#fbbf24");lines.forEach(l=>{l.setAttribute("stroke","#22c55e66");l.removeAttribute("stroke-dasharray")});},
+    ()=>{vers[1].textContent=`v=${ver}`;vers[2].textContent=`v=${ver}`;stL.textContent=`✅ All consistent v=${ver}`;stL.setAttribute("fill","#22c55e");},
+    ()=>{lines[0].setAttribute("stroke","#ef444466");lines[1].setAttribute("stroke","#ef444466");lines[0].setAttribute("stroke-dasharray","4,3");lines[1].setAttribute("stroke-dasharray","4,3");stL.textContent="⚡ Network Partition! A ↔ B/C broken";stL.setAttribute("fill","#ef4444");},
+    ()=>{ver++;vers[0].textContent=`v=${ver}`;circs[0].setAttribute("fill","#fbbf2422");vers[1].textContent=`v=${ver-1} stale`;vers[2].textContent=`v=${ver-1} stale`;circs[1].setAttribute("fill","#ef444422");circs[2].setAttribute("fill","#ef444422");stL.textContent="CP: B/C readers BLOCKED until consistent";stL.setAttribute("fill","#ef4444");},
+    ()=>{stL.textContent="AP: B/C serve stale data — always available";stL.setAttribute("fill","#f59e0b");circs[1].setAttribute("fill","#f59e0b22");circs[2].setAttribute("fill","#f59e0b22");},
+    ()=>{lines.forEach(l=>{l.setAttribute("stroke","#22c55e66");l.removeAttribute("stroke-dasharray")});vers.forEach(v=>v.textContent=`v=${ver}`);circs.forEach((ci,i)=>ci.setAttribute("fill",nodes[i].c+"22"));stL.textContent=`✅ Partition healed — all synced v=${ver}`;stL.setAttribute("fill","#22c55e");phase=-1;},
+  ];
+  const t=setInterval(()=>{flow[(phase+flow.length)%flow.length]();phase++;},1100);
+  addTimer(id,t);
+}
+
+// ── STREAM ──
+function simStream(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  bx(s,5,38,72,44,c,"Source","Events");
+  bx(s,W/2-48,12,96,96,c,"Processor","Window/Agg");
+  bx(s,W-77,38,72,44,c,"Sink","BigQuery");
+  ln(s,77,60,W/2-48,60,c);ln(s,W/2+48,60,W-77,60,c);
+  const stL=tx(s,"",W/2,118,c+"66",7);
+  const pcs=["#6366f1","#a855f7","#22d3ee","#10b981","#ef4444","#fbbf24"];
+  let pi=0;
+  const t=setInterval(()=>{
+    const p=pk(s,77,55+Math.random()*10-5,pcs[pi%pcs.length],4);glow(p,pcs[pi%pcs.length]);
+    gsap.to(p,{attr:{cx:W/2-48,cy:55+Math.random()*15},duration:.35,onComplete:()=>{
+      p.setAttribute("fill",c);p.setAttribute("r","3");
+      gsap.to(p,{attr:{cx:W-77,cy:60},duration:.35,delay:.1,onComplete:()=>{
+        stL.textContent=`Event #${pi+1} processed & emitted to sink`;
+        gsap.to(p,{opacity:0,duration:.2,onComplete:()=>p.remove()});
+      }});
+    }});
+    pi++;
+  },500);
+  addTimer(id,t);
+}
+
+// ── DAG ──
+function simDag(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  const tasks=[
+    {id:"T",x:5,y:50,w:52,h:22,l:"⏰ Trigger"},
+    {id:"A",x:72,y:18,w:62,h:22,l:"A: Ingest"},
+    {id:"B",x:72,y:80,w:62,h:22,l:"B: Validate"},
+    {id:"C",x:152,y:49,w:68,h:22,l:"C: Transform"},
+    {id:"D",x:238,y:49,w:62,h:22,l:"D: Load BQ"},
+    {id:"E",x:W-68,y:49,w:63,h:22,l:"✅ Done!"},
+  ];
+  const ctr={T:[31,61],A:[103,29],B:[103,91],C:[186,60],D:[269,60],E:[W-36,60]};
+  [["T","A"],["T","B"],["A","C"],["B","C"],["C","D"],["D","E"]].forEach(([a,b])=>{
+    const[x1,y1]=ctr[a],[x2,y2]=ctr[b];
+    ln(s,x1,y1,x2,y2,c);
+  });
+  const rects={};
+  tasks.forEach(t=>{
+    const r=sn("rect",{x:t.x,y:t.y,width:t.w,height:t.h,rx:4,fill:c+"12",stroke:c+"30","stroke-width":"1.2"},s);
+    tx(s,t.l,t.x+t.w/2,t.y+t.h/2+4,c+"77",7);
+    rects[t.id]=r;
+  });
+  const stL=tx(s,"",W/2,115,c+"66",7.5);
+  const seq=["T","A","B","C","D","E"];
+  let si=0,prev=null;
+  const t=setInterval(()=>{
+    if(prev){gsap.to(rects[prev],{attr:{fill:c+"12",stroke:c+"30"},duration:.2})}
+    const id=seq[si%seq.length];
+    gsap.to(rects[id],{attr:{fill:c+"44",stroke:c},duration:.3});
+    stL.textContent=`Running: ${tasks.find(t=>t.id===id).l}`;
+    if(id==="E"){gsap.to(rects[id],{attr:{fill:"#22c55e44",stroke:"#22c55e"},duration:.3});stL.textContent="✅ Pipeline complete!";stL.setAttribute("fill","#22c55e");}
+    else stL.setAttribute("fill",c+"66");
+    prev=id;si++;if(si>=seq.length)si=0;
+  },700);
+  addTimer(id,t);
+}
+
+// ── MVCC ──
+function simMvcc(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  const versions=[{v:"v1 (txn 50)",val:"salary=5000",y:8},{v:"v2 (txn 100)",val:"salary=6000",y:34},{v:"v3 (txn 115)",val:"salary=7000",y:60}];
+  const vR=[];
+  versions.forEach((v,i)=>{
+    const r=sn("rect",{x:5,y:v.y,width:195,height:22,rx:4,fill:c+"0${(i+1)*8}",stroke:c+"${(i+1)*20}","stroke-width":"1"},s);
+    tx(s,v.v,60,v.y+14,c+["44","77","aa"][i],7.5,{a:"start"});
+    tx(s,v.val,160,v.y+14,c+"cc",8,{w:"700"});
+    vR.push(r);
+  });
+  bx(s,W-155,8,145,28,"#22c55e","Txn A (txn=100)","sees v2 only");
+  bx(s,W-155,48,145,28,c,"Txn B (txn=115)","writes new v3!");
+  const newR=sn("rect",{x:5,y:86,width:195,height:22,rx:4,fill:c+"05",stroke:c+"15","stroke-width":"1"},s);
+  tx(s,"v4 (txn 120): salary=8000 ← NEW",100,100,c+"33",7);
+  ln(s,W-155,22,205,47,"#22c55e",true);
+  const stL=tx(s,"",W/2,116,c+"66",7.5);
+  let phase=0;
+  const flow=[
+    ()=>{gsap.to(vR[1],{attr:{fill:"#22c55e22",stroke:"#22c55e44"},duration:.4});stL.textContent="Txn A reads v2 snapshot — no locking needed";stL.setAttribute("fill","#22c55e");},
+    ()=>{gsap.to(newR,{attr:{fill:c+"22",stroke:c+"55"},duration:.4});stL.textContent="Txn B writes new v4 — reader not blocked!";stL.setAttribute("fill",c+"cc");},
+    ()=>{stL.textContent="✓ No blocking! A sees v2, B writes v4 simultaneously";stL.setAttribute("fill","#22d3ee");},
+    ()=>{vR.forEach((r,i)=>gsap.to(r,{attr:{fill:c+"0${(i+1)*5}"},duration:.3}));gsap.to(newR,{attr:{fill:c+"05",stroke:c+"15"},duration:.3});phase=-1;},
+  ];
+  const t=setInterval(()=>{flow[(phase+flow.length)%flow.length]();phase++;},1050);
+  addTimer(id,t);
+}
+
+// ── DEADLOCK ──
+function simDeadlock(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  const gA=sn("g",{},s);sn("rect",{x:5,y:8,width:110,height:34,rx:5,fill:c+"18",stroke:c,"stroke-width":"1.5"},gA);
+  tx(s,"🔵 Txn A",60,24,c+"cc",8.5,{w:"700"});tx(s,"UPDATE orders",60,37,c+"66",7);
+  const gB=sn("g",{},s);sn("rect",{x:5,y:78,width:110,height:34,rx:5,fill:"#ef444418",stroke:"#ef4444","stroke-width":"1.5"},gB);
+  tx(s,"🔴 Txn B",60,94,"#ef4444cc",8.5,{w:"700"});tx(s,"UPDATE payments",60,107,"#ef444466",7);
+  sn("rect",{x:W/2-55,y:8,width:110,height:28,rx:5,fill:"#22c55e14",stroke:"#22c55e55","stroke-width":"1.2"},s);
+  tx(s,"🔒 Row: orders",W/2,26,"#22c55e",8);
+  sn("rect",{x:W/2-55,y:78,width:110,height:28,rx:5,fill:"#22c55e14",stroke:"#22c55e55","stroke-width":"1.2"},s);
+  tx(s,"🔒 Row: payments",W/2,96,"#22c55e",8);
+  const stL=tx(s,"",W-5,60,c,8,{a:"end"});
+  const klL=tx(s,"",W-5,78,"#ef4444",8,{a:"end"});
+  const L1=sn("line",{x1:115,y1:22,x2:W/2-55,y2:22,stroke:"#22c55e","stroke-width":"1.8","stroke-dasharray":"4,3",opacity:"0"},s);
+  const L2=sn("line",{x1:115,y1:92,x2:W/2-55,y2:92,stroke:"#ef4444","stroke-width":"1.8","stroke-dasharray":"4,3",opacity:"0"},s);
+  const L3=sn("line",{x1:115,y1:33,x2:W/2-55,y2:86,stroke:c,"stroke-width":"1.3","stroke-dasharray":"5,3",opacity:"0"},s);
+  const L4=sn("line",{x1:115,y1:86,x2:W/2-55,y2:30,stroke:"#ef4444","stroke-width":"1.3","stroke-dasharray":"5,3",opacity:"0"},s);
+  let phase=0;
+  const flow=[
+    ()=>{stL.textContent="A locks Row orders ✓";klL.textContent="";gsap.to(L1,{opacity:1,duration:.3});},
+    ()=>{stL.textContent="B locks Row payments ✓";gsap.to(L2,{opacity:1,duration:.3});},
+    ()=>{stL.textContent="A wants payments ⏳";gsap.to(L3,{opacity:1,duration:.3});},
+    ()=>{stL.textContent="B wants orders ⏳";gsap.to(L4,{opacity:1,duration:.3});},
+    ()=>{stL.textContent="💀 DEADLOCK!";stL.setAttribute("fill","#ef4444");klL.textContent="→ Kill B, rollback";gB.querySelector("rect").setAttribute("fill","#ef444444");},
+    ()=>{[L1,L2,L3,L4].forEach(l=>gsap.to(l,{opacity:0,duration:.3}));stL.textContent="A commits ✓";stL.setAttribute("fill",c);klL.textContent="B retried & succeeded";gB.querySelector("rect").setAttribute("fill","#ef444418");phase=-1;},
+  ];
+  const t=setInterval(()=>{flow[(phase+flow.length)%flow.length]();phase++;},1000);
+  addTimer(id,t);
+}
+
+// ── SHARDING ──
+function simSharding(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  bx(s,5,45,75,30,c,"Write Req","user_id: ?");
+  bx(s,W/2-40,25,80,70,c,"Router","hash(user_id)");
+  const shards=[{x:W-130,y:8,c:"#6366f1",r:"0–999K"},{x:W-130,y:44,c:"#a855f7",r:"1M–1.9M"},{x:W-130,y:80,c:"#ec4899",r:"2M–2.9M"}];
+  const sR=shards.map(sh=>{
+    const r=sn("rect",{x:sh.x,y:sh.y,width:125,height:26,rx:4,fill:sh.c+"12",stroke:sh.c+"44","stroke-width":"1.2"},s);
+    tx(s,`Shard ${shards.indexOf(sh)+1}: ${sh.r}`,sh.x+62,sh.y+16,sh.c+"aa",7.5);
+    return r;
+  });
+  ln(s,80,60,W/2-40,60,c);
+  shards.forEach(sh=>ln(s,W/2+40,60,sh.x,sh.y+13,sh.c,true));
+  const reqL=tx(s,"uid: ?",42,43,c+"99",7);
+  const hashL=tx(s,"",W/2,22,c+"66",7);
+  const uids=[102,1500300,2100000,45,1999000,2500000];
+  let ri=0;
+  const t=setInterval(()=>{
+    const uid=uids[ri%uids.length];reqL.textContent=`uid: ${uid.toLocaleString()}`;
+    const si=uid<1000000?0:uid<2000000?1:2;
+    hashL.textContent=`hash → shard ${si+1}`;
+    sR.forEach((r,i)=>gsap.to(r,{attr:{fill:i===si?shards[i].c+"44":shards[i].c+"12",stroke:i===si?shards[i].c:shards[i].c+"44"},duration:.3}));
+    const p=pk(s,80,60,c);glow(p,c);
+    gsap.to(p,{attr:{cx:W/2-40},duration:.3,onComplete:()=>{p.setAttribute("fill",shards[si].c);glow(p,shards[si].c);
+      gsap.to(p,{attr:{cx:shards[si].x,cy:shards[si].y+13},duration:.4,onComplete:()=>{gsap.to(p,{opacity:0,duration:.2,onComplete:()=>p.remove()})}});
+    }});
+    ri++;
+  },900);
+  addTimer(id,t);
+}
+
+// ── REPLICATION ──
+function simReplication(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  bx(s,5,28,85,64,c,"Primary","Write OK");
+  bx(s,W/2-48,6,96,38,"#22c55e","Replica 1","SYNC — DR");
+  bx(s,W/2-48,68,96,38,c,"Replica 2","ASYNC — Read");
+  bx(s,W-90,28,85,64,c,"Replica 3","ASYNC — Read");
+  tx(s,"SYNC →",W/4,22,"#22c55e",6.5);tx(s,"ASYNC →",W/4,78,c+"66",6.5);
+  const stL=tx(s,"",W/2,116,c+"66",7.5);
+  const t=setInterval(()=>{
+    const ps=pk(s,90,45,"#22c55e");glow(ps,"#22c55e");
+    gsap.to(ps,{attr:{cx:W/2-48,cy:25},duration:.4,onComplete:()=>{
+      const ack=pk(s,W/2-48,25,"#22c55eaa",4);
+      gsap.to(ack,{attr:{cx:90,cy:45},duration:.3,onComplete:()=>{stL.textContent="SYNC: primary waits ACK before returning ✓";ack.remove();ps.remove()}});
+    }});
+    setTimeout(()=>{const pa=pk(s,90,75,c,4);gsap.to(pa,{attr:{cx:W/2-48,cy:87},duration:.55,onComplete:()=>{stL.textContent="ASYNC: fire & forget, replica syncs in background";pa.remove()}})},200);
+    setTimeout(()=>{const pb=pk(s,90,60,c,4);gsap.to(pb,{attr:{cx:W-90,cy:60},duration:.6,onComplete:()=>pb.remove()})},350);
+  },1200);
+  addTimer(id,t);
+}
+
+// ── RBAC ──
+function simRbac(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  const cols=["claim_id","NIK 🔒","jumlah","status"];
+  const cw=Math.floor((W-10)/cols.length);
+  cols.forEach((col,i)=>{
+    sn("rect",{x:5+i*cw,y:5,width:cw-3,height:16,rx:3,fill:c+"1a",stroke:c+"44","stroke-width":"1"},s);
+    tx(s,col,5+i*cw+cw/2,16,c+"99",7);
+  });
+  const data=[["CLM-001","320xxxxx","5,000","approved"],["CLM-002","321xxxxx","3,200","pending"],["CLM-003","322xxxxx","8,100","approved"]];
+  const cR=[],cT=[];
+  data.forEach((row,ri)=>{
+    const rr=[],rt=[];
+    row.forEach((cell,ci)=>{
+      const x=5+ci*cw,y=24+ri*22;
+      const r=sn("rect",{x,y,width:cw-3,height:18,rx:2,fill:c+"08",stroke:c+"16","stroke-width":"1"},s);
+      const t2=tx(s,cell,x+cw/2,y+12,c+"88",7);
+      rr.push(r);rt.push(t2);
+    });
+    cR.push(rr);cT.push(rt);
+  });
+  const rL=tx(s,"👤 ADMIN VIEW",W/2,112,c+"cc",8.5,{w:"700"});
+  let admin=true;
+  const t=setInterval(()=>{
+    admin=!admin;
+    rL.textContent=admin?"👤 ADMIN VIEW":"🔒 ANALYST VIEW";
+    rL.setAttribute("fill",admin?c+"cc":"#ef4444cc");
+    cT.forEach((row,ri)=>row.forEach((cell,ci)=>{
+      if(ci===1){cell.textContent=admin?data[ri][1]:"••••••••";cell.setAttribute("fill",admin?c+"88":"#ef444488");
+        gsap.to(cR[ri][ci],{attr:{fill:admin?c+"08":"#ef444414",stroke:admin?c+"16":"#ef444433"},duration:.3})}
+    }));
+  },1500);
+  addTimer(id,t);
+}
+
+// ── INDEX / BTREE ──
+function simBtree(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  tx(s,"❌ No Index: Full Scan",65,12,"#ef4444",7.5,{w:"700"});
+  const scanR=[];
+  for(let i=0;i<6;i++){
+    const r=sn("rect",{x:5,y:15+i*15,width:120,height:13,rx:3,fill:c+"0a",stroke:c+"1a","stroke-width":"1"},s);
+    tx(s,`row ${i+1}: date=2024-0${i%9+1}`,65,22+i*15,c+"55",6.5);scanR.push(r);
+  }
+  tx(s,"✅ B-tree Index",W-80,12,"#22c55e",7.5,{w:"700"});
+  const rR=sn("rect",{x:W-155,y:18,width:150,height:20,rx:4,fill:"#22c55e18",stroke:"#22c55e44","stroke-width":"1.2"},s);
+  tx(s,"Root: 2024-06",W-80,31,"#22c55e",7.5);
+  const lR=sn("rect",{x:W-155,y:52,width:68,height:16,rx:3,fill:"#22c55e0a",stroke:"#22c55e33","stroke-width":"1"},s);
+  tx(s,"Leaf: Jan-Mar",W-121,62,"#22c55e77",7);
+  const lR2=sn("rect",{x:W-82,y:52,width:68,height:16,rx:3,fill:"#22c55e0a",stroke:"#22c55e33","stroke-width":"1"},s);
+  tx(s,"Leaf: Apr-Jun",W-48,62,"#22c55e77",7);
+  sn("line",{x1:W-80,y1:38,x2:W-121,y2:52,stroke:"#22c55e44","stroke-width":"1"},s);
+  sn("line",{x1:W-80,y1:38,x2:W-48,y2:52,stroke:"#22c55e44","stroke-width":"1"},s);
+  const qL=tx(s,"Query: WHERE date='2024-01'",W/2,108,c+"66",7.5);
+  let scanning=false,si=0;
+  const t=setInterval(()=>{
+    if(!scanning){
+      scanR.forEach(r=>gsap.to(r,{attr:{fill:c+"0a"},duration:.1}));si=0;scanning=true;
+      qL.textContent="Full scan: checking ALL 6 rows...";qL.setAttribute("fill","#ef4444");
+    }else{
+      if(si<scanR.length){
+        gsap.to(scanR[si],{attr:{fill:si<2||si===4?"#22c55e22":c+"0a",stroke:si<2||si===4?"#22c55e55":c+"1a"},duration:.2});si++;
+      }else{
+        scanning=false;qL.textContent="B-tree: jump to Jan leaf directly → rows 1,3 only!";qL.setAttribute("fill","#22c55e");
+        gsap.to(rR,{attr:{fill:"#22c55e44"},duration:.3});gsap.to(lR,{attr:{fill:"#22c55e33"},duration:.3,delay:.3});
+        setTimeout(()=>{gsap.to(rR,{attr:{fill:"#22c55e18"},duration:.3});gsap.to(lR,{attr:{fill:"#22c55e0a"},duration:.3});scanR.forEach(r=>gsap.to(r,{attr:{fill:c+"0a",stroke:c+"1a"},duration:.2}))},900);
+      }
+    }
+  },240);
+  addTimer(id,t);
+}
+
+// ── DQ ──
+function simDq(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  bx(s,5,35,75,50,c,"Data","arrives");
+  bx(s,W/2-50,10,100,100,c,"DQ Engine","null check\nrange check\nuniqueness");
+  bx(s,W-85,8,80,45,"#22c55e","✅ Pass","next layer");
+  bx(s,W-85,63,80,45,"#ef4444","❌ Fail","quarantine");
+  ln(s,80,60,W/2-50,60,c);
+  const stL=tx(s,"",W/2,118,c+"66",7.5);
+  const cntL=tx(s,"✅0  ❌0",W/2,5,c+"66",7);
+  const recs=[{d:"NIK=320xx, amt=5000",ok:true},{d:"NIK=NULL, amt=3200",ok:false,r:"NIK is NULL"},{d:"NIK=320xx, amt=-100",ok:false,r:"amount < 0"},{d:"NIK=320xx, amt=8100",ok:true},{d:"claim_id=101 (dup)",ok:false,r:"duplicate ID"}];
+  let ri=0,pass=0,fail=0;
+  const t=setInterval(()=>{
+    const rec=recs[ri%recs.length];
+    stL.textContent=`Checking: ${rec.d}`;
+    const p=pk(s,80,60,c,5);glow(p,c);
+    gsap.to(p,{attr:{cx:W/2-50},duration:.4,onComplete:()=>{
+      p.setAttribute("fill",rec.ok?"#22c55e":"#ef4444");
+      gsap.to(p,{attr:{cx:W-85,cy:rec.ok?30:85},duration:.4,onComplete:()=>{
+        if(rec.ok){pass++;stL.textContent=`✅ PASS — ${rec.d}`}else{fail++;stL.textContent=`❌ FAIL: ${rec.r} → quarantined`}
+        cntL.textContent=`✅${pass}  ❌${fail}`;
+        gsap.to(p,{opacity:0,duration:.2,delay:.4,onComplete:()=>p.remove()});
+      }});
+    }});
+    ri++;
+  },1000);
+  addTimer(id,t);
+}
+
+// ── CACHING ──
+function simCaching(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  bx(s,5,35,70,50,c,"App","request");
+  bx(s,W/2-42,8,84,44,c,"Redis\nCache","TTL: 5min");
+  bx(s,W/2-42,65,84,44,c,"BigQuery","compute");
+  bx(s,W-75,35,70,50,"#22c55e","Response","to user");
+  ln(s,75,60,W/2-42,60,c);
+  const hitL=tx(s,"",W/2,60,c+"cc",8.5,{w:"700"});
+  const stL=tx(s,"",W/2,116,c+"66",7.5);
+  let ttl=0;
+  const t=setInterval(()=>{
+    const hit=ttl<4;
+    hitL.textContent=hit?"🎯 CACHE HIT! (2ms)":"💨 CACHE MISS → DB";
+    hitL.setAttribute("fill",hit?"#22c55e":"#ef4444");
+    if(hit){
+      stL.textContent=`HIT: return cached result in 2ms (BigQuery not touched)`;stL.setAttribute("fill","#22c55e");
+      const p=pk(s,75,60,c);gsap.to(p,{attr:{cx:W/2-42,cy:30},duration:.25,onComplete:()=>{p.setAttribute("fill","#22c55e");gsap.to(p,{attr:{cx:W-75,cy:60},duration:.2,onComplete:()=>p.remove()})}});
+    }else{
+      stL.textContent=`MISS: query BigQuery (300ms) → store in Redis → serve`;stL.setAttribute("fill","#f59e0b");
+      const p=pk(s,75,60,c);gsap.to(p,{attr:{cx:W/2-42,cy:87},duration:.3,onComplete:()=>{gsap.to(p,{attr:{cy:30},duration:.25,onComplete:()=>{p.setAttribute("fill","#22c55e");gsap.to(p,{attr:{cx:W-75,cy:60},duration:.25,onComplete:()=>p.remove()})}})}});
+      if(ttl>=6)ttl=0;
+    }
+    ttl++;
+  },900);
+  addTimer(id,t);
+}
+
+// ── STAR SCHEMA ──
+function simStar(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  const cx=W/2,cy=62;
+  const fR=sn("rect",{x:cx-55,y:cy-24,width:110,height:48,rx:6,fill:c+"20",stroke:c,"stroke-width":"1.8"},s);
+  tx(s,"fact_klaim",cx,cy-10,c+"cc",8.5,{w:"700"});
+  tx(s,"jumlah, dates_sk",cx,cy+2,c+"66",6.5);
+  tx(s,"pasien_sk, cabang_sk",cx,cy+13,c+"66",6.5);
+  const dims=[{x:18,y:8,l:"dim_tanggal",c:"#6366f1"},{x:W-138,y:8,l:"dim_pasien",c:"#a855f7"},{x:18,y:92,l:"dim_cabang",c:"#06b6d4"},{x:W-138,y:92,l:"dim_diagnosis",c:"#22c55e"}];
+  const dR=dims.map(d=>{
+    const r=sn("rect",{x:d.x,y:d.y,width:118,height:22,rx:5,fill:d.c+"14",stroke:d.c+"55","stroke-width":"1.2"},s);
+    tx(s,d.l,d.x+59,d.y+14,d.c+"aa",8);return r;
+  });
+  const dC=[[77,19],[W-79,19],[77,103],[W-79,103]];
+  const lns=dC.map((dc,i)=>ln(s,dc[0],dc[1],cx,cy,dims[i].c,true));
+  const stL=tx(s,"",W/2,118,c+"66",7.5);
+  let qi=0;
+  const t=setInterval(()=>{
+    dR.forEach((r,i)=>gsap.to(r,{attr:{fill:dims[i].c+"14",stroke:dims[i].c+"55"},duration:.2}));
+    lns.forEach((l,i)=>l.setAttribute("stroke",dims[i].c+"33"));
+    gsap.to(fR,{attr:{fill:c+"20"},duration:.2});
+    const di=qi%4;
+    gsap.to(dR[di],{attr:{fill:dims[di].c+"44",stroke:dims[di].c},duration:.35});
+    lns[di].setAttribute("stroke",dims[di].c+"88");
+    const p=pk(s,dC[di][0],dC[di][1],dims[di].c);glow(p,dims[di].c);
+    gsap.to(p,{attr:{cx,cy},duration:.45,ease:"power2.inOut",onComplete:()=>{
+      gsap.to(fR,{attr:{fill:c+"44"},duration:.2,yoyo:true,repeat:1});
+      stL.textContent=`JOIN fact_klaim ↔ ${dims[di].l}`;
+      p.remove();
+    }});
+    qi++;
+  },1000);
+  addTimer(id,t);
+}
+
+// ── PARTITION ──
+function simPartitioning(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  const months=["J","F","M","A","M","J","J","A","S","O","N","D"];
+  const pw=Math.floor((W-10)/12);
+  const pR=months.map((m,i)=>{
+    const x=5+i*pw;
+    const r=sn("rect",{x,y:28,width:pw-2,height:52,rx:3,fill:c+"0e",stroke:c+"22","stroke-width":"1"},s);
+    tx(s,m,x+pw/2,46,c+"44",6);return r;
+  });
+  tx(s,"PARTITION BY DATE(tanggal_klaim)",W/2,15,c+"77",8);
+  const cntL=months.map((m,i)=>tx(s,"0",5+i*pw+pw/2,72,c+"44",6.5));
+  const stL=tx(s,"",W/2,96,c+"66",7.5);
+  const insertDates=[2,2,5,0,8,2,11,5,2,2,5,2];
+  let ii=0,counts=new Array(12).fill(0);
+  const t=setInterval(()=>{
+    if(ii%9===8){
+      // Query pruning demo
+      stL.textContent="Query WHERE month='Mar' → prune! scan only Mar partition (1/12 data)";stL.setAttribute("fill","#fbbf24");
+      pR.forEach((r,i)=>gsap.to(r,{attr:{fill:i===2?c+"55":c+"06",stroke:i===2?c:c+"18"},duration:.3}));
+      setTimeout(()=>{pR.forEach((r,i)=>gsap.to(r,{attr:{fill:`${c}${Math.min(counts[i]*4+10,60).toString(16)}`,stroke:c+"22"},duration:.3}));stL.textContent="Inserting data...";stL.setAttribute("fill",c+"66");},1100);
+    }else{
+      const mi=insertDates[ii%insertDates.length];counts[mi]++;
+      const h=Math.min(counts[mi]*3,45);
+      gsap.to(pR[mi],{attr:{fill:c+"44",stroke:c},duration:.2,yoyo:true,repeat:1,onComplete:()=>{
+        const fill=Math.min(counts[mi]*5+10,60).toString(16).padStart(2,"0");
+        gsap.to(pR[mi],{attr:{fill:`${c}${fill}`},duration:.2});
+      }});
+      cntL[mi].textContent=counts[mi];
+      stL.textContent=`INSERT → routed to partition[${mi}] (${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][mi]})`;
+    }
+    ii++;
+  },450);
+  addTimer(id,t);
+}
+
+// ── SCD ──
+function simScd(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  const cols=["sk","nik","alamat","eff_date","exp_date","current"];
+  const cw=Math.floor((W-10)/6);
+  cols.forEach((col,i)=>{
+    sn("rect",{x:5+i*cw,y:5,width:cw-2,height:14,rx:2,fill:c+"16",stroke:c+"33","stroke-width":"1"},s);
+    tx(s,col,5+i*cw+cw/2,14,c+"88",6);
+  });
+  const row1=["1","320xx","Jl.Mawar 5","2022-01","2024-06","FALSE"];
+  const row2=["1","320xx","Jl.Melati 10","2024-06","9999-99","TRUE"];
+  const r1rects=[],r2rects=[];
+  row1.forEach((cell,i)=>{
+    const x=5+i*cw;
+    const r=sn("rect",{x,y:22,width:cw-2,height:16,rx:2,fill:c+"0a",stroke:c+"22","stroke-width":"1"},s);
+    tx(s,cell,x+cw/2,32,i===5?"#ef4444":c+"77",6.5);r1rects.push(r);
+  });
+  row2.forEach((cell,i)=>{
+    const x=5+i*cw;
+    const r=sn("rect",{x,y:41,width:cw-2,height:16,rx:2,fill:c+"00",stroke:c+"00","stroke-width":"1"},s);
+    const t2=tx(s,cell,x+cw/2,51,c+"00",6.5);r2rects.push(r);
+  });
+  const stL=tx(s,"One active row (is_current=TRUE)",W/2,75,c+"77",8);
+  const chL=tx(s,"",W/2,90,"#fbbf24",7.5);
+  const newL=tx(s,"",W/2,108,"#22c55e",7.5);
+  let phase=0;
+  const flow=[
+    ()=>{stL.textContent="Normal: one active row";chL.textContent="";newL.textContent="";},
+    ()=>{chL.textContent="🔔 Address change detected: Jl.Mawar → Jl.Melati!";r1rects.forEach(r=>gsap.to(r,{attr:{fill:"#fbbf2416",stroke:"#fbbf2444"},duration:.3}));},
+    ()=>{stL.textContent="Type 2: expire old row (is_current=FALSE)";r1rects[5]&&r1rects[5].setAttribute("fill","#ef444422");r1rects[4]&&r1rects[4].setAttribute("fill","#ef444422");},
+    ()=>{stL.textContent="Insert new row with new address";r2rects.forEach((r,i)=>gsap.to(r,{attr:{fill:"#22c55e18",stroke:"#22c55e44"},duration:.4}));
+      const t2=s.querySelectorAll("text");t2.forEach(t=>{if(t.getAttribute("fill")==="transparent"||t.getAttribute("fill")===c+"00")t.setAttribute("fill","#22c55e88")});
+      newL.textContent="✅ New row (is_current=TRUE) — full history preserved!";phase=-1;},
+  ];
+  const t=setInterval(()=>{flow[(phase+flow.length)%flow.length]();phase++;},1050);
+  addTimer(id,t);
+}
+
+// ── TWOPC ──
+function simTwopc(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  bx(s,W/2-48,5,96,28,c,"Coordinator","2PC Manager");
+  bx(s,8,60,105,48,c,"DB A: AHM","debit -1000");
+  bx(s,W-113,60,105,48,c,"DB B: ACC","credit +1000");
+  ln(s,W/2,33,60,60,c,true);ln(s,W/2,33,W-60,60,c,true);
+  const sA=tx(s,"waiting...",60,88,c+"66",7.5);
+  const sB=tx(s,"waiting...",W-60,88,c+"66",7.5);
+  const cL=tx(s,"",W/2,48,c+"88",7.5);
+  const fL=tx(s,"",W/2,116,c+"77",8);
+  let phase=0;
+  const flow=[
+    ()=>{cL.textContent="Phase 1: PREPARE →";sA.textContent="preparing...";sB.textContent="preparing...";fL.textContent="";
+      [60,W-60].forEach(x=>{const p=pk(s,W/2,19,c);gsap.to(p,{attr:{cx:x,cy:60},duration:.35,onComplete:()=>p.remove()})});},
+    ()=>{sA.textContent="VOTE YES ✓";sA.setAttribute("fill","#22c55e");const p=pk(s,60,60,"#22c55e",4);gsap.to(p,{attr:{cx:W/2,cy:19},duration:.3,onComplete:()=>p.remove()});},
+    ()=>{sB.textContent="VOTE YES ✓";sB.setAttribute("fill","#22c55e");const p=pk(s,W-60,60,"#22c55e",4);gsap.to(p,{attr:{cx:W/2,cy:19},duration:.3,onComplete:()=>p.remove()});},
+    ()=>{cL.textContent="Phase 2: COMMIT ALL →";[60,W-60].forEach(x=>{const p=pk(s,W/2,19,"#22c55e");gsap.to(p,{attr:{cx:x,cy:60},duration:.3,onComplete:()=>p.remove()})});},
+    ()=>{sA.textContent="COMMITTED ✅";sB.textContent="COMMITTED ✅";fL.textContent="✅ Atomic cross-DB commit — both or neither!";fL.setAttribute("fill","#22c55e");phase=-1;},
+  ];
+  const t=setInterval(()=>{flow[(phase+flow.length)%flow.length]();phase++;},950);
+  addTimer(id,t);
+}
+
+// ── CONNPOOL ──
+function simConnpool(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  ["App 1","App 2","App 3","App 4"].forEach((a,i)=>{
+    sn("rect",{x:5,y:8+i*27,width:58,height:22,rx:4,fill:c+"10",stroke:c+"30","stroke-width":"1"},s);
+    tx(s,a,34,21+i*27,c+"88",7.5);
+  });
+  bx(s,W/2-48,8,96,104,c,"PgBouncer\nPool","max: 5 conns");
+  bx(s,W-78,38,73,44,c,"PostgreSQL","DB");
+  const slots=Array.from({length:5},(_,i)=>{
+    const r=sn("rect",{x:W/2-40,y:22+i*18,width:80,height:14,rx:3,fill:c+"0a",stroke:c+"22","stroke-width":"1"},s);
+    tx(s,"idle",W/2,22+i*18+10,c+"33",6.5);return r;
+  });
+  const stL=tx(s,"",W/2,118,c+"66",7.5);
+  const inUse=new Set();
+  const t=setInterval(()=>{
+    const free=[...Array(5).keys()].find(i=>!inUse.has(i));
+    if(free===undefined){stL.textContent="All conns busy — request queued ⏳";return;}
+    const ai=Math.floor(Math.random()*4);
+    inUse.add(free);
+    gsap.to(slots[free],{attr:{fill:c+"44",stroke:c},duration:.25});
+    const p=pk(s,63,8+ai*27+11,c,4);gsap.to(p,{attr:{cx:W/2-48},duration:.3,onComplete:()=>p.remove()});
+    stL.textContent=`App ${ai+1} borrowed conn #${free+1} — reusing existing connection`;
+    setTimeout(()=>{
+      inUse.delete(free);gsap.to(slots[free],{attr:{fill:c+"0a",stroke:c+"22"},duration:.25});
+      stL.textContent=`Conn #${free+1} returned to pool — available for next request`;
+    },600+Math.random()*500);
+  },450);
+  addTimer(id,t);
+}
+
+// ── WAL ──
+function simWal(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  bx(s,5,40,72,40,c,"App","Write req");
+  bx(s,W/2-55,8,110,42,"#fbbf24","WAL Log","sequential, fast");
+  bx(s,W/2-55,62,110,42,c,"Storage","heap/data pages");
+  bx(s,W-77,40,72,40,"#22c55e","ACK","to app");
+  ln(s,77,60,W/2-55,29,c);ln(s,W/2+55,29,W-77,60,"#22c55e");
+  ln(s,W/2,50,W/2,62,c,true);
+  tx(s,"1st: write WAL",W/4,22,c+"66",6.5);tx(s,"2nd: ACK",W-38,38,"#22c55e77",6.5);tx(s,"3rd: apply async",W/2,90,c+"44",6.5);
+  bx(s,5,8,72,24,"#a855f7","Debezium","reads WAL");
+  ln(s,W/2-55,29,77,20,"#a855f7",true);
+  const walL=tx(s,"",W/2,48,"#fbbf24cc",7,{w:"700"});
+  const stL=tx(s,"",W/2,112,c+"66",7.5);
+  const ops=["UPDATE salary=7000","INSERT claim_id=101","DELETE order_id=55","UPDATE status=paid"];
+  let oi=0;
+  const t=setInterval(()=>{
+    const op=ops[oi%ops.length];walL.textContent=`LSN-${1000+oi}: ${op}`;
+    const p=pk(s,77,60,c);glow(p,c);
+    gsap.to(p,{attr:{cx:W/2-55,cy:29},duration:.35,onComplete:()=>{
+      const ack=pk(s,W/2+55,29,"#22c55eaa",4);
+      gsap.to(ack,{attr:{cx:W-77,cy:60},duration:.25,onComplete:()=>{
+        stL.textContent="WAL written → ACK sent immediately → storage updated async";
+        ack.remove();const sp=pk(s,W/2,50,c,3);gsap.to(sp,{attr:{cy:62},duration:.3,delay:.1,onComplete:()=>sp.remove()});
+      }});p.remove();
+    }});
+    oi++;
+  },1000);
+  addTimer(id,t);
+}
+
+// ── IDEMPOTENCY ──
+function simIdempotency(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  bx(s,5,30,78,60,c,"Events","retried?");
+  bx(s,W/2-48,10,96,100,c,"Pipeline","dedup check");
+  bx(s,W-83,30,78,60,c,"BigQuery","MERGE/UPSERT");
+  const evL=tx(s,"event: ?",44,28,c+"88",7);
+  const chL=tx(s,"",W/2,58,c+"99",7.5);
+  const rL=tx(s,"",W-44,28,c,7);
+  const cntL=tx(s,"processed: 0  skipped: 0",W/2,118,c+"55",7.5);
+  const seen=new Set();let evs=["claim-001","claim-002","claim-001","claim-001","claim-003","claim-002"],ei=0,pc=0,sc=0;
+  const t=setInterval(()=>{
+    const ev=evs[ei%evs.length];evL.textContent=`event: ${ev}`;
+    const isNew=!seen.has(ev);
+    const p=pk(s,83,60,isNew?c:"#475569",5);if(isNew)glow(p,c);
+    gsap.to(p,{attr:{cx:W/2-48},duration:.35,onComplete:()=>{
+      chL.textContent=isNew?"New ✓ → process":"Already seen → SKIP 🔁";chL.setAttribute("fill",isNew?"#22c55e":"#94a3b8");
+      if(isNew){seen.add(ev);pc++;p.setAttribute("fill","#22c55e");gsap.to(p,{attr:{cx:W-83},duration:.3,onComplete:()=>{rL.textContent="MERGE ✓";rL.setAttribute("fill","#22c55e");gsap.to(p,{opacity:0,duration:.2,onComplete:()=>p.remove()})}});}
+      else{sc++;rL.textContent="(skipped)";rL.setAttribute("fill","#94a3b8");gsap.to(p,{opacity:0,duration:.3,delay:.3,onComplete:()=>p.remove()});}
+      cntL.textContent=`processed: ${pc}  skipped: ${sc}`;
+    }});
+    ei++;
+  },1000);
+  addTimer(id,t);
+}
+
+// ── ELT ──
+function simElt(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  const stages=[
+    {x:5,y:38,w:68,h:44,l:"Source",sub:"MySQL/API",c},
+    {x:88,y:38,w:68,h:44,l:"Raw Layer",sub:"BQ raw",c:"#fbbf24"},
+    {x:172,y:18,w:80,h:84,l:"dbt Transform",sub:"staging→mart",c:"#a855f7"},
+    {x:267,y:38,w:68,h:44,l:"Mart Layer",sub:"Analytics",c:"#22c55e"},
+    {x:W-73,y:38,w:68,h:44,l:"BI Tool",sub:"Looker/PBI",c:"#06b6d4"},
+  ];
+  stages.forEach(st=>bx(s,st.x,st.y,st.w,st.h,st.c,st.l,st.sub));
+  const xs=[[73,156],[156,172],[252,267],[335,W-73]];
+  xs.forEach(([x1,x2])=>ln(s,x1,60,x2,60,c));
+  const stL=tx(s,"",W/2,118,c+"66",7.5);
+  const msgs=["Extracting from source MySQL...","Loading raw → BigQuery raw layer...","dbt transforming: staging→intermediate→mart...","Mart layer ready for queries!","Dashboard served to users ✓"];
+  let pi=0;
+  const cols=[c,"#fbbf24","#a855f7","#22c55e","#06b6d4"];
+  const t=setInterval(()=>{
+    const si=pi%5;stL.textContent=msgs[si];
+    if(si<4){
+      const fromX=stages[si].x+stages[si].w;
+      const p=pk(s,fromX,60,cols[si]);glow(p,cols[si]);
+      gsap.to(p,{attr:{cx:stages[si+1].x},duration:.4,ease:"power2.inOut",onComplete:()=>p.remove()});
+    }
+    pi++;
+  },700);
+  addTimer(id,t);
+}
+
+// ── ETL ──
+function simEtl(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  bx(s,5,35,70,50,c,"Source","OLTP DB");
+  bx(s,W/2-55,10,110,100,c,"ETL Engine","Extract→Transform\nClean/Join/Agg");
+  bx(s,W-75,35,70,50,c,"DWH","loaded!");
+  ln(s,75,60,W/2-55,60,c);ln(s,W/2+55,60,W-75,60,c);
+  const stL=tx(s,"",W/2,118,c+"66",7.5);
+  const steps=["Extract: SELECT * FROM source","Transform: clean NULL values","Transform: join dimension tables","Transform: aggregate metrics","Validate: schema check","Load to DWH target ✓"];
+  let si=0;
+  const t=setInterval(()=>{
+    stL.textContent=steps[si%steps.length];
+    const p=pk(s,75,60,c);glow(p,c);
+    gsap.to(p,{attr:{cx:W/2-55},duration:.3,onComplete:()=>{
+      p.setAttribute("fill","#a855f7");
+      if(si%steps.length===5){gsap.to(p,{attr:{cx:W-75},duration:.3,onComplete:()=>p.remove()});}
+      else{gsap.to(p,{opacity:0,duration:.2,onComplete:()=>p.remove()});}
+    }});
+    si++;
+  },700);
+  addTimer(id,t);
+}
+
+// ── FOREIGN KEY ──
+function simForeignkey(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  bx(s,5,8,160,50,c,"dim_pasien (parent)","");
+  ["sk=1 ✓","sk=2 ✓","sk=3 ✓"].forEach((r,i)=>tx(s,r,82,24+i*13,c+"88",7.5));
+  bx(s,5,68,160,44,c,"fact_klaim (child)","");
+  const iL=tx(s,"INSERT pasien_sk=?",82,88,c+"aa",8.5);
+  bx(s,W-125,38,120,44,c,"FK Check","Does PK exist?");
+  const rL=tx(s,"",W-65,90,c,8);
+  const ins=[{v:1,ok:true},{v:99,ok:false},{v:2,ok:true},{v:404,ok:false},{v:3,ok:true}];
+  let ii=0;
+  const t=setInterval(()=>{
+    const ins_=ins[ii%ins.length];iL.textContent=`INSERT pasien_sk=${ins_.v}`;
+    const p=pk(s,160,90,c);glow(p,c);
+    gsap.to(p,{attr:{cx:W-125},duration:.4,onComplete:()=>{
+      p.setAttribute("fill",ins_.ok?"#22c55e":"#ef4444");
+      rL.textContent=ins_.ok?"✅ FK OK — allowed":"❌ FK VIOLATION — rejected";rL.setAttribute("fill",ins_.ok?"#22c55e":"#ef4444");
+      gsap.to(p,{opacity:0,duration:.2,delay:.5,onComplete:()=>p.remove()});
+    }});
+    ii++;
+  },1200);
+  addTimer(id,t);
+}
+
+// ── UNIQUE ──
+function simUnique(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  bx(s,5,5,160,88,c,"tabel_pasien","UNIQUE(nik)");
+  const rows=[{nik:"3201xx001",y:20},{nik:"3201xx002",y:38},{nik:"3201xx003",y:56}];
+  rows.forEach(r=>{sn("rect",{x:8,y:r.y,width:154,height:15,rx:3,fill:c+"0a",stroke:c+"22","stroke-width":"1"},s);tx(s,r.nik,85,r.y+10.5,c+"77",7.5)});
+  bx(s,W-145,28,140,60,c,"UNIQUE Index","binary search");
+  const rL=tx(s,"",W-75,97,c,8);
+  const iL=tx(s,"INSERT nik=?",W-75,18,c+"88",7.5);
+  const ins=[{nik:"3201xx004",ok:true},{nik:"3201xx001",ok:false},{nik:"3201xx005",ok:true},{nik:"3201xx002",ok:false}];
+  let ii=0;
+  const t=setInterval(()=>{
+    const ins_=ins[ii%ins.length];iL.textContent=`INSERT '${ins_.nik}'`;
+    const p=pk(s,160,55,c);glow(p,c);
+    gsap.to(p,{attr:{cx:W-145},duration:.4,onComplete:()=>{
+      p.setAttribute("fill",ins_.ok?"#22c55e":"#ef4444");
+      rL.textContent=ins_.ok?"✅ UNIQUE OK — inserted":"❌ DUPLICATE — rejected";rL.setAttribute("fill",ins_.ok?"#22c55e":"#ef4444");
+      gsap.to(p,{opacity:0,duration:.2,delay:.5,onComplete:()=>p.remove()});
+    }});
+    ii++;
+  },1200);
+  addTimer(id,t);
+}
+
+// ── CDC ──
+function simCdc(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  bx(s,5,8,90,104,c,"MySQL DB","");
+  const ops=[{t:"INSERT",c:"#22c55e"},{t:"UPDATE",c:"#fbbf24"},{t:"DELETE",c:"#ef4444"},{t:"INSERT",c:"#22c55e"}];
+  const lR=ops.map((op,i)=>{
+    const r=sn("rect",{x:8,y:14+i*23,width:84,height:20,rx:3,fill:op.c+"12",stroke:op.c+"33","stroke-width":"1"},s);
+    tx(s,op.t,50,25+i*23,op.c,8,{w:"700"});return r;
+  });
+  bx(s,W/2-50,20,100,30,c,"Debezium","reads binlog");
+  bx(s,W/2-50,65,100,30,c,"Kafka","event stream");
+  bx(s,W-95,20,90,40,"#22c55e","BigQuery","sink");
+  ln(s,95,65,W/2-50,35,c,true);ln(s,W/2+50,35,W/2+50,65,c);ln(s,W/2+50,80,W-95,40,"#22c55e");
+  let oi=0;
+  const t=setInterval(()=>{
+    const op=ops[oi%4];
+    lR.forEach((r,i)=>gsap.to(r,{attr:{fill:i===oi%4?ops[i].c+"33":ops[i].c+"12"},duration:.2}));
+    const p=pk(s,95,35+(oi%4)*23,op.c);glow(p,op.c);
+    gsap.to(p,{attr:{cx:W/2-50,cy:35},duration:.45,onComplete:()=>{p.setAttribute("fill",c);
+      gsap.to(p,{attr:{cy:80},duration:.3,onComplete:()=>{gsap.to(p,{attr:{cx:W-95,cy:40},duration:.35,onComplete:()=>{gsap.to(p,{opacity:0,duration:.2,onComplete:()=>p.remove()})}})}})}});
+    oi++;
+  },850);
+  addTimer(id,t);
+}
+
+// ── COLUMNAR ──
+function simColumnar(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  const hw=Math.floor((W-20)/2);
+  // Row storage side
+  tx(s,"Row Storage",hw/2+5,12,"#94a3b8",7.5,{w:"700"});
+  const rowData=[["id","name","salary","dept"],["1","John","5000","Eng"],["2","Jane","6000","HR"],["3","Bob","5500","Eng"]];
+  rowData.forEach((row,ri)=>{
+    row.forEach((cell,ci)=>{
+      const cw2=hw/4;
+      const r=sn("rect",{x:5+ci*cw2,y:16+ri*18,width:cw2-2,height:16,rx:2,fill:ri===0?c+"1a":c+"0a",stroke:c+"22","stroke-width":"1"},s);
+      tx(s,cell,5+ci*cw2+cw2/2,26+ri*18,ri===0?c+"99":c+"66",7);
+    });
+  });
+  // Columnar side
+  tx(s,"Columnar Storage",hw+hw/2+15,12,"#22c55e",7.5,{w:"700"});
+  const cols=[["salary"],["5000"],["6000"],["5500"]];
+  const colR=cols.map((col,i)=>{
+    const r=sn("rect",{x:hw+15+(i*(hw/4)),y:22,width:hw/4-3,height:70,rx:3,fill:i===0?c+"18":c+"0a",stroke:i===0?"#22c55e55":c+"22","stroke-width":"1"},s);
+    col.forEach((v,j)=>tx(s,v,hw+15+(i*(hw/4))+(hw/4-3)/2,22+j*18+13,i===0?"#22c55ecc":c+"77",7));
+    return r;
+  });
+  const qL=tx(s,"SELECT SUM(salary)...",W/2,108,c+"66",7.5);
+  const stL=tx(s,"",W/2,120,c+"55",7);
+  let phase=0;
+  const t=setInterval(()=>{
+    if(phase===0){qL.textContent="SELECT SUM(salary) FROM employees";
+      stL.textContent="Row storage: must read ALL columns even though we only need salary";
+      rowData.slice(1).forEach((_,ri)=>{
+        for(let ci=0;ci<4;ci++){gsap.to(s.querySelectorAll("rect")[1+ci+ri*4]||s,{attr:{fill:c+"22"},duration:.2,delay:ci*.1})}
+      });
+    }else if(phase===1){
+      stL.textContent="Columnar: read ONLY salary column — skip id, name, dept entirely!";
+      colR.forEach((r,i)=>gsap.to(r,{attr:{fill:i===0?"#22c55e33":c+"0a"},duration:.3}));
+    }else{
+      s.querySelectorAll("rect").forEach(r=>gsap.to(r,{attr:{fill:c+"0a"},duration:.2}));colR.forEach(r=>gsap.to(r,{attr:{fill:c+"0a"},duration:.2}));
+      phase=-1;
+    }
+    phase++;
+  },1200);
+  addTimer(id,t);
+}
+
+// ── BASE ──
+function simBase(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  bx(s,5,28,85,64,c,"Primary","Write OK");
+  bx(s,W/2-45,6,90,36,"#22c55e","Replica 1","(async)");
+  bx(s,W/2-45,68,90,36,c,"Replica 2","(async)");
+  bx(s,W-90,28,85,64,c,"Replica 3","(async)");
+  const v1=tx(s,"v=1",W/2,28,c+"77",7);const v2=tx(s,"v=1",W/2,90,c+"77",7);const v3=tx(s,"v=1",W-47,58,c+"77",7);
+  const stL=tx(s,"",W/2,116,"#fbbf24",7.5);
+  let ver=1;
+  const t=setInterval(()=>{
+    ver++;
+    tx(s,`v=${ver}`,45,58,c+"cc",8,{w:"700"});
+    stL.textContent=`Write v=${ver} → ACK immediately, replicas sync in background`;
+    const p1=pk(s,90,45,c,4);gsap.to(p1,{attr:{cx:W/2-45,cy:24},duration:.5,delay:.1,onComplete:()=>{v1.textContent=`v=${ver}`;v1.setAttribute("fill","#22c55e");p1.remove()}});
+    const p2=pk(s,90,65,c,4);gsap.to(p2,{attr:{cx:W/2-45,cy:86},duration:.65,delay:.2,onComplete:()=>{v2.textContent=`v=${ver}`;p2.remove()}});
+    const p3=pk(s,90,55,c,4);gsap.to(p3,{attr:{cx:W-90,cy:60},duration:.55,delay:.3,onComplete:()=>{v3.textContent=`v=${ver}`;p3.remove()}});
+  },1300);
+  addTimer(id,t);
+}
+
+// ── VACUUM ──
+function simVacuum(wrap,c,id){
+  const{s,W}=makeSVG(wrap);
+  const rows=Array.from({length:8},(_,i)=>({y:8+i*13,dead:i===2||i===4||i===6}));
+  const rects=rows.map(r=>{
+    const rect=sn("rect",{x:5,y:r.y,width:W/2-20,height:11,rx:2,fill:r.dead?"#ef444420":"#22c55e14",stroke:r.dead?"#ef444440":"#22c55e33","stroke-width":"1"},s);
+    tx(s,r.dead?"💀 DEAD TUPLE":"✓ Live row",W/4,r.y+8.5,r.dead?"#ef444488":"#22c55e77",6.5);
+    return rect;
+  });
+  tx(s,"← Table Storage",W/4,116,c+"55",7.5);
+  const vBox=bx(s,W/2+10,8,W/2-15,56,c,"VACUUM","running...");
+  const stL=tx(s,"",3*W/4,75,c+"77",8);
+  const spaceL=tx(s,"",3*W/4,92,c+"55",7.5);
+  const deadL=tx(s,`Dead tuples: ${rows.filter(r=>r.dead).length}`,3*W/4,108,c+"66",7.5);
+  let phase=0,deadCount=3;
+  const t=setInterval(()=>{
+    if(phase===0){stL.textContent="VACUUM triggered (autovacuum)";spaceL.textContent="Finding dead tuples...";
+    }else if(phase<=3){
+      const di=[2,4,6][phase-1];
+      gsap.to(rects[di],{attr:{fill:"#fbbf2422",stroke:"#fbbf2444"},duration:.3});
+      stL.textContent=`Removing dead tuple at row ${di+1}`;
+    }else if(phase===4){
+      rows.filter(r=>r.dead).forEach((_,i)=>{gsap.to(rects[[2,4,6][i]],{attr:{fill:c+"0a",stroke:c+"22"},duration:.5})});
+      deadCount=0;deadL.textContent="Dead tuples: 0";stL.textContent="✅ Dead tuples removed — space reclaimed!";spaceL.textContent="Table size reduced, query faster";
+    }else{
+      rows.forEach((r,i)=>gsap.to(rects[i],{attr:{fill:r.dead?"#ef444420":"#22c55e14",stroke:r.dead?"#ef444440":"#22c55e33"},duration:.3}));
+      deadCount=3;deadL.textContent=`Dead tuples: ${deadCount}`;stL.textContent="New UPDATEs created dead tuples again...";phase=-1;
+    }
+    phase++;
+  },1000);
+  addTimer(id,t);
+}
+
+// ── GENERIC fallback ──
+function simGeneric(wrap,c,id,label){
+  const{s,W}=makeSVG(wrap);
+  bx(s,5,35,78,50,c,"Input","data");
+  bx(s,W/2-55,12,110,96,c,label||"Process","concept");
+  bx(s,W-83,35,78,50,c,"Output","result");
+  ln(s,83,60,W/2-55,60,c);ln(s,W/2+55,60,W-83,60,c);
+  let pi=0;
+  const t=setInterval(()=>{
+    const p=pk(s,83,60,c);glow(p,c);
+    gsap.to(p,{attr:{cx:W/2-55},duration:.4,ease:"power2.inOut",onComplete:()=>{
+      gsap.to(p,{attr:{cx:W-83},duration:.35,onComplete:()=>{gsap.to(p,{opacity:0,duration:.2,onComplete:()=>p.remove()})}});
+    }});
+    pi++;
+  },800);
+  addTimer(id,t);
+}
+
+// ── DISPATCH ──
+const SIM_MAP={
+  medallion:simMedallion,acid:simAcid,cap:simCap,stream:simStream,dag:simDag,
+  mvcc:simMvcc,deadlock:simDeadlock,sharding:simSharding,replication:simReplication,
+  rbac:simRbac,btree:simBtree,dq:simDq,caching:simCaching,star:simStar,
+  partitioning:simPartitioning,scd:simScd,twopc:simTwopc,connpool:simConnpool,
+  wal:simWal,idempotency:simIdempotency,elt:simElt,etl:simEtl,
+  foreignkey:simForeignkey,unique:simUnique,cdc:simCdc,columnar:simColumnar,
+  base:simBase,vacuum:simVacuum,
+  // aliases
+  lakehouse:simElt,lambda:simDag,fabric:simStream,dwlake:simElt,batch:simStream,
+  mqueue:simStream,schemrw:simScd,rowcol:simColumnar,iceberg:simScd,
+  clustering:simPartitioning,compaction:simVacuum,tiering:simCaching,
+  storagetypes:simConnpool,snowflake:simStar,datavault:simScd,semantic:simElt,
+  facttypes:simStar,catalog:simDq,lineage:simDag,mdm:simIdempotency,
+  classification:simRbac,steward:simDq,mv:simCaching,queryopt:simBtree,
+  bloom:simBtree,cbo:simBtree,masking:simRbac,encryption:simUnique,
+  audit:simDag,tokenization:simUnique,featurestore:simConnpool,schemareg:simUnique,
+  observability:simDq,vectordb:simBtree,llmpipeline:simElt,
+  pacelc:simCap,ryw:simMvcc,eventual:simReplication,isolation:simMvcc,
+  normalization:simScd,primarykey:simUnique,cardinality:simBtree,
+  surrogatekey:simUnique,null:simDq,savepoint:simAcid,locks:simDeadlock,
+  bloat:simVacuum,sequence:simUnique,uuid:simUnique,viewmv:simCaching,
+  trigger:simScd,storedproc:simEtl,cte:simStream,window:simBtree,
+  upsert:simIdempotency,explainplan:simBtree,schema_ns:simConnpool,orm:simElt,
+  lateral:simStar,recursive:simDag,pgpartition:simPartitioning,json:simDq,
+  fts:simBtree,connstring:simConnpool,computed:simScd,bqpartition:simPartitioning,
+  explainopt:simBtree,rowvscol:simColumnar,mesh:simDag,htap:simReplication,
+};
+
+function runSim(term,wrap){
+  const fn=SIM_MAP[term.sim];
+  if(fn)fn(wrap,term.color,term.id);
+  else simGeneric(wrap,term.color,term.id,term.term);
+}
+
+// ═══════════════════════════════════════════
+// GAMIFICATION
+// ═══════════════════════════════════════════
+let xp=0,seen=new Set(),allExp=false,activeCat="All",searchQ="";
+
+function addXP(amount){
+  xp+=amount;
+  document.getElementById("xp").textContent=`${xp} XP`;
+  const lvl=Math.floor(xp/500)+1;
+  if(xp%500<amount){showToast(`🎉 Level ${lvl} unlocked!`);}
+}
+function showToast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg;
+  gsap.to(t,{opacity:1,y:0,duration:.35,ease:"power2.out",onComplete:()=>{
+    gsap.to(t,{opacity:0,y:-16,duration:.35,delay:2});
+  }});
+}
+function markSeen(id){
+  if(seen.has(id))return;
+  seen.add(id);
+  addXP(10);
+  document.getElementById("sc").textContent=seen.size;
+  const pct=(seen.size/101)*100;
+  document.getElementById("pb").style.width=pct+"%";
+  const card=document.getElementById(`card-${id}`);
+  if(card)card.classList.add("seen");
+  if(seen.size===10)showToast("🔥 10 concepts learned!");
+  if(seen.size===50)showToast("⚡ Halfway there — 50 concepts!");
+  if(seen.size===101)showToast("🏆 MASTER: All 101 concepts learned!");
+}
+
+// ═══════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════
+const CATS=["All",...[...new Set(T.map(t=>t.cat))]];
+
+function getFiltered(){
+  return T.filter(t=>(activeCat==="All"||t.cat===activeCat)&&
+    (!searchQ||t.term.toLowerCase().includes(searchQ)||t.konsep.toLowerCase().includes(searchQ)||t.tools.some(x=>x.toLowerCase().includes(searchQ))));
+}
+
+function renderCats(){
+  const counts={};CATS.slice(1).forEach(c=>counts[c]=T.filter(t=>t.cat===c).length);
+  document.getElementById("cats").innerHTML=CATS.map(cat=>`
+    <button class="cp${cat===activeCat?" on":""}" onclick="setCat('${cat}')">${cat}${cat!=="All"?` (${counts[cat]})`:` (${T.length})`}</button>`).join("");
+}
+
+function renderStats(){
+  const cm={};T.forEach(t=>cm[t.cat]=t.color);
+  document.getElementById("sbar").innerHTML=[...new Set(T.map(t=>t.cat))].map(cat=>`
+    <div class="sc"><div class="sdot" style="background:${cm[cat]}"></div><span style="color:var(--mt)">${cat}</span><span class="snum" style="color:${cm[cat]}">${T.filter(t=>t.cat===cat).length}</span></div>`).join("");
+}
+
+const expandedIds=new Set();
+
+function startFlow(id,proses){
+  if(FT[id])clearInterval(FT[id]);
+  const steps=proses.split("→").length;let active=0;
+  function tick(){
+    const c=document.getElementById(`flow-${id}`);if(!c){clearInterval(FT[id]);return;}
+    c.querySelectorAll(".fs").forEach((el,i)=>el.classList.toggle("a",i===active));
+    c.querySelectorAll(".fa").forEach((el,i)=>el.classList.toggle("a",i<active));
+    active=(active+1)%steps;
+  }
+  tick();FT[id]=setInterval(tick,700);
+}
+function stopFlow(id){clearInterval(FT[id]);delete FT[id];const c=document.getElementById(`flow-${id}`);if(c)c.querySelectorAll(".fs,.fa").forEach(el=>el.classList.remove("a"));}
+
+function buildFlow(proses,id){
+  return proses.split("→").map((s,i,arr)=>`<span class="fs">${s.trim()}</span>${i<arr.length-1?'<span class="fa">›</span>':""}`).join("");
+}
+
+function renderCards(){
+  const filtered=getFiltered();
+  document.getElementById("rc").innerHTML=`Menampilkan <strong>${filtered.length}</strong> dari ${T.length} term`;
+  const el=document.getElementById("cards");
+  const emp=document.getElementById("empty");
+  if(!filtered.length){el.innerHTML="";emp.style.display="block";return;}
+  emp.style.display="none";
+  el.innerHTML=filtered.map(t=>{
+    const isOpen=allExp||expandedIds.has(t.id);
+    return `<div class="card${isOpen?" open":""}${seen.has(t.id)?" seen":""}" id="card-${t.id}" style="--cc:${t.color}">
+  <div class="chdr" onclick="toggleCard(${t.id})">
+    <div class="cnum">${t.id}</div>
+    <div class="cico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="${t.icon}"/></svg></div>
+    <div class="ctitle">${t.term}</div>
+    <div class="ccat">${t.cat}</div>
+    <div class="cunlk">✓ learned</div>
+    <div class="cchev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="6 9 12 15 18 9"/></svg></div>
+  </div>
+  <div class="cbody">
+    <div class="cbi">
+      <div class="illus" id="illus-${t.id}"></div>
+      <div class="dgrid">
+        <div class="db"><div class="dbl">💡 Konsep</div><div class="dbt">${t.konsep}</div></div>
+        <div class="db"><div class="dbl">📐 Metodologi</div><div class="dbt">${t.met}</div></div>
+        <div class="db"><div class="dbl">🔄 Alur Proses</div><div class="flow" id="flow-${t.id}">${buildFlow(t.proses,t.id)}</div></div>
+        <div class="db"><div class="dbl">🏢 Contoh</div><div class="dbt">${t.contoh}</div></div>
+      </div>
+      <div class="trow">
+        <span style="font-size:9px;color:${t.color};font-weight:700;margin-right:4px">🛠️ Tools:</span>
+        ${t.tools.map(tool=>`<span class="tbg">${tool}</span>`).join("")}
+      </div>
+    </div>
+  </div>
+</div>`;
+  }).join("");
+
+  gsap.fromTo(".card",{opacity:0,y:10},{opacity:1,y:0,duration:.3,stagger:.025,ease:"power2.out"});
+
+  filtered.forEach(t=>{if(allExp||expandedIds.has(t.id))initCard(t);});
+}
+
+function initCard(t){
+  const wrap=document.getElementById(`illus-${t.id}`);
+  if(wrap&&!wrap._init){wrap._init=true;setTimeout(()=>runSim(t,wrap),50);}
+  startFlow(t.id,t.proses);
+}
+
+function toggleCard(id){
+  const card=document.getElementById(`card-${id}`);
+  const t=T.find(x=>x.id===id);
+  if(!card||!t)return;
+  if(expandedIds.has(id)){
+    expandedIds.delete(id);card.classList.remove("open");stopFlow(id);cleanup(id);
+  }else{
+    expandedIds.add(id);card.classList.add("open");markSeen(id);
+    setTimeout(()=>{initCard(t);card.scrollIntoView({behavior:"smooth",block:"nearest"});},50);
+  }
+}
+
+function setCat(cat){
+  activeCat=cat;expandedIds.clear();
+  Object.keys(FT).forEach(id=>stopFlow(id));
+  document.querySelectorAll(".illus").forEach(w=>{cleanup(parseInt(w.id.split("-")[1]));w._init=false;w.innerHTML="";});
+  renderCats();renderCards();
+}
+
+document.getElementById("search").addEventListener("input",function(){
+  searchQ=this.value.toLowerCase().trim();
+  expandedIds.clear();Object.keys(FT).forEach(id=>stopFlow(id));renderCards();
+});
+
+document.getElementById("btnexp").addEventListener("click",function(){
+  allExp=!allExp;this.textContent=allExp?"Collapse All":"Expand All";this.classList.toggle("on",allExp);
+  if(!allExp){expandedIds.clear();Object.keys(FT).forEach(id=>stopFlow(id));}
+  else{getFiltered().forEach(t=>setTimeout(()=>initCard(t),50));}
+  renderCards();
+});
+
+gsap.from(".hi > *",{opacity:0,y:16,duration:.6,stagger:.1,ease:"power3.out"});
+renderStats();renderCats();renderCards();
+</script>
+</body>
+</html>
