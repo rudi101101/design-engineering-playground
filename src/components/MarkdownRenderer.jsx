@@ -1,29 +1,34 @@
-import ReactMarkdown from 'react-markdown';
-import { CodeBlock } from './CodeBlock';
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import CodeBlock from "./CodeBlock.jsx";
 
-export function MarkdownRenderer({ text }) {
+export default function MarkdownRenderer({ text }) {
+  if (!text) return null;
   return (
-    <ReactMarkdown
-      components={{
-        code({ className, children }) {
-          return (
-            <code className="px-1 py-0.5 rounded bg-hairline-border text-body">
-              {children}
-            </code>
-          );
-        },
-        pre({ children }) {
-          // children is the code element itself (React element)
-          const className = children?.props?.className || '';
-          const match = /language-(\w+)/.exec(className);
-          const value = String(children?.props?.children ?? '').replace(/\n$/, '');
-          return (
-            <CodeBlock language={match ? match[1] : ''} value={value} />
-          );
-        },
-      }}
-    >
-      {text}
-    </ReactMarkdown>
+    <div className="prose-content text-body text-ink">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          code({ className, children, ...props }) {
+            // react-markdown v9 dropped the `inline` prop — detect block code by the
+            // `language-xxx` class fenced blocks get instead (absent on inline spans).
+            const match = /language-(\w+)/.exec(className || "");
+            if (!match) {
+              return (
+                <code className="rounded bg-indigo-wash px-1.5 py-0.5 font-mono text-[13px] text-indigo-deep" {...props}>
+                  {children}
+                </code>
+              );
+            }
+            return <CodeBlock language={match[1]}>{children}</CodeBlock>;
+          },
+          pre({ children }) {
+            return <>{children}</>;
+          },
+        }}
+      >
+        {text}
+      </ReactMarkdown>
+    </div>
   );
 }

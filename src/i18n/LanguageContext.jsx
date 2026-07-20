@@ -1,32 +1,52 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useMemo, useState, useCallback, useEffect } from "react";
+import { strings } from "./strings.js";
 
+const STORAGE_KEY = "dep-lang";
 const LanguageContext = createContext(null);
-const STORAGE_KEY = 'language';
+
+function readInitialLang() {
+  if (typeof window === "undefined") return "id";
+  const stored = window.localStorage.getItem(STORAGE_KEY);
+  return stored === "en" || stored === "id" ? stored : "id";
+}
 
 export function LanguageProvider({ children }) {
-  const [language, setLanguage] = useState(
-    () => localStorage.getItem(STORAGE_KEY) || 'id'
-  );
+  const [lang, setLangState] = useState(readInitialLang);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, language);
-  }, [language]);
+    window.localStorage.setItem(STORAGE_KEY, lang);
+  }, [lang]);
 
-  function toggleLanguage() {
-    setLanguage((prev) => (prev === 'id' ? 'en' : 'id'));
-  }
+  const setLang = useCallback((next) => {
+    setLangState(next === "en" ? "en" : "id");
+  }, []);
 
-  return (
-    <LanguageContext.Provider value={{ language, toggleLanguage }}>
-      {children}
-    </LanguageContext.Provider>
+  const toggleLang = useCallback(() => {
+    setLangState((prev) => (prev === "id" ? "en" : "id"));
+  }, []);
+
+  const t = useCallback((key) => strings[lang][key] ?? strings.id[key] ?? key, [lang]);
+
+  const pick = useCallback(
+    (field) => {
+      if (!field) return { text: "", isFallback: false };
+      const primary = field[lang];
+      if (primary && primary.trim().length > 0) {
+        return { text: primary, isFallback: false };
+      }
+      const other = lang === "id" ? "en" : "id";
+      return { text: field[other] ?? "", isFallback: true };
+    },
+    [lang]
   );
+
+  const value = useMemo(() => ({ lang, setLang, toggleLang, t, pick }), [lang, setLang, toggleLang, t, pick]);
+
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }
 
 export function useLanguage() {
-  const context = useContext(LanguageContext);
-  if (!context) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
-  }
-  return context;
+  const ctx = useContext(LanguageContext);
+  if (!ctx) throw new Error("useLanguage must be used within a LanguageProvider");
+  return ctx;
 }

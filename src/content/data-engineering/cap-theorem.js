@@ -1,0 +1,52 @@
+export const term = {
+  id: "cap-theorem",
+  track: "data-engineering",
+  category: "DB Fundamentals",
+  color: "#f472b6",
+  icon: "M12 2l10 18H2z",
+  simulation: "cap",
+  tools: ["Zookeeper (CP)", "Cassandra (AP)", "DynamoDB (tunable)", "etcd (CP)", "CouchDB (AP)"],
+  prerequisites: ["replication"],
+  related: ["pacelc-theorem", "eventual-consistency"],
+  name: { id: "CAP Theorem", en: "CAP Theorem" },
+  content: {
+    description: {
+      id: "CAP Theorem menyatakan bahwa sistem terdistribusi hanya bisa menjamin dua dari tiga properti berikut secara bersamaan: Consistency (semua node melihat data yang sama pada saat yang sama), Availability (setiap request selalu mendapat respons, bahkan jika ada node yang gagal), dan Partition Tolerance (sistem tetap berjalan meski komunikasi antar node terputus). Teorema ini, dirumuskan oleh Eric Brewer, menjadi salah satu prinsip paling fundamental dalam merancang sistem database terdistribusi, karena memaksa arsitek untuk secara sadar memilih trade-off yang sesuai dengan kebutuhan bisnis mereka, bukan berharap bisa mendapatkan ketiganya sekaligus.",
+      en: "The CAP Theorem states that a distributed system can only guarantee two out of three properties simultaneously: Consistency (all nodes see the same data at the same time), Availability (every request always gets a response, even if some node has failed), and Partition Tolerance (the system keeps running even if communication between nodes is cut off). This theorem, formulated by Eric Brewer, is one of the most fundamental principles in designing distributed database systems, because it forces architects to consciously choose the trade-off that fits their business needs, rather than hoping to get all three at once.",
+    },
+    concept: {
+      id: "Bayangkan CAP Theorem seperti dua kantor cabang bank yang jaringan teleponnya putus (network partition) di tengah hari kerja. Kamu punya dua pilihan: (1) tutup sementara kedua cabang sampai jaringan pulih supaya tidak ada risiko catatan saldo yang berbeda antar cabang (ini CP — konsisten tapi tidak available), atau (2) tetap buka kedua cabang dan layani nasabah seperti biasa, menerima risiko kecil bahwa saldo yang ditampilkan mungkin sedikit berbeda sampai jaringan pulih dan data disinkronkan ulang (ini AP — available tapi sementara tidak konsisten). Kamu tidak bisa memilih 'tetap buka DAN selalu konsisten' saat jaringan benar-benar putus — itulah inti CAP Theorem.",
+      en: "Think of the CAP Theorem like two bank branches whose phone line is cut (a network partition) in the middle of a business day. You have two choices: (1) temporarily close both branches until the network recovers, so there's no risk of differing balance records between branches (this is CP — consistent but not available), or (2) keep both branches open and serve customers as usual, accepting a small risk that the displayed balance might differ slightly until the network recovers and data resyncs (this is AP — available but temporarily inconsistent). You can't choose 'stay open AND always consistent' while the network is truly cut — that's the essence of the CAP Theorem.",
+    },
+    methodology: {
+      id: "Partition Tolerance hampir selalu wajib dipilih pada sistem terdistribusi modern karena jaringan pada dasarnya tidak bisa dijamin 100% andal — pertanyaan sesungguhnya bukan 'apakah akan ada partition' tapi 'kapan'. Karena itu, pilihan nyata yang dihadapi arsitek adalah antara CP dan AP: sistem CP akan menolak atau memblokir request pada node yang terisolasi sampai konsistensi bisa dijamin kembali, sementara sistem AP akan tetap melayani request menggunakan data yang mungkin sudah usang (stale) demi menjaga availability. Alurnya: Network partition → CP: block until consistent | AP: continue serving stale data.",
+      en: "Partition Tolerance is almost always mandatory in modern distributed systems because networks fundamentally cannot be guaranteed 100% reliable — the real question isn't 'will there be a partition' but 'when'. Because of that, the real choice architects face is between CP and AP: a CP system will reject or block requests on the isolated node until consistency can be guaranteed again, while an AP system will keep serving requests using data that may already be stale, in order to preserve availability. The flow: Network partition → CP: block until consistent | AP: continue serving stale data.",
+    },
+    objective: {
+      id: "Sebelum CAP Theorem dirumuskan secara eksplisit, banyak sistem terdistribusi dirancang dengan asumsi implisit bahwa konsistensi dan ketersediaan penuh bisa dicapai bersamaan — asumsi yang terbukti salah begitu jaringan benar-benar terputus di produksi. CAP Theorem menyelesaikan kebingungan ini dengan memberi kerangka berpikir yang jelas: begitu kamu tahu partition itu tak terhindarkan, kamu bisa secara sadar merancang sistem yang memilih CP atau AP sesuai kebutuhan bisnis spesifik, alih-alih terkejut saat insiden terjadi.",
+      en: "Before the CAP Theorem was explicitly formulated, many distributed systems were designed with the implicit assumption that full consistency and availability could be achieved simultaneously — an assumption proven wrong the moment a network actually gets partitioned in production. The CAP Theorem resolves this confusion by providing a clear mental framework: once you know a partition is inevitable, you can consciously design a system that chooses CP or AP to fit specific business needs, instead of being caught off guard when an incident happens.",
+    },
+    goal: {
+      id: "Hasil yang dicapai adalah keputusan arsitektur yang sadar dan terukur — tim tahu persis apa yang akan terjadi pada sistem mereka saat network partition terjadi (blokir vs stale data), dan bisa merancang mitigasi yang sesuai sejak awal, alih-alih menemukan perilaku sistem yang tidak terduga saat insiden nyata terjadi di produksi.",
+      en: "The outcome is a conscious, measured architecture decision — the team knows exactly what will happen to their system when a network partition occurs (blocking vs. stale data), and can design appropriate mitigations from the start, instead of discovering unexpected system behavior when a real incident hits production.",
+    },
+    exampleImplementation: {
+      id: "Membandingkan perilaku dua sistem saat network partition terjadi:\n\n```\n# Sistem CP (contoh: etcd, Zookeeper)\n# Saat partition, node minoritas menolak request write/read\n# untuk mencegah split-brain dan menjaga konsistensi\n$ etcdctl put key value\nError: etcdserver: request timed out (no quorum)\n\n# Sistem AP (contoh: Cassandra dengan consistency level ONE)\n# Saat partition, tiap node tetap melayani request dengan data lokalnya\n$ cqlsh> SELECT * FROM users WHERE id = 1;\n# Berhasil, meski node ini mungkin belum menerima update terbaru\n```\n\nMemilih consistency level di Cassandra (`ONE`, `QUORUM`, `ALL`) adalah cara langsung men-tuning trade-off CAP sesuai kebutuhan tiap query.",
+      en: "Comparing the behavior of two systems when a network partition happens:\n\n```\n# CP system (e.g. etcd, Zookeeper)\n# During a partition, the minority-side node rejects write/read requests\n# to prevent split-brain and preserve consistency\n$ etcdctl put key value\nError: etcdserver: request timed out (no quorum)\n\n# AP system (e.g. Cassandra with consistency level ONE)\n# During a partition, each node keeps serving requests with its local data\n$ cqlsh> SELECT * FROM users WHERE id = 1;\n# Succeeds, even though this node may not have received the latest update yet\n```\n\nChoosing a consistency level in Cassandra (`ONE`, `QUORUM`, `ALL`) is a direct way to tune the CAP trade-off per query as needed.",
+    },
+    exampleEnterprise: {
+      id: "PT Nusantara Logistik menggunakan Cassandra (AP) untuk sistem pelacakan lokasi armada real-time — mereka lebih memilih armada tetap bisa melapor posisi meski satu data center sedang bermasalah jaringan, walau posisinya sedikit terlambat diperbarui, daripada sistem berhenti total. Sebaliknya, untuk sistem pembukuan keuangan mereka, mereka menggunakan database CP tradisional (PostgreSQL dengan replikasi sinkron) karena saldo yang tidak konsisten jauh lebih berbahaya daripada sistem yang sesaat tidak tersedia.",
+      en: "PT Nusantara Logistik uses Cassandra (AP) for its real-time fleet location tracking system — they'd rather have vehicles keep reporting position even if one data center is having network issues, with slightly delayed updates, than have the system stop entirely. Conversely, for their financial bookkeeping system, they use a traditional CP database (PostgreSQL with synchronous replication) because an inconsistent balance is far more dangerous than a system being momentarily unavailable.",
+    },
+    prosAndCons: {
+      pros: {
+        id: "- Memberi kerangka berpikir yang jelas untuk trade-off desain sistem terdistribusi\n- Membantu tim membuat keputusan arsitektur secara sadar, bukan berdasarkan asumsi yang salah\n- Berlaku universal — relevan untuk hampir semua sistem database terdistribusi modern\n- Mendorong desain sistem yang tangguh terhadap kegagalan jaringan yang memang tak terhindarkan",
+        en: "- Provides a clear mental framework for distributed system design trade-offs\n- Helps teams make architecture decisions consciously, not based on wrong assumptions\n- Universally applicable — relevant to almost every modern distributed database system\n- Encourages designing systems resilient to network failures, which are genuinely inevitable",
+      },
+      cons: {
+        id: "- Seringkali disederhanakan berlebihan seolah pilihannya hanya CP vs AP yang kaku, padahal sistem nyata sering punya nuansa (tunable consistency)\n- Tidak memperhitungkan latency, yang justru diselesaikan oleh teorema pelengkap seperti PACELC\n- Bisa disalahpahami sebagai 'harus pilih 2 dari 3 selamanya', padahal trade-off bisa berbeda per operasi/query\n- Fokus hanya pada skenario partition, padahal sebagian besar waktu sistem berjalan normal tanpa partition",
+        en: "- Often oversimplified as a rigid CP vs AP choice, when real systems frequently offer nuance (tunable consistency)\n- Doesn't account for latency, which is instead addressed by complementary theorems like PACELC\n- Can be misunderstood as 'must pick 2 of 3 forever', when the trade-off can actually differ per operation/query\n- Focuses only on the partition scenario, even though most of the time a system runs normally without one",
+      },
+    },
+  },
+};

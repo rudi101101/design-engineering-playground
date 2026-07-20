@@ -1,29 +1,33 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-export function CodeBlock({ language, value }) {
+export default function CodeBlock({ language, children }) {
   const [copied, setCopied] = useState(false);
+  const code = String(children).replace(/\n$/, "");
 
-  function handleCopy() {
-    navigator.clipboard?.writeText(value);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  }
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // clipboard unavailable — silently ignore
+    }
+  };
 
   return (
-    <div className="rounded-button bg-ink overflow-hidden my-4">
-      <div className="flex items-center justify-between px-4 py-2 bg-black/20">
-        <span className="text-caption font-semibold text-slate-gray uppercase">
-          {language || 'text'}
-        </span>
+    <div className="my-3 overflow-hidden rounded-xl border border-hairline-border bg-ink">
+      <div className="flex items-center justify-between border-b border-white/10 px-3 py-1.5">
+        <span className="font-mono text-[11px] font-semibold text-faint-gray">{language || "text"}</span>
         <button
+          type="button"
           onClick={handleCopy}
-          className="text-caption font-semibold text-pure-white/70 hover:text-pure-white"
+          className="rounded-md px-2 py-0.5 text-[11px] font-semibold text-faint-gray transition hover:bg-white/10 hover:text-white"
         >
-          {copied ? 'Copied!' : 'Copy'}
+          {copied ? "Copied" : "Copy"}
         </button>
       </div>
-      <pre className="p-4 overflow-x-auto text-body text-pure-white">
-        <code>{value}</code>
+      <pre className="overflow-x-auto px-3 py-2.5 text-[12.5px] leading-relaxed text-slate-gray">
+        <code className="font-mono text-[#e2e8f0]">{code}</code>
       </pre>
     </div>
   );

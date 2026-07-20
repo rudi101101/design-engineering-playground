@@ -1,29 +1,27 @@
 {
   "name": "design-engineering-playground",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run validate-content && vite build",
     "preview": "vite preview",
-    "test": "vitest run",
     "validate-content": "node scripts/validate-content.js"
   },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.0",
-    "react-markdown": "^9.0.1"
+    "react-router-dom": "^6.26.2",
+    "react-markdown": "^9.0.1",
+    "remark-gfm": "^4.0.0",
+    "gsap": "^3.12.5",
+    "reactflow": "^11.11.4"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.5.0",
-    "@testing-library/react": "^16.0.1",
-    "@vitejs/plugin-react": "^4.3.1",
     "@tailwindcss/vite": "^4.0.0",
-    "jsdom": "^25.0.0",
+    "@vitejs/plugin-react": "^4.3.1",
     "tailwindcss": "^4.0.0",
-    "vite": "^5.4.0",
-    "vitest": "^2.1.0"
+    "vite": "^5.4.8"
   }
 }

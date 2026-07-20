@@ -1,29 +1,18 @@
-import { Link } from 'react-router-dom';
-import { useLanguage } from '../i18n/LanguageContext';
+import { Link } from "react-router-dom";
+import { useLanguage } from "../i18n/LanguageContext.jsx";
 
-const STRINGS = {
-  id: {
-    title: 'Halaman tidak ditemukan',
-    body: 'Halaman yang kamu cari tidak ada atau sudah dipindahkan.',
-    backLink: '← Kembali ke beranda',
-  },
-  en: {
-    title: 'Page not found',
-    body: "The page you're looking for doesn't exist or has moved.",
-    backLink: '← Back to home',
-  },
-};
-
-export function NotFoundPage() {
-  const { language } = useLanguage();
-  const t = STRINGS[language];
-
+export default function NotFoundPage() {
+  const { t } = useLanguage();
   return (
-    <div className="max-w-3xl mx-auto px-4 py-16 text-center">
-      <h1 className="text-heading font-bold text-ink mb-2">{t.title}</h1>
-      <p className="text-body text-slate-gray mb-6">{t.body}</p>
-      <Link to="/" className="text-indigo-primary text-label font-semibold">
-        {t.backLink}
+    <div className="mx-auto flex max-w-[1280px] flex-col items-center justify-center px-5 py-24 text-center">
+      <p className="text-[48px]">🔍</p>
+      <h1 className="mt-2 text-heading font-bold text-ink">{t("notFoundTitle")}</h1>
+      <p className="mt-2 text-body text-slate-gray">{t("notFoundBody")}</p>
+      <Link
+        to="/"
+        className="mt-6 rounded-xl bg-gradient-to-r from-indigo-primary to-indigo-deep px-5 py-2.5 text-body font-semibold text-white shadow-[var(--shadow-button-tinted)]"
+      >
+        {t("backHome")}
       </Link>
     </div>
   );

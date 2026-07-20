@@ -1,0 +1,52 @@
+export const term = {
+  id: "medallion-architecture",
+  track: "data-engineering",
+  category: "Arsitektur",
+  color: "#818cf8",
+  icon: "M12 3L2 8l10 5 10-5-10-5zM2 13l10 5 10-5M2 18l10 5 10-5",
+  simulation: "medallion",
+  tools: ["Databricks", "Delta Lake", "Apache Iceberg", "dbt", "BigQuery"],
+  prerequisites: [],
+  related: ["data-lakehouse", "star-schema"],
+  name: { id: "Medallion Architecture", en: "Medallion Architecture" },
+  content: {
+    description: {
+      id: "Medallion Architecture adalah pola desain untuk mengatur data di dalam lakehouse menjadi tiga lapisan kualitas yang berurutan: Bronze, Silver, dan Gold. Setiap lapisan merepresentasikan tingkat kesiapan data yang berbeda — dari data mentah yang belum tersentuh sampai data yang sudah diagregasi dan siap dikonsumsi oleh dashboard atau model machine learning. Pola ini populer karena memberi struktur yang jelas pada pipeline data yang sebelumnya sering menjadi kumpulan skrip transformasi tanpa batasan yang jelas, sehingga tim data tahu persis di lapisan mana suatu masalah kualitas data berasal.",
+      en: "Medallion Architecture is a design pattern for organizing data inside a lakehouse into three sequential quality layers: Bronze, Silver, and Gold. Each layer represents a different level of data readiness — from untouched raw data to aggregated, consumption-ready data used by dashboards or ML models. The pattern is popular because it gives clear structure to pipelines that used to be an unbounded collection of transformation scripts, so teams know exactly which layer a data-quality problem originates from.",
+    },
+    concept: {
+      id: "Bayangkan medallion architecture seperti proses pengolahan emas dari tambang sampai perhiasan. Bronze adalah bijih mentah yang baru digali — masih bercampur kotoran, belum diproses. Silver adalah emas yang sudah dimurnikan — kotoran dibuang, kadar diverifikasi, siap dibentuk. Gold adalah perhiasan jadi — sudah dipoles dan siap dipakai (dikonsumsi) langsung oleh pembeli, dalam hal ini tim bisnis dan model ML. Kamu tidak akan menjual bijih mentah ke pelanggan, dan kamu juga tidak akan membuang bijih mentah begitu saja — setiap tahap punya nilai dan tujuannya sendiri.",
+      en: "Think of the medallion architecture like refining gold from ore to jewelry. Bronze is the raw ore just dug up — still mixed with impurities, unprocessed. Silver is purified gold — impurities removed, purity verified, ready to be shaped. Gold is the finished jewelry — polished and ready to be consumed directly by the buyer, in this case business teams and ML models. You wouldn't sell raw ore to a customer, nor would you discard it — every stage has its own value and purpose.",
+    },
+    methodology: {
+      id: "Lapisan Bronze menyimpan data seperti aslinya dari sumber — tanpa transformasi, kadang termasuk duplikat dan nilai null, tujuannya adalah audit trail dan kemampuan untuk replay ulang jika logika transformasi berubah. Lapisan Silver menerapkan deduplication, validasi tipe data, normalisasi skema, dan join dasar antar sumber — hasilnya adalah data yang bersih dan bisa dipercaya tapi masih dalam granularitas mentah (belum diagregasi). Lapisan Gold melakukan agregasi bisnis, join ke banyak tabel dimensi, dan membentuk tabel mart yang sudah dioptimalkan untuk pertanyaan bisnis spesifik — sering kali dalam bentuk star schema. Alurnya: Source → Bronze (raw) → Silver (clean/validate) → Gold (mart) → BI / ML.",
+      en: "The Bronze layer stores data exactly as it arrives from the source — no transformation, sometimes including duplicates and null values; its purpose is an audit trail and the ability to replay history if transformation logic changes. The Silver layer applies deduplication, data-type validation, schema normalization, and basic joins across sources — the result is clean, trustworthy data still at raw grain (not yet aggregated). The Gold layer performs business aggregation, joins across many dimension tables, and builds mart tables optimized for specific business questions — often shaped as a star schema. The flow: Source → Bronze (raw) → Silver (clean/validate) → Gold (mart) → BI / ML.",
+    },
+    objective: {
+      id: "Sebelum pola ini populer, banyak tim data menyimpan data mentah dan data hasil transformasi di tempat yang sama tanpa pemisahan yang jelas, sehingga sulit melacak dari mana sebuah angka yang salah berasal, dan sulit melakukan reprocessing tanpa menarik ulang data dari sumber asli (yang kadang sudah tidak tersedia). Medallion architecture menyelesaikan ini dengan memisahkan tanggung jawab tiap lapisan secara eksplisit, sehingga tim tahu di lapisan mana harus memperbaiki masalah, dan bisa mereplay pipeline dari Bronze kapan saja tanpa bergantung pada sistem sumber.",
+      en: "Before this pattern became common, many data teams stored raw and transformed data together without clear separation, making it hard to trace where a wrong number came from, and hard to reprocess without pulling data again from the original source (which is sometimes no longer available). Medallion architecture solves this by explicitly separating each layer's responsibility, so teams know exactly which layer to fix, and can replay the pipeline from Bronze at any time without depending on the source system.",
+    },
+    goal: {
+      id: "Hasil yang dicapai adalah pipeline data yang bisa diaudit ulang secara penuh (full data lineage dari raw ke mart), kualitas data yang terjamin karena validasi terjadi secara bertahap dan terdokumentasi, serta kemampuan reprocessing yang cepat karena Bronze selalu tersedia sebagai sumber kebenaran mentah — tanpa perlu menghubungi sistem sumber lagi.",
+      en: "The outcome is a fully re-auditable data pipeline (full data lineage from raw to mart), guaranteed data quality because validation happens in documented stages, and fast reprocessing capability because Bronze always remains available as the raw source of truth — without needing to hit the source system again.",
+    },
+    exampleImplementation: {
+      id: "Implementasi umum di Databricks/Delta Lake menggunakan tiga skema terpisah:\n\n1. **Bronze**: `bronze.claims_raw` — ingest langsung dari file JSON/PDF hasil OCR, disimpan apa adanya termasuk kolom metadata `_ingested_at` dan `_source_file`.\n2. **Silver**: `silver.claims_clean` — job scheduled membaca Bronze, membuang duplikat berdasarkan `claim_id`, memvalidasi tipe data, dan menstandardisasi format tanggal.\n3. **Gold**: `gold.fact_claims` — job dbt melakukan agregasi harian per cabang dan join ke `dim_date`, `dim_branch` untuk menghasilkan tabel mart siap pakai oleh BI tool.\n\n```sql\n-- Contoh transformasi Silver → Gold di dbt\nCREATE OR REPLACE TABLE gold.fact_claims AS\nSELECT\n  c.claim_id,\n  c.claim_amount,\n  d.date_sk,\n  b.branch_sk\nFROM silver.claims_clean c\nJOIN dim_date d ON c.claim_date = d.full_date\nJOIN dim_branch b ON c.branch_code = b.branch_code;\n```",
+      en: "A typical Databricks/Delta Lake implementation uses three separate schemas:\n\n1. **Bronze**: `bronze.claims_raw` — ingested directly from OCR'd JSON/PDF files, stored as-is including metadata columns `_ingested_at` and `_source_file`.\n2. **Silver**: `silver.claims_clean` — a scheduled job reads Bronze, removes duplicates by `claim_id`, validates data types, and standardizes date formats.\n3. **Gold**: `gold.fact_claims` — a dbt job performs daily aggregation per branch and joins to `dim_date`, `dim_branch` to produce a mart table ready for BI tools.\n\n```sql\n-- Example Silver → Gold transformation in dbt\nCREATE OR REPLACE TABLE gold.fact_claims AS\nSELECT\n  c.claim_id,\n  c.claim_amount,\n  d.date_sk,\n  b.branch_sk\nFROM silver.claims_clean c\nJOIN dim_date d ON c.claim_date = d.full_date\nJOIN dim_branch b ON c.branch_code = b.branch_code;\n```",
+    },
+    exampleEnterprise: {
+      id: "PT Nusantara Asuransi menerima klaim dalam bentuk PDF dan JSON dari ratusan agen di seluruh Indonesia. Tim data mereka menyimpan file mentah apa adanya di Bronze (`bronze.claims_raw`), lalu setiap malam job Silver membersihkan data — membuang klaim duplikat yang terkirim dua kali karena masalah jaringan agen, memvalidasi format NIK, dan menstandardisasi mata uang. Lapisan Gold kemudian membentuk `fact_claims` yang di-join dengan dimensi cabang dan tanggal, dipakai langsung oleh dashboard eksekutif untuk memantau rasio klaim harian per cabang.",
+      en: "PT Nusantara Asuransi receives claims as PDFs and JSON from hundreds of agents across the country. Their data team stores raw files as-is in Bronze (`bronze.claims_raw`), then every night a Silver job cleans the data — removing duplicate claims sent twice due to agent network issues, validating ID formats, and standardizing currency. The Gold layer then builds `fact_claims` joined with branch and date dimensions, used directly by the executive dashboard to monitor daily claim ratios per branch.",
+    },
+    prosAndCons: {
+      pros: {
+        id: "- Full audit trail — Bronze menyimpan data mentah selamanya, memungkinkan replay kapan saja\n- Pemisahan tanggung jawab yang jelas antar tim (ingestion, cleaning, business logic)\n- Memudahkan debugging — masalah kualitas data bisa dilacak ke lapisan spesifik\n- Cocok untuk lakehouse yang menggabungkan data batch dan streaming di platform yang sama",
+        en: "- Full audit trail — Bronze keeps raw data forever, enabling replay at any time\n- Clear separation of responsibility across teams (ingestion, cleaning, business logic)\n- Easier debugging — data-quality issues can be traced to a specific layer\n- Fits lakehouses that combine batch and streaming data on the same platform",
+      },
+      cons: {
+        id: "- Menyimpan data tiga kali (Bronze, Silver, Gold) meningkatkan biaya storage\n- Menambah latency end-to-end karena data melewati tiga tahap transformasi berurutan\n- Butuh disiplin tim yang konsisten agar batas tanggung jawab tiap lapisan tidak kabur\n- Overkill untuk use case sederhana dengan volume data kecil dan kebutuhan real-time ketat",
+        en: "- Storing data three times (Bronze, Silver, Gold) increases storage cost\n- Adds end-to-end latency since data passes through three sequential transformation stages\n- Requires consistent team discipline so each layer's responsibility boundary doesn't blur\n- Overkill for simple use cases with small data volume and strict real-time requirements",
+      },
+    },
+  },
+};
