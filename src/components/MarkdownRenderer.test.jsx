@@ -13,4 +13,12 @@ describe('MarkdownRenderer', () => {
     expect(screen.getByText('bash')).toBeInTheDocument();
     expect(screen.getByText('echo hi')).toBeInTheDocument();
   });
+
+  it('renders inline code without CodeBlock styling', () => {
+    render(<MarkdownRenderer text="this is `inline code`" />);
+    expect(screen.getByText('inline code')).toBeInTheDocument();
+    // Should not have Copy button or language label
+    expect(screen.queryByText('Copy')).not.toBeInTheDocument();
+    expect(screen.queryByText('Copied!')).not.toBeInTheDocument();
+  });
 });
