@@ -4,6 +4,11 @@ import { getTrackById } from '../content';
 import { useLanguage } from '../i18n/LanguageContext';
 import { TermCard } from '../components/TermCard';
 
+const CHROME_STRINGS = {
+  id: { searchPlaceholder: 'Cari term...', all: 'Semua' },
+  en: { searchPlaceholder: 'Search terms...', all: 'All' },
+};
+
 export function TrackListPage() {
   const { trackId } = useParams();
   const { language } = useLanguage();
@@ -40,7 +45,7 @@ export function TrackListPage() {
       <input
         value={search}
         onChange={(event) => setSearch(event.target.value)}
-        placeholder="Cari term..."
+        placeholder={CHROME_STRINGS[language].searchPlaceholder}
         className="w-full rounded-input border border-hairline-border px-4 py-2 mb-4 text-body"
       />
       <div className="flex flex-wrap gap-2 mb-6">
@@ -54,7 +59,7 @@ export function TrackListPage() {
                 : 'bg-pure-white border border-hairline-border text-slate-gray'
             }`}
           >
-            {category}
+            {category === 'All' ? CHROME_STRINGS[language].all : category}
           </button>
         ))}
       </div>
