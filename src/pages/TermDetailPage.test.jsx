@@ -3,8 +3,17 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { TermDetailPage } from './TermDetailPage';
-import { LanguageProvider } from '../i18n/LanguageContext';
+import { LanguageProvider, useLanguage } from '../i18n/LanguageContext';
 import { getTrackProgress } from '../lib/progress';
+
+function LanguageToggle() {
+  const { language, toggleLanguage } = useLanguage();
+  return (
+    <button onClick={toggleLanguage}>
+      {language === 'id' ? 'EN' : 'ID'}
+    </button>
+  );
+}
 
 function renderPage() {
   render(
@@ -13,6 +22,7 @@ function renderPage() {
         <Routes>
           <Route path="/:trackId/:termId" element={<TermDetailPage />} />
         </Routes>
+        <LanguageToggle />
       </LanguageProvider>
     </MemoryRouter>
   );
@@ -40,5 +50,20 @@ describe('TermDetailPage', () => {
   it('marks the term as seen and awards xp on mount', () => {
     renderPage();
     expect(getTrackProgress('data-engineering')).toEqual({ seen: ['etl'], xp: 10 });
+  });
+
+  it('shows language-aware chrome strings when language is toggled', () => {
+    renderPage();
+
+    // Confirm Indonesian tab label by default
+    expect(screen.getByRole('button', { name: 'Teknis' })).toBeInTheDocument();
+
+    // Click language toggle
+    const toggleButton = screen.getByText(/^(ID|EN)$/);
+    fireEvent.click(toggleButton);
+
+    // Confirm English tab label is now shown
+    expect(screen.queryByRole('button', { name: 'Teknis' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Technical' })).toBeInTheDocument();
   });
 });

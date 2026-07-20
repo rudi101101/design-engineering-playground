@@ -6,7 +6,21 @@ import { MarkdownRenderer } from '../components/MarkdownRenderer';
 import { markTermSeen } from '../lib/progress';
 
 const TABS = ['overview', 'teknis', 'bisnis'];
-const TAB_LABELS = { overview: 'Overview', teknis: 'Teknis', bisnis: 'Bisnis' };
+
+const CHROME_STRINGS = {
+  id: {
+    tabs: { overview: 'Overview', teknis: 'Teknis', bisnis: 'Bisnis' },
+    tools: 'Tools:',
+    prerequisites: 'Prasyarat:',
+    related: 'Terkait:',
+  },
+  en: {
+    tabs: { overview: 'Overview', teknis: 'Technical', bisnis: 'Business' },
+    tools: 'Tools:',
+    prerequisites: 'Prerequisites:',
+    related: 'Related:',
+  },
+};
 
 export function TermDetailPage() {
   const { trackId, termId } = useParams();
@@ -43,7 +57,7 @@ export function TermDetailPage() {
               activeTab === tab ? 'bg-indigo-wash text-indigo-primary' : 'text-slate-gray'
             }`}
           >
-            {TAB_LABELS[tab]}
+            {CHROME_STRINGS[language].tabs[tab]}
           </button>
         ))}
       </div>
@@ -71,12 +85,12 @@ export function TermDetailPage() {
       )}
 
       <div className="mt-8 text-label text-slate-gray space-y-1">
-        <p><strong className="text-ink">Tools:</strong> {term.tools.join(', ')}</p>
+        <p><strong className="text-ink">{CHROME_STRINGS[language].tools}</strong> {term.tools.join(', ')}</p>
         {term.prerequisites.length > 0 && (
-          <p><strong className="text-ink">Prerequisites:</strong> {term.prerequisites.join(', ')}</p>
+          <p><strong className="text-ink">{CHROME_STRINGS[language].prerequisites}</strong> {term.prerequisites.join(', ')}</p>
         )}
         {term.related.length > 0 && (
-          <p><strong className="text-ink">Related:</strong> {term.related.join(', ')}</p>
+          <p><strong className="text-ink">{CHROME_STRINGS[language].related}</strong> {term.related.join(', ')}</p>
         )}
       </div>
 
