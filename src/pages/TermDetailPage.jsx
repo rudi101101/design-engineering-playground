@@ -1,0 +1,101 @@
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { getTermById, getTrackById } from '../content';
+import { useLanguage } from '../i18n/LanguageContext';
+import { MarkdownRenderer } from '../components/MarkdownRenderer';
+import { markTermSeen } from '../lib/progress';
+
+const TABS = ['overview', 'teknis', 'bisnis'];
+const TAB_LABELS = { overview: 'Overview', teknis: 'Teknis', bisnis: 'Bisnis' };
+
+export function TermDetailPage() {
+  const { trackId, termId } = useParams();
+  const { language } = useLanguage();
+  const track = getTrackById(trackId);
+  const term = getTermById(termId);
+  const [activeTab, setActiveTab] = useState('overview');
+
+  useEffect(() => {
+    markTermSeen(trackId, termId);
+  }, [trackId, termId]);
+
+  const index = track.terms.findIndex((t) => t.id === termId);
+  const prevTerm = track.terms[index - 1];
+  const nextTerm = track.terms[index + 1];
+
+  return (
+    <div className="max-w-3xl mx-auto px-4 py-8">
+      <Link to={`/${trackId}`} className="text-label text-slate-gray">
+        ← {track.name} / {term.category}
+      </Link>
+      <h1 className="text-heading font-bold text-ink mt-2">{term.name[language]}</h1>
+
+      <div className="rounded-notification-card bg-hairline-border/40 h-40 flex items-center justify-center my-6 text-slate-gray text-label">
+        Ilustrasi: {term.simulation}
+      </div>
+
+      <div className="flex gap-2 mb-4">
+        {TABS.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-4 py-2 rounded-button text-label font-semibold ${
+              activeTab === tab ? 'bg-indigo-wash text-indigo-primary' : 'text-slate-gray'
+            }`}
+          >
+            {TAB_LABELS[tab]}
+          </button>
+        ))}
+      </div>
+
+      {activeTab === 'overview' && (
+        <div>
+          <MarkdownRenderer text={term.content.description[language]} />
+          <MarkdownRenderer text={term.content.concept[language]} />
+          <MarkdownRenderer text={term.content.objective[language]} />
+          <MarkdownRenderer text={term.content.goal[language]} />
+        </div>
+      )}
+      {activeTab === 'teknis' && (
+        <div>
+          <MarkdownRenderer text={term.content.methodology[language]} />
+          <MarkdownRenderer text={term.content.exampleImplementation[language]} />
+        </div>
+      )}
+      {activeTab === 'bisnis' && (
+        <div>
+          <MarkdownRenderer text={term.content.exampleEnterprise[language]} />
+          <MarkdownRenderer text={term.content.prosAndCons.pros[language]} />
+          <MarkdownRenderer text={term.content.prosAndCons.cons[language]} />
+        </div>
+      )}
+
+      <div className="mt-8 text-label text-slate-gray space-y-1">
+        <p><strong className="text-ink">Tools:</strong> {term.tools.join(', ')}</p>
+        {term.prerequisites.length > 0 && (
+          <p><strong className="text-ink">Prerequisites:</strong> {term.prerequisites.join(', ')}</p>
+        )}
+        {term.related.length > 0 && (
+          <p><strong className="text-ink">Related:</strong> {term.related.join(', ')}</p>
+        )}
+      </div>
+
+      <div className="flex justify-between mt-8">
+        {prevTerm ? (
+          <Link to={`/${trackId}/${prevTerm.id}`} className="text-indigo-primary text-label">
+            ← {prevTerm.name[language]}
+          </Link>
+        ) : (
+          <span />
+        )}
+        {nextTerm ? (
+          <Link to={`/${trackId}/${nextTerm.id}`} className="text-indigo-primary text-label">
+            {nextTerm.name[language]} →
+          </Link>
+        ) : (
+          <span />
+        )}
+      </div>
+    </div>
+  );
+}
