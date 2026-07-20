@@ -10,12 +10,14 @@ const TABS = ['overview', 'teknis', 'bisnis'];
 const CHROME_STRINGS = {
   id: {
     tabs: { overview: 'Overview', teknis: 'Teknis', bisnis: 'Bisnis' },
+    illustration: 'Ilustrasi',
     tools: 'Tools:',
     prerequisites: 'Prasyarat:',
     related: 'Terkait:',
   },
   en: {
     tabs: { overview: 'Overview', teknis: 'Technical', bisnis: 'Business' },
+    illustration: 'Illustration',
     tools: 'Tools:',
     prerequisites: 'Prerequisites:',
     related: 'Related:',
@@ -45,7 +47,7 @@ export function TermDetailPage() {
       <h1 className="text-heading font-bold text-ink mt-2">{term.name[language]}</h1>
 
       <div className="rounded-notification-card bg-hairline-border/40 h-40 flex items-center justify-center my-6 text-slate-gray text-label">
-        Ilustrasi: {term.simulation}
+        {CHROME_STRINGS[language].illustration}: {term.simulation}
       </div>
 
       <div className="flex gap-2 mb-4">

@@ -55,15 +55,18 @@ describe('TermDetailPage', () => {
   it('shows language-aware chrome strings when language is toggled', () => {
     renderPage();
 
-    // Confirm Indonesian tab label by default
+    // Confirm Indonesian strings by default
     expect(screen.getByRole('button', { name: 'Teknis' })).toBeInTheDocument();
+    expect(screen.getByText(/Ilustrasi:/)).toBeInTheDocument();
 
     // Click language toggle
     const toggleButton = screen.getByText(/^(ID|EN)$/);
     fireEvent.click(toggleButton);
 
-    // Confirm English tab label is now shown
+    // Confirm English strings are now shown
     expect(screen.queryByRole('button', { name: 'Teknis' })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Technical' })).toBeInTheDocument();
+    expect(screen.queryByText(/Ilustrasi:/)).not.toBeInTheDocument();
+    expect(screen.getByText(/Illustration:/)).toBeInTheDocument();
   });
 });
