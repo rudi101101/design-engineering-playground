@@ -70,4 +70,18 @@ describe('TrackListPage', () => {
     expect(screen.queryByRole('button', { name: 'Semua' })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'All' })).toBeInTheDocument();
   });
+
+  it('shows the NotFoundPage when trackId does not match any track', () => {
+    render(
+      <MemoryRouter initialEntries={['/nonexistent-track']}>
+        <LanguageProvider>
+          <Routes>
+            <Route path="/:trackId" element={<TrackListPage />} />
+          </Routes>
+        </LanguageProvider>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Halaman tidak ditemukan')).toBeInTheDocument();
+  });
 });

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { getTrackById } from '../content';
 import { useLanguage } from '../i18n/LanguageContext';
 import { TermCard } from '../components/TermCard';
+import { NotFoundPage } from './NotFoundPage';
 
 const CHROME_STRINGS = {
   id: { searchPlaceholder: 'Cari term...', all: 'Semua' },
@@ -17,13 +18,13 @@ export function TrackListPage() {
   const [search, setSearch] = useState('');
 
   const categories = useMemo(
-    () => ['All', ...new Set(track.terms.map((term) => term.category))],
+    () => ['All', ...new Set((track?.terms ?? []).map((term) => term.category))],
     [track]
   );
 
   const filteredTerms = useMemo(() => {
     const query = search.trim().toLowerCase();
-    return track.terms.filter((term) => {
+    return (track?.terms ?? []).filter((term) => {
       if (!query) return true;
       return term.name[language].toLowerCase().includes(query);
     });
@@ -38,6 +39,10 @@ export function TrackListPage() {
     }
     return groups;
   }, [filteredTerms, activeCategory]);
+
+  if (!track) {
+    return <NotFoundPage />;
+  }
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">

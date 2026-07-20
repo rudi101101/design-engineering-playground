@@ -69,4 +69,18 @@ describe('TermDetailPage', () => {
     expect(screen.queryByText(/Ilustrasi:/)).not.toBeInTheDocument();
     expect(screen.getByText(/Illustration:/)).toBeInTheDocument();
   });
+
+  it('shows the NotFoundPage when termId does not match any term', () => {
+    render(
+      <MemoryRouter initialEntries={['/data-engineering/nonexistent-term']}>
+        <LanguageProvider>
+          <Routes>
+            <Route path="/:trackId/:termId" element={<TermDetailPage />} />
+          </Routes>
+        </LanguageProvider>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Halaman tidak ditemukan')).toBeInTheDocument();
+  });
 });

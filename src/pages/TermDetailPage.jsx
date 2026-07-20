@@ -4,6 +4,7 @@ import { getTermById, getTrackById } from '../content';
 import { useLanguage } from '../i18n/LanguageContext';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
 import { markTermSeen } from '../lib/progress';
+import { NotFoundPage } from './NotFoundPage';
 
 const TABS = ['overview', 'teknis', 'bisnis'];
 
@@ -28,16 +29,22 @@ export function TermDetailPage() {
   const { trackId, termId } = useParams();
   const { language } = useLanguage();
   const track = getTrackById(trackId);
-  const term = getTermById(termId);
+  const term = track ? getTermById(termId) : undefined;
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
-    markTermSeen(trackId, termId);
-  }, [trackId, termId]);
+    if (track && term) {
+      markTermSeen(trackId, termId);
+    }
+  }, [trackId, termId, track, term]);
 
-  const index = track.terms.findIndex((t) => t.id === termId);
-  const prevTerm = track.terms[index - 1];
-  const nextTerm = track.terms[index + 1];
+  const index = track ? track.terms.findIndex((t) => t.id === termId) : -1;
+  const prevTerm = track ? track.terms[index - 1] : undefined;
+  const nextTerm = track ? track.terms[index + 1] : undefined;
+
+  if (!track || !term) {
+    return <NotFoundPage />;
+  }
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
