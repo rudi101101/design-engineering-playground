@@ -1,72 +1,59 @@
 @import "tailwindcss";
 
 @theme {
-  /* Colors */
-  --color-lavender-canvas: #f6f7fb;
+  /* Colors — Meetcan design system (docs/DesignSystemPresentation.dc.html) */
+  --color-lavender-canvas: #fbfbfc;
   --color-pure-white: #ffffff;
-  --color-hairline-border: #ecedf3;
-  --color-ink: #14161f;
-  --color-slate-gray: #6b7280;
-  --color-faint-gray: #9ca3af;
-  --color-indigo-primary: #3e5eea;
-  --color-indigo-deep: #2a44c7;
-  --color-indigo-wash: #e6ecff;
-  --color-success-green: #16a34a;
-  --color-success-wash: #e3f9ea;
-  --color-warning-amber: #c9821a;
-  --color-warning-wash: #fff4de;
-  --color-danger-red: #e0393e;
-  --color-danger-wash: #fde8e8;
+  --color-hairline-border: #eef0f3;
+  --color-ink: #161a22;
+  --color-slate-gray: #4a5160;
+  --color-faint-gray: #9aa1ad;
+  --color-indigo-primary: #2f6fed;
+  --color-indigo-deep: #2456c9;
+  --color-indigo-wash: #e6effd;
+  --color-success-green: #1f9d5c;
+  --color-success-wash: #e5f6ea;
+  --color-warning-amber: #b3791a;
+  --color-warning-wash: #fdf1dd;
+  --color-danger-red: #d8514b;
+  --color-danger-wash: #fdeaea;
   --color-lavender-tag: #7c5cfc;
   --color-lavender-tag-wash: #ede9fe;
-  --color-coral-chip: #f1495b;
-  --color-amber-chip: #ffa53d;
-  --color-emerald-chip: #22c55e;
+  --color-coral-chip: #d8433d;
+  --color-amber-chip: #dc9420;
+  --color-emerald-chip: #1f9155;
 
   /* Typography */
-  --font-jakarta: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-jakarta: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  --text-caption: 11px;
+  --text-caption: 10.5px;
   --text-caption--line-height: 1.3;
   --text-label: 12px;
   --text-label--line-height: 1.4;
-  --text-body: 14px;
+  --text-body: 13.5px;
   --text-body--line-height: 1.5;
-  --text-card-title: 16px;
+  --text-card-title: 14px;
   --text-card-title--line-height: 1.4;
   --text-section-title: 18px;
   --text-section-title--line-height: 1.3;
-  --text-heading: 28px;
+  --text-heading: 24px;
   --text-heading--line-height: 1.2;
-  --text-stat-display: 36px;
+  --text-stat-display: 26px;
   --text-stat-display--line-height: 1.1;
-
-  /* Spacing */
-  --spacing-4: 4px;
-  --spacing-8: 8px;
-  --spacing-12: 12px;
-  --spacing-16: 16px;
-  --spacing-20: 20px;
-  --spacing-24: 24px;
-  --spacing-32: 32px;
-  --spacing-40: 40px;
-  --spacing-48: 48px;
-  --spacing-64: 64px;
-  --spacing-80: 80px;
 
   /* Border Radius */
   --radius-pill: 9999px;
-  --radius-button: 12px;
-  --radius-icon-chip: 12px;
-  --radius-input: 10px;
-  --radius-stat-card: 20px;
-  --radius-notification-card: 24px;
+  --radius-button: 9px;
+  --radius-icon-chip: 9px;
+  --radius-input: 8px;
+  --radius-stat-card: 12px;
+  --radius-notification-card: 16px;
 
   /* Shadows */
-  --shadow-card: 0px 8px 24px -4px rgba(20, 23, 31, 0.06);
-  --shadow-card-hover: 0px 16px 32px -8px rgba(20, 23, 31, 0.1);
-  --shadow-button-tinted: 0px 8px 16px -6px rgba(62, 94, 234, 0.35);
-  --shadow-nav-active-tinted: 0px 6px 14px -4px rgba(62, 94, 234, 0.3);
+  --shadow-card: 0px 1px 2px rgba(22, 26, 34, 0.04);
+  --shadow-card-hover: 0px 10px 24px -10px rgba(22, 26, 34, 0.14);
+  --shadow-button-tinted: 0px 6px 16px -6px #2f6fed;
+  --shadow-nav-active-tinted: none;
 }
 
 body {

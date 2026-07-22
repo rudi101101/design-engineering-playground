@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;background:#f3f4f6}
+  a{color:#2f6fed;text-decoration:none}
+  a:hover{color:#2f6fed;opacity:.8}
+</style>
+</helmet>
+
+<div style="max-width:1360px;margin:0 auto;padding:40px 32px 100px">
+
+  <div style="margin-bottom:36px">
+    <div style="font-size:12px;font-weight:700;letter-spacing:.6px;color:#9aa1ad;text-transform:uppercase;margin-bottom:8px">Meetcan · Design System</div>
+    <div style="font-size:32px;font-weight:800;color:#161a22;letter-spacing:-.5px">Dashboard Design System</div>
+    <div style="font-size:14px;color:#8b93a1;margin-top:6px">Tokens and components extracted directly from Dashboard.dc.html</div>
+  </div>
+
+  <!-- COLOR PALETTE -->
+  <div style="background:#fff;border:1px solid #eef0f3;border-radius:16px;padding:28px;margin-bottom:24px">
+    <div style="font-size:18px;font-weight:800;color:#161a22;margin-bottom:20px">Color Palette</div>
+
+    <div style="font-size:12px;font-weight:700;letter-spacing:.4px;color:#9aa1ad;text-transform:uppercase;margin-bottom:10px">Backgrounds & Brand</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:24px">
+      <sc-for list="{{bgSwatches}}" as="sw" hint-placeholder-count="6">
+        <div style="border:1px solid #eef0f3;border-radius:10px;overflow:hidden">
+          <div style="height:64px;background:{{sw.bg}}"></div>
+          <div style="padding:8px 10px">
+            <div style="font-size:12px;font-weight:700;color:#161a22">{{sw.name}}</div>
+            <div style="font-size:10.5px;color:#9aa1ad;font-family:ui-monospace,monospace">{{sw.value}}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;letter-spacing:.4px;color:#9aa1ad;text-transform:uppercase;margin-bottom:10px">Text Colors</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:24px">
+      <sc-for list="{{textSwatches}}" as="sw" hint-placeholder-count="4">
+        <div style="border:1px solid #eef0f3;border-radius:10px;padding:14px">
+          <div style="font-size:18px;font-weight:700;color:{{sw.value}};margin-bottom:6px">Aa</div>
+          <div style="font-size:12px;font-weight:700;color:#161a22">{{sw.name}}</div>
+          <div style="font-size:10.5px;color:#9aa1ad;font-family:ui-monospace,monospace">{{sw.value}}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;letter-spacing:.4px;color:#9aa1ad;text-transform:uppercase;margin-bottom:10px">Status / Badge Colors</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px">
+      <sc-for list="{{statusSwatches}}" as="sw" hint-placeholder-count="6">
+        <div style="border:1px solid #eef0f3;border-radius:10px;padding:14px">
+          <span style="display:inline-block;font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:6px;background:{{sw.bg}};color:{{sw.color}};margin-bottom:8px">{{sw.name}}</span>
+          <div style="font-size:10.5px;color:#9aa1ad;font-family:ui-monospace,monospace">bg {{sw.bg}}</div>
+          <div style="font-size:10.5px;color:#9aa1ad;font-family:ui-monospace,monospace">text {{sw.color}}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- TYPOGRAPHY -->
+  <div style="background:#fff;border:1px solid #eef0f3;border-radius:16px;padding:28px;margin-bottom:24px">
+    <div style="font-size:18px;font-weight:800;color:#161a22;margin-bottom:6px">Typography</div>
+    <div style="font-size:12.5px;color:#8b93a1;margin-bottom:20px;font-family:ui-monospace,monospace">font-family: 'Inter', system-ui, sans-serif</div>
+    <sc-for list="{{typeSpecs}}" as="t" hint-placeholder-count="8">
+      <div style="display:flex;align-items:baseline;gap:20px;padding:14px 0;border-bottom:1px solid #f3f4f6">
+        <div style="width:190px;flex:none;font-size:11px;font-family:ui-monospace,monospace;color:#9aa1ad">{{t.spec}}</div>
+        <div style="font-size:{{t.size}};font-weight:{{t.weight}};color:{{t.color}};line-height:1.3">{{t.sample}}</div>
+      </div>
+    </sc-for>
+  </div>
+
+  <!-- SPACING & RADIUS -->
+  <div style="background:#fff;border:1px solid #eef0f3;border-radius:16px;padding:28px;margin-bottom:24px">
+    <div style="font-size:18px;font-weight:800;color:#161a22;margin-bottom:20px">Spacing &amp; Radius</div>
+    <div style="font-size:12px;font-weight:700;letter-spacing:.4px;color:#9aa1ad;text-transform:uppercase;margin-bottom:10px">Spacing Scale</div>
+    <div style="display:flex;flex-wrap:wrap;gap:18px;margin-bottom:24px;align-items:flex-end">
+      <sc-for list="{{spacingScale}}" as="sp" hint-placeholder-count="6">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="width:{{sp.px}}px;height:{{sp.px}}px;background:#2f6fed22;border:1px solid #2f6fed55;border-radius:4px"></div>
+          <div style="font-size:11px;font-family:ui-monospace,monospace;color:#4a5160">{{sp.px}}px</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="font-size:12px;font-weight:700;letter-spacing:.4px;color:#9aa1ad;text-transform:uppercase;margin-bottom:10px">Radius Scale</div>
+    <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end">
+      <sc-for list="{{radiusScale}}" as="r" hint-placeholder-count="6">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="width:64px;height:64px;background:#f3f4f7;border:1px solid #eef0f3;border-radius:{{r.px}}px"></div>
+          <div style="font-size:11px;font-family:ui-monospace,monospace;color:#4a5160">{{r.px}}px</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- COMPONENT SHOWCASE -->
+  <div style="font-size:22px;font-weight:800;color:#161a22;margin:36px 0 16px">Component Showcase</div>
+
+  <!-- Sidebar -->
+  <div style="background:#fff;border:1px solid #eef0f3;border-radius:16px;padding:24px;margin-bottom:24px">
+    <div style="font-size:13px;font-weight:700;color:#9aa1ad;text-transform:uppercase;letter-spacing:.4px;margin-bottom:14px">Sidebar</div>
+    <div style="width:250px;border:1px solid #eef0f3;display:flex;flex-direction:column;padding:20px 14px;box-sizing:border-box;background:#fff;border-radius:10px;overflow:hidden">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin:-20px -14px 18px;padding:26px 22px 22px;border-bottom:1px solid #eef0f3">
+        <div style="display:flex;align-items:center;gap:9px">
+          <div style="width:28px;height:28px;border-radius:8px;background:#2f6fed;display:flex;align-items:center;justify-content:center">
+            <span style="font-size:15px;font-weight:800;color:#fff;font-style:italic;font-family:Georgia,serif">n</span>
+          </div>
+          <div style="font-weight:800;font-size:16px;color:#161a22;letter-spacing:-.2px">Meetcan</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 14 14" style="opacity:.4"><rect x="1" y="1" width="12" height="12" rx="3" stroke="#161a22" stroke-width="1.3" fill="none"></rect></svg>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13.5px;font-weight:600;color:#2f6fed;background:#2f6fed1a;margin-bottom:14px">
+        <svg width="16" height="16" viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="#2f6fed"></rect><rect x="9" y="1" width="6" height="6" rx="1.5" fill="#2f6fed" opacity=".4"></rect><rect x="1" y="9" width="6" height="6" rx="1.5" fill="#2f6fed" opacity=".4"></rect><rect x="9" y="9" width="6" height="6" rx="1.5" fill="#2f6fed"></rect></svg>
+        Dashboard
+      </div>
+      <div style="font-size:10.5px;font-weight:700;letter-spacing:.6px;color:#9aa1ad;padding:10px 10px 6px">BUSINESS</div>
+      <sc-for list="{{sidebarSampleNav}}" as="n" hint-placeholder-count="3">
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13.5px;font-weight:600;color:#4a5160">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.3" stroke="#9aa1ad" stroke-width="1.4"></circle></svg>
+          {{n}}
+        </div>
+      </sc-for>
+      <div style="flex:1;min-height:20px"></div>
+      <div style="height:1px;background:#eef0f3;margin:4px 10px 14px"></div>
+      <div style="position:relative;overflow:hidden;border-radius:12px;padding:14px;background:radial-gradient(120% 120% at 100% 0%,#dfe3fb 0%,#f7f0ff 60%);margin-bottom:12px">
+        <div style="position:relative;display:flex;align-items:center;gap:7px;margin-bottom:10px">
+          <div style="width:18px;height:18px;border-radius:6px;background:#2f6fed;box-shadow:0 3px 6px #2f6fed55;display:flex;align-items:center;justify-content:center"><svg width="9" height="9" viewBox="0 0 9 9"><rect width="9" height="9" rx="1.5" fill="#fff"></rect></svg></div>
+          <span style="font-size:12px;font-weight:700;color:#161a22">Meeting Credits</span>
+        </div>
+        <div style="position:relative;font-size:11px;color:#8b93a1;margin-bottom:2px">Available</div>
+        <div style="position:relative;font-size:22px;font-weight:800;color:#161a22;margin-bottom:10px">24<span style="font-size:13px;font-weight:600;color:#9aa1ad">/50</span></div>
+        <div style="position:relative;display:flex;gap:2px">
+          <sc-for list="{{creditSegments}}" as="seg" hint-placeholder-count="24">
+            <div style="height:20px;flex:1;border-radius:3px;background:{{seg}}"></div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topbar -->
+  <div style="background:#fff;border:1px solid #eef0f3;border-radius:16px;padding:24px;margin-bottom:24px">
+    <div style="font-size:13px;font-weight:700;color:#9aa1ad;text-transform:uppercase;letter-spacing:.4px;margin-bottom:14px">Top Header</div>
+    <div style="display:flex;align-items:center;gap:14px;padding:18px 28px;border:1px solid #eef0f3;border-radius:12px">
+      <div style="width:30px;height:30px;border-radius:8px;border:1px solid #e7e9ee;display:flex;align-items:center;justify-content:center">
+        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M8 1L2 6L8 11" stroke="#4a5160" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path></svg>
+      </div>
+      <div style="font-size:14.5px;font-weight:700;color:#161a22">Vendor workspace</div>
+      <div style="flex:1"></div>
+      <div style="position:relative;width:230px">
+        <svg width="13" height="13" viewBox="0 0 13 13" style="position:absolute;left:11px;top:50%;transform:translateY(-50%)" fill="none"><circle cx="5.5" cy="5.5" r="4.3" stroke="#aab1bd" stroke-width="1.3"></circle><path d="M8.6 8.6L12 12" stroke="#aab1bd" stroke-width="1.3" stroke-linecap="round"></path></svg>
+        <input placeholder="Search" style="width:100%;box-sizing:border-box;padding:8px 10px 8px 32px;border-radius:8px;border:1px solid #e7e9ee;background:#fbfbfc;font-size:13px;font-family:inherit;outline:none" readonly=""/>
+      </div>
+      <div style="width:34px;height:34px;border-radius:9px;border:1px solid #e7e9ee;display:flex;align-items:center;justify-content:center;position:relative">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5C5.6 1.5 4 3.1 4 5V7.3L2.8 9.7C2.6 10.1 2.9 10.5 3.3 10.5H11.7C12.1 10.5 12.4 10.1 12.2 9.7L11 7.3V5C11 3.1 9.4 1.5 7.5 1.5Z" stroke="#4a5160" stroke-width="1.2" stroke-linejoin="round"></path></svg>
+        <div style="position:absolute;top:6px;right:7px;width:6px;height:6px;border-radius:50%;background:#e0554f"></div>
+      </div>
+      <div style="width:34px;height:34px;border-radius:9px;background:#2f6fed;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px">F</div>
+    </div>
+  </div>
+
+  <!-- Stat cards -->
+  <div style="background:#fff;border:1px solid #eef0f3;border-radius:16px;padding:24px;margin-bottom:24px">
+    <div style="font-size:13px;font-weight:700;color:#9aa1ad;text-transform:uppercase;letter-spacing:.4px;margin-bottom:14px">Stat Cards</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+      <sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
+        <div style="position:relative">
+          <div style="position:relative;z-index:2;border:1px solid #eef0f3;border-radius:12px;overflow:hidden;padding:18px;background:radial-gradient(130% 130% at 100% 0%,{{s.tint}} 0%,#fff 65%)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px">
+              <div style="display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden">
+                <div style="width:28px;height:28px;flex:none;border-radius:9px;background:{{s.iconBg}};box-shadow:0 4px 8px {{s.iconShadow}};display:flex;align-items:center;justify-content:center">{{s.icon}}</div>
+                <span style="font-size:12.5px;font-weight:700;color:#161a22;line-height:1.25">{{s.label}}</span>
+              </div>
+              <span style="font-size:10.5px;font-weight:700;color:#4a5160;background:#fff;border:1px solid #eef0f3;padding:5px 10px;border-radius:8px;white-space:nowrap;flex:none">View All</span>
+            </div>
+            <div style="font-size:26px;font-weight:800;color:#161a22;margin-bottom:4px">{{s.value}}</div>
+            <div style="font-size:11.5px;color:#9aa1ad">{{s.sub}}</div>
+          </div>
+          <div style="position:relative;z-index:1;margin:-10px 1.5px 0;border:1px solid #eef0f3;border-radius:0 0 12px 12px;padding:18px 16.5px 10px;background:#eef0f2;font-size:11.5px;font-weight:700;color:#1f9d5c;display:flex;align-items:center;justify-content:space-between">
+            <span style="display:flex;align-items:center;gap:4px"><svg width="8" height="8" viewBox="0 0 8 8"><path d="M4 1L7 6H1L4 1Z" fill="#1f9d5c"></path></svg>+0.28%</span>
+            <span style="color:#9aa1ad;font-weight:500">vs. last week</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- Table with all badge variants -->
+  <div style="background:#fff;border:1px solid #eef0f3;border-radius:16px;padding:24px;margin-bottom:24px">
+    <div style="font-size:13px;font-weight:700;color:#9aa1ad;text-transform:uppercase;letter-spacing:.4px;margin-bottom:14px">Data Table — Status Badge Variants</div>
+    <div style="border:1px solid #eef0f3;border-radius:12px;padding:18px">
+      <div style="display:grid;grid-template-columns:1.5fr 1.3fr 1.3fr 1.1fr;padding:8px 10px;border-bottom:1px solid #f0f1f4">
+        <div style="font-size:11.5px;font-weight:600;color:#9aa1ad">Title</div>
+        <div style="font-size:11.5px;font-weight:600;color:#9aa1ad">Company</div>
+        <div style="font-size:11.5px;font-weight:600;color:#9aa1ad">Status</div>
+        <div style="font-size:11.5px;font-weight:600;color:#9aa1ad">Requested</div>
+      </div>
+      <sc-for list="{{allBadgeRows}}" as="r" hint-placeholder-count="6">
+        <div style="display:grid;grid-template-columns:1.5fr 1.3fr 1.3fr 1.1fr;padding:13px 10px;align-items:center;border-bottom:1px solid #f6f7f9">
+          <div style="font-size:13px;font-weight:600;color:#161a22">{{r.title}}</div>
+          <div style="font-size:13px;color:#4a5160">{{r.company}}</div>
+          <div><span style="font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:6px;background:{{r.bg}};color:{{r.color}}">{{r.status}}</span></div>
+          <div style="font-size:12.5px;color:#9aa1ad">{{r.requested}}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- Upcoming meeting + campaign card -->
+  <div style="background:#fff;border:1px solid #eef0f3;border-radius:16px;padding:24px;margin-bottom:24px">
+    <div style="font-size:13px;font-weight:700;color:#9aa1ad;text-transform:uppercase;letter-spacing:.4px;margin-bottom:14px">Upcoming Meeting Card &amp; Campaign Card</div>
+    <div style="display:grid;grid-template-columns:300px 300px;gap:20px">
+      <div style="border:1px solid #eef0f3;border-radius:10px;padding:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span style="font-size:13px;font-weight:700;color:#161a22">Director of IT</span>
+          <span style="font-size:11.5px;color:#9aa1ad;font-weight:600">Debox Agency</span>
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:10px">
+          <span style="font-size:11px;font-weight:600;color:#4a5160;background:#f3f4f7;padding:4px 8px;border-radius:6px">Apr 14, 2026</span>
+          <span style="font-size:11px;font-weight:600;color:#4a5160;background:#f3f4f7;padding:4px 8px;border-radius:6px">30 minute</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12px;color:#9aa1ad;font-weight:600">10:00 AM</span>
+          <div style="display:flex">
+            <div style="width:22px;height:22px;border-radius:50%;background:#dbe4f5;border:2px solid #fff;margin-left:-6px"></div>
+            <div style="width:22px;height:22px;border-radius:50%;background:#2f6fed;border:2px solid #fff;margin-left:-6px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="position:relative">
+        <div style="position:relative;z-index:2;border:1px solid #eef0f3;border-radius:10px;overflow:hidden;padding:14px;background:#fff">
+          <div style="position:absolute;left:-20%;bottom:-40%;width:140%;height:80%;background:radial-gradient(closest-side,#eefaf1aa,transparent 75%);pointer-events:none"></div>
+          <div style="position:relative;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <span style="font-size:10.5px;font-weight:600;padding:3px 9px 3px 7px;border-radius:20px;background:#fff;border:1px solid #1f9d5c33;color:#1f9d5c;display:flex;align-items:center;gap:4px">
+              <svg width="10" height="10" viewBox="0 0 11 11"><circle cx="5.5" cy="5.5" r="5" stroke="#1f9d5c" stroke-width="1.1" fill="none"></circle><path d="M3.3 5.6L4.8 7L7.7 4" stroke="#1f9d5c" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" fill="none"></path></svg>
+              Live Now
+            </span>
+            <span style="font-size:11px;color:#9aa1ad;font-weight:500">Apr 14, 2026</span>
+          </div>
+          <div style="position:relative;font-size:13px;font-weight:600;color:#161a22;margin-bottom:5px">Quarterly Marketing Planning</div>
+          <div style="position:relative;font-size:11.5px;color:#9aa1ad;line-height:1.4;margin-bottom:12px">Plan upcoming campaigns and growth opportunities.</div>
+          <div style="position:relative;display:flex;gap:6px;flex-wrap:wrap">
+            <span style="font-size:10px;font-weight:500;color:#4a5160;background:#fff;border:1px solid #eef0f3;padding:3px 11px;border-radius:20px">Marketing</span>
+            <span style="font-size:10px;font-weight:500;color:#4a5160;background:#fff;border:1px solid #eef0f3;padding:3px 11px;border-radius:20px">Growth</span>
+          </div>
+        </div>
+        <div style="position:relative;z-index:1;margin:-10px 1.5px 0;display:flex;align-items:center;justify-content:space-between;border:1px solid #eef0f3;border-radius:0 0 10px 10px;padding:18px 12.5px 10px;background:#eef0f2;font-size:12px;font-weight:700;color:#4a5160">
+          View All <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5H8M8 5L5.5 2.5M8 5L5.5 7.5" stroke="#4a5160" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"></path></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Buttons + avatars -->
+  <div style="background:#fff;border:1px solid #eef0f3;border-radius:16px;padding:24px;margin-bottom:24px">
+    <div style="font-size:13px;font-weight:700;color:#9aa1ad;text-transform:uppercase;letter-spacing:.4px;margin-bottom:14px">Buttons &amp; Avatars</div>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:7px;background:#2f6fed;color:#fff;font-size:13.5px;font-weight:700;padding:11px 18px;border-radius:9px;box-shadow:0 6px 16px -6px #2f6fed">
+        <svg width="13" height="13" viewBox="0 0 13 13"><path d="M6.5 1V12M1 6.5H12" stroke="#fff" stroke-width="1.6" stroke-linecap="round"></path></svg>
+        Create campaign
+      </div>
+      <span style="font-size:11px;font-weight:700;color:#4a5160;background:#fff;border:1px solid #eef0f3;padding:5px 12px;border-radius:8px">View All</span>
+      <div style="padding:9px 16px;border-radius:8px;font-size:13px;font-weight:700;color:#4a5160">Cancel</div>
+      <div style="padding:9px 16px;border-radius:8px;font-size:13px;font-weight:700;color:#fff;background:#2f6fed">Create</div>
+      <div style="width:34px;height:34px;border-radius:9px;background:#2f6fed;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px">F</div>
+      <div style="width:22px;height:22px;border-radius:50%;background:#dbe4f5;border:2px solid #fff"></div>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  icon(paths){ return React.createElement('div', { style:{width:'100%',height:'100%',display:'flex',alignItems:'center',justifyContent:'center'}, dangerouslySetInnerHTML:{__html:paths} }); }
+
+  renderVals(){
+    return {
+      bgSwatches: [
+        { name:'Page backdrop', bg:'linear-gradient(160deg,#7fc7e8 0%,#9ed6d8 22%,#c3e6c0 48%,#a9d99a 70%,#7fbf7a 100%)', value:'gradient' },
+        { name:'App window / Sidebar', bg:'#fff', value:'#ffffff' },
+        { name:'Main content bg', bg:'#fbfbfc', value:'#fbfbfc' },
+        { name:'Accent (brand)', bg:'#2f6fed', value:'#2f6fed' },
+        { name:'Balance figure', bg:'#1f8a5f', value:'#1f8a5f' },
+        { name:'Destructive', bg:'#e0554f', value:'#e0554f' },
+      ],
+      textSwatches: [
+        { name:'Text primary', value:'#161a22' },
+        { name:'Text secondary', value:'#4a5160' },
+        { name:'Text muted', value:'#9aa1ad' },
+        { name:'Text muted alt', value:'#8b93a1' },
+      ],
+      statusSwatches: [
+        { name:'Under review', bg:'#fdf1dd', color:'#b3791a' },
+        { name:'Submitted', bg:'#e5f6ea', color:'#1f9d5c' },
+        { name:'Expired', bg:'#fdeaea', color:'#d8514b' },
+        { name:'Schedule', bg:'#e6effd', color:'#2f6fed' },
+        { name:'Pending Schedule', bg:'#fdf1dd', color:'#b3791a' },
+        { name:'Live Now', bg:'#e5f6ea', color:'#1f9d5c' },
+      ],
+      typeSpecs: [
+        { spec:'26px / 800', size:'26px', weight:'800', color:'#161a22', sample:'Stat value — 26px/800' },
+        { spec:'24px / 800', size:'24px', weight:'800', color:'#161a22', sample:'Good evening, Farhan' },
+        { spec:'16px / 800', size:'16px', weight:'800', color:'#161a22', sample:'Meetcan' },
+        { spec:'14px / 700', size:'14px', weight:'700', color:'#161a22', sample:'Recent Meeting Request' },
+        { spec:'13.5px / 600', size:'13.5px', weight:'600', color:'#4a5160', sample:'Business Profile' },
+        { spec:'13px / 600', size:'13px', weight:'600', color:'#161a22', sample:'Director of IT Infrastructur' },
+        { spec:'12.5px / 700', size:'12.5px', weight:'700', color:'#161a22', sample:'New Request' },
+        { spec:'11.5px / 700', size:'11.5px', weight:'700', color:'#b3791a', sample:'Under review'  },
+        { spec:'11px / 600, letter-spacing .6px', size:'10.5px', weight:'700', color:'#9aa1ad', sample:'BUSINESS' },
+        { spec:'11.5px / 400', size:'11.5px', weight:'400', color:'#9aa1ad', sample:'Pending Review' },
+      ],
+      spacingScale: [ {px:4}, {px:8}, {px:10}, {px:12}, {px:14}, {px:16}, {px:20} ],
+      radiusScale: [ {px:6}, {px:8}, {px:9}, {px:10}, {px:12}, {px:16}, {px:20} ],
+      sidebarSampleNav: ['Business Profile', 'Campaigns', 'Availability'],
+      creditSegments: Array.from({length:24}, (_,i) => i < 12 ? 'linear-gradient(180deg,#2f6fed,color-mix(in srgb, #2f6fed 55%, #fff))' : '#dfe3ee'),
+      stats: [
+        { label:'New Request', value:1, sub:'Pending Review', iconBg:'linear-gradient(135deg,#f2726c,#d8433d)', iconShadow:'rgba(216,67,61,.4)', tint:'#fbd2ce', icon: this.icon('<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="1.5" width="10" height="11" rx="1.5" stroke="#fff" stroke-width="1.3"/><path d="M4.5 5H9.5M4.5 7.5H9.5M4.5 10H7.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/></svg>') },
+        { label:'New Feedback', value:0, sub:'This week', iconBg:'linear-gradient(135deg,#f3bb5c,#dc9420)', iconShadow:'rgba(220,148,32,.4)', tint:'#fbe3b8', icon: this.icon('<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="2.5" width="11" height="8" rx="2" stroke="#fff" stroke-width="1.3"/><path d="M4.5 12.5L6.5 10.5H9" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>') },
+        { label:'Meeting Request', value:2, sub:'Total Active', iconBg:'linear-gradient(135deg,#f2726c,#d8433d)', iconShadow:'rgba(216,67,61,.4)', tint:'#fbd2ce', icon: this.icon('<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="2.5" width="11" height="10" rx="1.5" stroke="#fff" stroke-width="1.3"/><path d="M1.5 5.5H12.5" stroke="#fff" stroke-width="1.3"/><path d="M4.2 1V3.2M9.8 1V3.2" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>') },
+        { label:'Schedule', value:1, sub:'Upcoming', iconBg:'linear-gradient(135deg,#4cc487,#1f9155)', iconShadow:'rgba(31,145,85,.4)', tint:'#c9f0d3', icon: this.icon('<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="2.5" width="11" height="10" rx="1.5" stroke="#fff" stroke-width="1.3"/><path d="M1.5 5.5H12.5" stroke="#fff" stroke-width="1.3"/><path d="M4.2 1V3.2M9.8 1V3.2" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>') },
+      ],
+      allBadgeRows: [
+        { title:'Director of IT Infrastructur', company:'Tech Systems', status:'Under review', bg:'#fdf1dd', color:'#b3791a', requested:'5 min ago' },
+        { title:'Marketing', company:'Debox Agency', status:'Submitted', bg:'#e5f6ea', color:'#1f9d5c', requested:'10 min ago' },
+        { title:'Sales', company:'Cloves co', status:'Expired', bg:'#fdeaea', color:'#d8514b', requested:'13 min ago' },
+        { title:'Lead of Sales', company:'Desktive', status:'Schedule', bg:'#e6effd', color:'#2f6fed', requested:'20 min ago' },
+        { title:'Creative', company:'Advance', status:'Pending Schedule', bg:'#fdf1dd', color:'#b3791a', requested:'45 min ago' },
+        { title:'Quarterly Marketing Planning', company:'Internal', status:'Live Now', bg:'#e5f6ea', color:'#1f9d5c', requested:'1 hr ago' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

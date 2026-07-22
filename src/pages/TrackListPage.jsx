@@ -38,11 +38,14 @@ export default function TrackListPage() {
 
   return (
     <div className="mx-auto max-w-[1280px] px-5 py-8">
-      <div className="mb-6 flex flex-col gap-1 border-b border-hairline-border pb-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-6 flex flex-col gap-2 border-b border-hairline-border pb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-heading font-bold text-ink">{track.name[lang] || track.name.id}</h1>
-          <p className="mt-1 text-label text-slate-gray">
-            {learned}/{total} {t("termsLearned")}
+          <h1 className="text-[24px] font-extrabold tracking-[-0.5px] text-ink">{track.name[lang] || track.name.id}</h1>
+          <p className="mt-1.5 flex items-center gap-2 text-[11.5px] text-faint-gray">
+            <span className="rounded-[6px] bg-success-wash px-2 py-1 text-[11.5px] font-bold text-success-green">
+              {learned}/{total}
+            </span>
+            {t("termsLearned")}
           </p>
         </div>
       </div>
@@ -58,19 +61,31 @@ export default function TrackListPage() {
 
         <div className="min-w-0 flex-1">
           <div className="mb-6">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={t("searchPlaceholder")}
-              className="w-full rounded-[10px] border border-hairline-border bg-pure-white px-4 py-2 text-body text-ink outline-none focus:border-indigo-primary sm:max-w-xs"
-            />
+            <div className="relative w-full sm:max-w-xs">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 13 13"
+                fill="none"
+                className="pointer-events-none absolute left-[11px] top-1/2 -translate-y-1/2"
+              >
+                <circle cx="5.5" cy="5.5" r="4.3" stroke="#aab1bd" strokeWidth="1.3" />
+                <path d="M8.6 8.6L12 12" stroke="#aab1bd" strokeWidth="1.3" strokeLinecap="round" />
+              </svg>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={t("searchPlaceholder")}
+                className="w-full rounded-[8px] border border-[#e7e9ee] bg-[#fbfbfc] py-2 pl-8 pr-3 text-[13px] text-ink outline-none transition focus:border-indigo-primary focus:bg-pure-white"
+              />
+            </div>
           </div>
 
           <div className="flex flex-col gap-10">
             {filteredCategories.map((c) => (
               <section key={c.category}>
-                <h2 className="mb-3 text-caption font-bold uppercase tracking-wide text-faint-gray">{c.category}</h2>
+                <h2 className="mb-3 text-[10.5px] font-bold uppercase tracking-[0.6px] text-faint-gray">{c.category}</h2>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
                   {c.terms.map((term) => (
                     <TermCard key={term.id} term={term} trackSlug={trackSlug} seen={seenIds.has(term.id)} />

@@ -30,6 +30,8 @@ export const strings = {
     notFoundBody: "Term atau track yang kamu cari tidak ada.",
     backHome: "Kembali ke Beranda",
     playGame: "Mulai",
+    jumpToDemo: "Lompat ke simulasi interaktif →",
+    allConcepts: "Semua konsep",
   },
   en: {
     appName: "Design & Engineering Playground",
@@ -62,5 +64,7 @@ export const strings = {
     notFoundBody: "The term or track you're looking for doesn't exist.",
     backHome: "Back to Home",
     playGame: "Start",
+    jumpToDemo: "Jump to the interactive demo →",
+    allConcepts: "All concepts",
   },
 };

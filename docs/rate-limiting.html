@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rate limiting — same burst, two outcomes</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #060709;
+    color: #e8ecef;
+    font-family: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 28px 12px 60px;
+  }
+  .card {
+    width: 100%;
+    max-width: 640px;
+  }
+  .handle { color: #7b8896; font-size: 13px; text-align: center; margin-bottom: 4px; letter-spacing: 0.02em; }
+  h1 {
+    text-align: center;
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-top: 6px;
+  }
+  h1 span { color: #4fd1ff; }
+  .subtitle { text-align: center; color: #8b96a1; font-size: 14.5px; margin-top: 6px; margin-bottom: 22px; }
+
+  .toggleRow { display: flex; justify-content: center; margin-bottom: 18px; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    border: 1px solid;
+    cursor: pointer;
+    background: transparent;
+    transition: all .25s ease;
+    user-select: none;
+  }
+  .badge.off {
+    color: #ff6b6b;
+    border-color: #ff6b6b55;
+    box-shadow: 0 0 18px -6px #ff6b6b88;
+  }
+  .badge.on {
+    color: #43e8b0;
+    border-color: #43e8b055;
+    box-shadow: 0 0 18px -6px #43e8b088;
+  }
+  .badge .tag { color: #8b96a1; font-weight: 500; text-transform: none; letter-spacing: 0; }
+
+  .panel {
+    position: relative;
+    border-radius: 14px;
+    padding: 18px 14px 26px;
+    margin-bottom: 18px;
+    min-height: 300px;
+    border: 1px solid #1b2027;
+    background: radial-gradient(ellipse at 50% 0%, #0d1117 0%, #060709 70%);
+    overflow: hidden;
+  }
+  .statline {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    font-size: 12px;
+    color: #6b7684;
+    letter-spacing: 0.02em;
+  }
+  .statline b.bad { color: #ff6b6b; font-weight: 700; }
+  .statline b.good { color: #43e8b0; font-weight: 700; }
+
+  svg { width: 100%; height: 220px; display: block; }
+
+  .node {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    fill: #cfd6dd;
+  }
+  .nodeSmall { font-size: 9.5px; fill: #6b7684; letter-spacing: 0.02em; }
+  .hexLabel { font-size: 10px; fill: #6b7684; font-weight: 600; letter-spacing: 0.03em; }
+
+  .caption {
+    text-align: center;
+    font-size: 11.5px;
+    color: #5c6672;
+    margin-top: 4px;
+    letter-spacing: 0.01em;
+  }
+  .caption.limiter-on { color: #4fd1ff; }
+
+  .grid3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .cell {
+    border: 1px solid #1b2027;
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: #0b0e12;
+  }
+  .cell .lbl { font-size: 10px; color: #ff6b6b; font-weight: 700; letter-spacing: 0.04em; margin-bottom: 4px; }
+  .panel.on .cell .lbl { color: #43e8b0; }
+  .cell .val { font-size: 13.5px; color: #dfe4e8; font-weight: 600; }
+
+  .resultBar {
+    margin-top: 8px;
+    border: 1px solid #1b2027;
+    border-radius: 8px;
+    padding: 10px 14px;
+    background: #0b0e12;
+    font-size: 13px;
+    color: #d3d9de;
+    text-align: center;
+    min-height: 20px;
+  }
+
+  .particle { filter: drop-shadow(0 0 4px currentColor); }
+  .flowline { stroke-dasharray: 4 6; }
+
+  footer {
+    text-align: center;
+    color: #414954;
+    font-size: 11px;
+    margin-top: 26px;
+    letter-spacing: 0.03em;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="handle">@krishnachaytanyaa</div>
+  <h1>Rate <span>limiting</span></h1>
+  <div class="subtitle">same burst traffic, two very different outcomes</div>
+
+  <div class="toggleRow">
+    <div class="badge off" id="toggleBtn">
+      <span id="toggleLabel">WITHOUT RATE LIMITING</span>
+      <span class="tag" id="toggleTag">direct burst</span>
+    </div>
+  </div>
+
+  <div class="panel" id="panel">
+    <div class="statline" id="statline"><b class="bad" id="statBad">503: 0</b> &nbsp;|&nbsp; ok: <b class="good" id="statGood">0</b></div>
+
+    <svg viewBox="0 0 600 220" id="svgRoot">
+      <!-- flow lines -->
+      <path id="lineMain1" class="flowline" d="M 95 130 L 235 130" stroke="#2a3038" stroke-width="1.5" fill="none"/>
+      <path id="lineMain2" class="flowline" d="M 265 130 L 480 130" stroke="#2a3038" stroke-width="1.5" fill="none"/>
+      <path id="lineToRules" d="M 250 118 C 300 70, 380 55, 430 55" stroke="#2a3038" stroke-width="1.3" fill="none"/>
+      <path id="lineToStore" d="M 250 142 C 300 185, 380 195, 430 195" stroke="#2a3038" stroke-width="1.3" fill="none"/>
+      <path id="lineReject" class="flowline" d="M 95 140 C 130 175, 170 178, 205 145" stroke="#ff6b6b" stroke-width="1.5" fill="none" opacity="0.85"/>
+
+      <!-- rules hexagon -->
+      <polygon points="405,45 455,45 470,55 455,65 405,65 390,55" fill="#0e1218" stroke="#2a3038" stroke-width="1"/>
+      <text x="430" y="59" text-anchor="middle" class="hexLabel">RULES</text>
+
+      <!-- usage store -->
+      <ellipse cx="430" cy="195" rx="45" ry="10" fill="#0e1218" stroke="#2a3038" stroke-width="1"/>
+      <ellipse cx="430" cy="191" rx="45" ry="10" fill="none" stroke="#2a3038" stroke-width="1"/>
+      <text x="430" y="196" text-anchor="middle" class="hexLabel">USAGE STORE</text>
+
+      <!-- requests node -->
+      <rect x="15" y="112" rx="16" ry="16" width="82" height="36" fill="#0e1218" stroke="#3a4552" stroke-width="1.3"/>
+      <circle cx="34" cy="130" r="4" fill="#4fd1ff"/>
+      <text x="45" y="134" class="node">REQUESTS</text>
+
+      <!-- limiter node -->
+      <circle cx="250" cy="130" r="14" fill="#0e1218" stroke="#4fd1ff" stroke-width="1.6" id="limiterCircle"/>
+      <text x="250" y="103" text-anchor="middle" class="node" id="limiterLabel">LIMITER OFF</text>
+      <text x="250" y="134" text-anchor="middle" font-size="9" fill="#4fd1ff" font-weight="700" id="limiterCount"></text>
+
+      <!-- api calls node -->
+      <circle cx="520" cy="130" r="34" fill="#0e1218" stroke="#ff6b6b" stroke-width="2" id="apiRing"/>
+      <text x="520" y="107" text-anchor="middle" class="nodeSmall" id="apiStatus">processing backlog...</text>
+      <text x="520" y="134" text-anchor="middle" font-size="16" fill="#dfe4e8">≡</text>
+      <text x="520" y="180" text-anchor="middle" class="node">API CALLS</text>
+
+      <!-- 503 label -->
+      <text x="130" y="170" class="nodeSmall" fill="#ff6b6b" font-weight="700" id="rejectLabel">503 SERVICE UNAVAILABLE</text>
+
+      <!-- moving particles group -->
+      <g id="particles"></g>
+    </svg>
+
+    <div class="caption" id="flowCaption">no gate, no queue — spike hits API directly — concurrency exceeded — 503</div>
+
+    <div class="grid3">
+      <div class="cell">
+        <div class="lbl" id="c1lbl">PATH</div>
+        <div class="val" id="c1val">direct API hit</div>
+      </div>
+      <div class="cell">
+        <div class="lbl" id="c2lbl">QUEUE</div>
+        <div class="val" id="c2val">not available</div>
+      </div>
+      <div class="cell">
+        <div class="lbl" id="c3lbl">RESULT</div>
+        <div class="val" id="c3val">spikes → 503</div>
+      </div>
+    </div>
+
+    <div class="resultBar" id="resultBar">API overwhelmed — returning 503 to 5 requests</div>
+  </div>
+
+  <footer>tap the badge to switch modes</footer>
+</div>
+
+<script>
+const state = {
+  on: false
+};
+
+const els = {
+  toggleBtn: document.getElementById('toggleBtn'),
+  toggleLabel: document.getElementById('toggleLabel'),
+  toggleTag: document.getElementById('toggleTag'),
+  panel: document.getElementById('panel'),
+  statBad: document.getElementById('statBad'),
+  statGood: document.getElementById('statGood'),
+  limiterLabel: document.getElementById('limiterLabel'),
+  limiterCircle: document.getElementById('limiterCircle'),
+  limiterCount: document.getElementById('limiterCount'),
+  apiStatus: document.getElementById('apiStatus'),
+  apiRing: document.getElementById('apiRing'),
+  rejectLabel: document.getElementById('rejectLabel'),
+  lineReject: document.getElementById('lineReject'),
+  flowCaption: document.getElementById('flowCaption'),
+  c1lbl: document.getElementById('c1lbl'), c1val: document.getElementById('c1val'),
+  c2lbl: document.getElementById('c2lbl'), c2val: document.getElementById('c2val'),
+  c3lbl: document.getElementById('c3lbl'), c3val: document.getElementById('c3val'),
+  resultBar: document.getElementById('resultBar'),
+  particles: document.getElementById('particles'),
+};
+
+function setMode(on) {
+  state.on = on;
+  els.toggleBtn.classList.toggle('off', !on);
+  els.toggleBtn.classList.toggle('on', on);
+  els.panel.classList.toggle('on', on);
+  els.toggleLabel.textContent = on ? 'WITH RATE LIMITING' : 'WITHOUT RATE LIMITING';
+  els.toggleTag.textContent = on ? 'controlled flow' : 'direct burst';
+
+  if (on) {
+    els.limiterLabel.textContent = 'LIMITER';
+    els.limiterCircle.setAttribute('stroke', '#43e8b0');
+    els.apiRing.setAttribute('stroke', '#43e8b0');
+    els.apiStatus.textContent = 'waiting...';
+    els.rejectLabel.textContent = '429 TOO MANY REQUESTS';
+    els.rejectLabel.setAttribute('fill', '#f5a623');
+    els.lineReject.setAttribute('stroke', '#f5a623');
+    els.flowCaption.textContent = 'token bucket checked per request — over limit → 429 immediately — no queue';
+    els.flowCaption.classList.add('limiter-on');
+
+    els.c1lbl.textContent = 'CHECK'; els.c1val.textContent = 'token bucket';
+    els.c2lbl.textContent = 'REJECT'; els.c2val.textContent = '429 instantly';
+    els.c3lbl.textContent = 'PASS'; els.c3val.textContent = 'within limit';
+    els.resultBar.textContent = 'Limiter checks token bucket on every incoming request';
+    els.statBad.textContent = '429: 0';
+    els.statGood.textContent = '2';
+  } else {
+    els.limiterLabel.textContent = 'LIMITER OFF';
+    els.limiterCircle.setAttribute('stroke', '#4fd1ff');
+    els.apiRing.setAttribute('stroke', '#ff6b6b');
+    els.apiStatus.textContent = 'processing backlog...';
+    els.rejectLabel.textContent = '503 SERVICE UNAVAILABLE';
+    els.rejectLabel.setAttribute('fill', '#ff6b6b');
+    els.lineReject.setAttribute('stroke', '#ff6b6b');
+    els.flowCaption.textContent = 'no gate, no queue — spike hits API directly — concurrency exceeded — 503';
+    els.flowCaption.classList.remove('limiter-on');
+
+    els.c1lbl.textContent = 'PATH'; els.c1val.textContent = 'direct API hit';
+    els.c2lbl.textContent = 'QUEUE'; els.c2val.textContent = 'not available';
+    els.c3lbl.textContent = 'RESULT'; els.c3val.textContent = 'spikes → 503';
+    els.resultBar.textContent = 'API overwhelmed — returning 503 to 5 requests';
+    els.statBad.textContent = '503: 5';
+    els.statGood.textContent = '3';
+  }
+}
+
+els.toggleBtn.addEventListener('click', () => setMode(!state.on));
+
+// --- particle animation along the main flow path ---
+const NS = 'http://www.w3.org/2000/svg';
+let counter = 0;
+
+function spawnParticle() {
+  const good = state.on ? (Math.random() > 0.45) : (Math.random() > 0.6);
+  const circle = document.createElementNS(NS, 'circle');
+  circle.setAttribute('r', '3.2');
+  circle.setAttribute('class', 'particle');
+  circle.setAttribute('fill', good ? (state.on ? '#43e8b0' : '#4fd1ff') : (state.on ? '#f5a623' : '#ff6b6b'));
+  els.particles.appendChild(circle);
+
+  const startX = 20, startY = 130;
+  const midX = 250, midY = 130;
+  const endX = good ? 490 : 110;
+  const endY = good ? 130 : (state.on ? 155 : 165);
+
+  let t = 0;
+  const dur = good ? 900 : 650;
+  const startTime = performance.now();
+
+  function frame(now) {
+    t = Math.min(1, (now - startTime) / dur);
+    let x, y;
+    if (t < 0.45) {
+      const lt = t / 0.45;
+      x = startX + (midX - startX) * lt;
+      y = startY;
+    } else {
+      const lt = (t - 0.45) / 0.55;
+      if (good) {
+        x = midX + (endX - midX) * lt;
+        y = midY;
+      } else {
+        x = midX - 45 + (endX - (midX - 45)) * lt;
+        y = midY + (endY - midY) * Math.sin(lt * Math.PI * 0.6) * 1.4 * lt;
+      }
+    }
+    circle.setAttribute('cx', x);
+    circle.setAttribute('cy', y);
+    circle.setAttribute('opacity', t > 0.85 ? (1 - (t - 0.85) / 0.15) : 1);
+
+    if (t < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      circle.remove();
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+setInterval(() => {
+  const n = state.on ? 1 : (Math.random() > 0.4 ? 2 : 1);
+  for (let i = 0; i < n; i++) setTimeout(spawnParticle, i * 90);
+}, state.on ? 420 : 300);
+
+setMode(false);
+</script>
+</body>
+</html>

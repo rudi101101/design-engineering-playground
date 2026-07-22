@@ -4,24 +4,33 @@ import { useLanguage } from "../i18n/LanguageContext.jsx";
 export default function TermCard({ term, trackSlug, seen }) {
   const { lang, pick } = useLanguage();
   const { text: description } = pick(term.content.description);
+  const isId = lang === "id";
 
   return (
     <Link
       to={`/${trackSlug}/${term.id}`}
-      className="group relative block rounded-2xl border border-hairline-border bg-pure-white p-4 shadow-[var(--shadow-card)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-card-hover)]"
+      className="group relative block overflow-hidden rounded-[12px] border border-hairline-border p-[18px] shadow-[var(--shadow-card)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-card-hover)]"
+      style={{ background: `radial-gradient(130% 130% at 100% 0%, ${term.color}1f 0%, #ffffff 65%)` }}
     >
-      {seen && <span className="absolute left-0 top-4 h-6 w-1 rounded-r-full" style={{ backgroundColor: term.color }} />}
-      <div className="flex items-start gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" style={{ backgroundColor: `${term.color}1a`, color: term.color }}>
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d={term.icon} />
-          </svg>
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-2">
+          <div
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[9px]"
+            style={{ background: term.color, boxShadow: `0 4px 8px ${term.color}66` }}
+          >
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d={term.icon} />
+            </svg>
+          </div>
+          <h4 className="truncate text-[12.5px] font-bold leading-[1.25] text-ink">{term.name[lang] || term.name.id}</h4>
         </div>
-        <div className="min-w-0 flex-1">
-          <h4 className="text-card-title font-semibold text-ink">{term.name[lang] || term.name.id}</h4>
-          <p className="mt-0.5 line-clamp-2 text-label text-slate-gray">{description}</p>
-        </div>
+        {seen && (
+          <span className="shrink-0 rounded-[6px] bg-success-wash px-2 py-1 text-[10.5px] font-bold text-success-green">
+            {isId ? "Selesai" : "Done"}
+          </span>
+        )}
       </div>
+      <p className="line-clamp-2 text-[11.5px] leading-[1.5] text-faint-gray">{description}</p>
     </Link>
   );
 }

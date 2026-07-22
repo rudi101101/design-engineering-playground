@@ -5,7 +5,7 @@ import CodeBlock from "./CodeBlock.jsx";
 export default function MarkdownRenderer({ text }) {
   if (!text) return null;
   return (
-    <div className="prose-content text-body text-ink">
+    <div className="prose-content text-[13.5px] leading-[1.65] text-slate-gray">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{

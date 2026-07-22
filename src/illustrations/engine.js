@@ -13,15 +13,43 @@ function sn(tag, a, p) {
   if (p) p.appendChild(e);
   return e;
 }
+const FONT = "'Inter', 'Inter', ui-sans-serif, system-ui, sans-serif";
+const FONT_MONO = "'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace";
+// Legibility multiplier applied uniformly to every font-size passed through tx()/bx() —
+// the original prototype's 6.5-9px sizes were tuned for a dense dark terminal aesthetic;
+// scaled up so text reads clearly inside the app's DESIGN.md card system.
+const FONT_SCALE = 1.25;
+
 function bx(p, x, y, w, h, c, l, s) {
   const g = sn("g", {}, p);
-  sn("rect", { x, y, width: w, height: h, rx: 5, fill: c + "18", stroke: c + "55", "stroke-width": "1.2" }, g);
-  sn("text", { x: x + w / 2, y: y + h / 2 - (s ? 4 : 0), fill: c + "cc", "font-size": "8", "text-anchor": "middle", "font-family": "monospace", "font-weight": "600" }, g).textContent = l;
-  if (s) sn("text", { x: x + w / 2, y: y + h / 2 + 8, fill: c + "66", "font-size": "6.5", "text-anchor": "middle", "font-family": "monospace" }, g).textContent = s;
+  sn("rect", { x, y, width: w, height: h, rx: 8, fill: c + "2e", stroke: c + "99", "stroke-width": "1.6" }, g);
+  sn(
+    "text",
+    { x: x + w / 2, y: y + h / 2 - (s ? 6 : 0), fill: c + "ff", "font-size": 8 * FONT_SCALE, "text-anchor": "middle", "font-family": FONT, "font-weight": "700" },
+    g
+  ).textContent = l;
+  if (s)
+    sn(
+      "text",
+      { x: x + w / 2, y: y + h / 2 + 12, fill: c + "b0", "font-size": 6.5 * FONT_SCALE, "text-anchor": "middle", "font-family": FONT, "font-weight": "500" },
+      g
+    ).textContent = s;
   return g;
 }
 function tx(p, t, x, y, c, sz, opts = {}) {
-  const e = sn("text", { x, y, fill: c, "font-size": sz, "text-anchor": opts.a || "middle", "font-family": "monospace", "font-weight": opts.w || "400" }, p);
+  const e = sn(
+    "text",
+    {
+      x,
+      y,
+      fill: c,
+      "font-size": sz * FONT_SCALE,
+      "text-anchor": opts.a || "middle",
+      "font-family": opts.mono ? FONT_MONO : FONT,
+      "font-weight": opts.w || "500",
+    },
+    p
+  );
   e.textContent = t;
   return e;
 }
@@ -29,7 +57,7 @@ function pk(s, x, y, c, r = 5) {
   return sn("circle", { cx: x, cy: y, r, fill: c, opacity: 0.9 }, s);
 }
 function ln(p, x1, y1, x2, y2, c, dash = false) {
-  return sn("line", { x1, y1, x2, y2, stroke: c + "55", "stroke-width": "1.3", ...(dash ? { "stroke-dasharray": "5,3" } : {}) }, p);
+  return sn("line", { x1, y1, x2, y2, stroke: c + "70", "stroke-width": "1.6", ...(dash ? { "stroke-dasharray": "5,3" } : {}) }, p);
 }
 function glow(e, c) {
   e.style.filter = `drop-shadow(0 0 4px ${c})`;
@@ -48,7 +76,7 @@ function addTimer(id, t) {
 
 function makeSVG(wrap) {
   const W = wrap.offsetWidth || 600,
-    H = 120;
+    H = 190;
   const s = sn("svg", { width: "100%", height: H, viewBox: `0 0 ${W} ${H}` }, wrap);
   return { s, W, H };
 }
@@ -107,9 +135,10 @@ function simAcid(wrap, c, id) {
     rR.push(rect);
     vT.push(v);
   });
-  bx(s, W - 170, 8, 155, 50, c, "Transaction", "");
-  const txL = tx(s, "BEGIN", W - 93, 30, c + "cc", 8, { w: "700" });
-  const stL = tx(s, "", W - 93, 46, c + "66", 7);
+  bx(s, W - 170, 8, 155, 50, c, "", "");
+  tx(s, "TRANSACTION", W - 92.5, 20, c + "80", 6, { w: "700" });
+  const txL = tx(s, "BEGIN", W - 93, 36, c + "ff", 8.5, { w: "700" });
+  const stL = tx(s, "", W - 93, 50, c + "b0", 7);
   const walL = tx(s, "📝 WAL: ", 10, 75, c + "66", 7, { a: "start" });
   walL.setAttribute("opacity", "0");
   let phase = 0;
@@ -320,14 +349,16 @@ function simStream(wrap, c, id) {
 function simDag(wrap, c, id) {
   const { s, W } = makeSVG(wrap);
   const tasks = [
-    { id: "T", x: 5, y: 50, w: 52, h: 22, l: "⏰ Trigger" },
-    { id: "A", x: 72, y: 18, w: 62, h: 22, l: "A: Ingest" },
-    { id: "B", x: 72, y: 80, w: 62, h: 22, l: "B: Validate" },
-    { id: "C", x: 152, y: 49, w: 68, h: 22, l: "C: Transform" },
-    { id: "D", x: 238, y: 49, w: 62, h: 22, l: "D: Load" },
-    { id: "E", x: W - 68, y: 49, w: 63, h: 22, l: "✅ Done!" },
+    { id: "T", x: 6, y: 68, w: 62, h: 28, l: "Trigger" },
+    { id: "A", x: 104, y: 28, w: 82, h: 28, l: "A: Ingest" },
+    { id: "B", x: 104, y: 108, w: 82, h: 28, l: "B: Validate" },
+    { id: "C", x: 224, y: 68, w: 92, h: 28, l: "C: Transform" },
+    { id: "D", x: 352, y: 68, w: 78, h: 28, l: "D: Load" },
+    { id: "E", x: W - 90, y: 68, w: 80, h: 28, l: "Done!" },
   ];
-  const ctr = { T: [31, 61], A: [103, 29], B: [103, 91], C: [186, 60], D: [269, 60], E: [W - 36, 60] };
+  const byId = Object.fromEntries(tasks.map((t) => [t.id, t]));
+  const rightMid = (t) => [t.x + t.w, t.y + t.h / 2];
+  const leftMid = (t) => [t.x, t.y + t.h / 2];
   [
     ["T", "A"],
     ["T", "B"],
@@ -336,26 +367,26 @@ function simDag(wrap, c, id) {
     ["C", "D"],
     ["D", "E"],
   ].forEach(([a, b]) => {
-    const [x1, y1] = ctr[a],
-      [x2, y2] = ctr[b];
+    const [x1, y1] = rightMid(byId[a]);
+    const [x2, y2] = leftMid(byId[b]);
     ln(s, x1, y1, x2, y2, c);
   });
   const rects = {};
   tasks.forEach((t) => {
-    const r = sn("rect", { x: t.x, y: t.y, width: t.w, height: t.h, rx: 4, fill: c + "12", stroke: c + "30", "stroke-width": "1.2" }, s);
-    tx(s, t.l, t.x + t.w / 2, t.y + t.h / 2 + 4, c + "77", 7);
+    const r = sn("rect", { x: t.x, y: t.y, width: t.w, height: t.h, rx: 6, fill: c + "26", stroke: c + "80", "stroke-width": "1.6" }, s);
+    tx(s, t.l, t.x + t.w / 2, t.y + t.h / 2 + 4, c + "ff", 7.5, { w: "700" });
     rects[t.id] = r;
   });
-  const stL = tx(s, "", W / 2, 115, c + "66", 7.5);
+  const stL = tx(s, "", W / 2, 160, c + "b0", 8);
   const seq = ["T", "A", "B", "C", "D", "E"];
   let si = 0,
     prev = null;
   const t = setInterval(() => {
     if (prev) {
-      gsap.to(rects[prev], { attr: { fill: c + "12", stroke: c + "30" }, duration: 0.2 });
+      gsap.to(rects[prev], { attr: { fill: c + "26", stroke: c + "80" }, duration: 0.2 });
     }
     const id_ = seq[si % seq.length];
-    gsap.to(rects[id_], { attr: { fill: c + "44", stroke: c }, duration: 0.3 });
+    gsap.to(rects[id_], { attr: { fill: c + "55", stroke: c }, duration: 0.3 });
     stL.textContent = `Running: ${tasks.find((t) => t.id === id_).l}`;
     if (id_ === "E") {
       gsap.to(rects[id_], { attr: { fill: "#22c55e44", stroke: "#22c55e" }, duration: 0.3 });
@@ -766,10 +797,10 @@ function simStar(wrap, c, id) {
   const { s, W } = makeSVG(wrap);
   const cx = W / 2,
     cy = 62;
-  const fR = sn("rect", { x: cx - 55, y: cy - 24, width: 110, height: 48, rx: 6, fill: c + "20", stroke: c, "stroke-width": "1.8" }, s);
-  tx(s, "fact_sales", cx, cy - 10, c + "cc", 8.5, { w: "700" });
-  tx(s, "amount, date_sk", cx, cy + 2, c + "66", 6.5);
-  tx(s, "cust_sk, store_sk", cx, cy + 13, c + "66", 6.5);
+  const fR = sn("rect", { x: cx - 60, y: cy - 32, width: 120, height: 64, rx: 8, fill: c + "26", stroke: c, "stroke-width": "1.8" }, s);
+  tx(s, "fact_sales", cx, cy - 15, c + "ff", 9, { w: "700" });
+  tx(s, "amount, date_sk", cx, cy, c + "b0", 6.5);
+  tx(s, "cust_sk, store_sk", cx, cy + 14, c + "b0", 6.5);
   const dims = [
     { x: 18, y: 8, l: "dim_date", c: "#6366f1" },
     { x: W - 138, y: 8, l: "dim_customer", c: "#a855f7" },

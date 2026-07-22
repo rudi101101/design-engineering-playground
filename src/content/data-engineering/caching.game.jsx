@@ -63,7 +63,7 @@ const nodeTypes = { flowNode: FlowNode };
 
 function PulseEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, data }) {
   const [path] = getBezierPath({ sourceX, sourceY, sourcePosition, targetX, targetY, targetPosition });
-  const color = data?.state === "hit" ? "#16a34a" : data?.state === "miss" ? "#e0393e" : "#c7cad6";
+  const color = data?.state === "hit" ? "#1f9d5c" : data?.state === "miss" ? "#d8514b" : "#c7cad6";
   return <BaseEdge id={id} path={path} style={{ stroke: color, strokeWidth: 2, transition: "stroke 0.3s" }} />;
 }
 
@@ -85,7 +85,7 @@ export default function CachingGame() {
 
   const nodes = useMemo(
     () => [
-      { id: "client", type: "flowNode", position: { x: 0, y: 60 }, data: { label: "Client", sub: isId ? "aplikasi" : "app", emoji: "💻", color: "#3e5eea" }, draggable: true },
+      { id: "client", type: "flowNode", position: { x: 0, y: 60 }, data: { label: "Client", sub: isId ? "aplikasi" : "app", emoji: "💻", color: "#2f6fed" }, draggable: true },
       { id: "cache", type: "flowNode", position: { x: 220, y: 60 }, data: { label: "Cache", sub: "Redis, TTL 5m", emoji: "⚡", color: "#f59e0b" }, draggable: true },
       { id: "database", type: "flowNode", position: { x: 440, y: 60 }, data: { label: isId ? "Database" : "Database", sub: isId ? "sumber data" : "source of truth", emoji: "🗄️", color: "#ef4444" }, draggable: true },
     ],
@@ -143,7 +143,7 @@ export default function CachingGame() {
     const key = pickWeightedKey();
     const isHit = cacheEnabled && seenKeys.has(key);
 
-    animateParticle('[data-id="client"]', '[data-id="cache"]', "#3e5eea");
+    animateParticle('[data-id="client"]', '[data-id="cache"]', "#2f6fed");
     flashEdge("cc", isHit ? "hit" : "miss");
 
     if (isHit) {

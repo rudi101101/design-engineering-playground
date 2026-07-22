@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:{{accentColor}};text-decoration:none}
+  a:hover{color:{{accentColor}};opacity:.8}
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:linear-gradient(160deg,#7fc7e8 0%,#9ed6d8 22%,#c3e6c0 48%,#a9d99a 70%,#7fbf7a 100%);position:relative;display:flex;align-items:center;justify-content:center;padding:28px;box-sizing:border-box">
+<div style="position:absolute;inset:0;opacity:.5;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.12) 0px,rgba(255,255,255,.12) 3px,transparent 3px,transparent 6px),repeating-linear-gradient(90deg,rgba(0,0,0,.03) 0px,rgba(0,0,0,.03) 3px,transparent 3px,transparent 6px)"></div>
+<div style="width:100%;max-width:1400px;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(20,30,60,.18),0 1px 0 rgba(255,255,255,.6) inset;overflow:hidden;display:flex;min-height:900px">
+
+  <!-- SIDEBAR -->
+  <div style="width:250px;flex:none;border-right:1px solid #eef0f3;display:flex;flex-direction:column;padding:20px 14px;box-sizing:border-box;background:#fff">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:-20px -14px 18px;padding:26px 22px 22px;border-bottom:1px solid #eef0f3">
+      <div style="display:flex;align-items:center;gap:9px">
+        <div style="width:28px;height:28px;border-radius:8px;background:{{accentColor}};display:flex;align-items:center;justify-content:center">
+          <span style="font-size:15px;font-weight:800;color:#fff;font-style:italic;font-family:Georgia,serif">n</span>
+        </div>
+        <div style="font-weight:800;font-size:16px;color:#161a22;letter-spacing:-.2px">Meetcan</div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 14 14" style="opacity:.4"><rect x="1" y="1" width="12" height="12" rx="3" stroke="#161a22" stroke-width="1.3" fill="none"/></svg>
+    </div>
+
+    <sc-for list="{{navGroups}}" as="group" hint-placeholder-count="4">
+      <div style="margin-bottom:14px">
+        <sc-if value="{{group.divider}}" hint-placeholder-val="{{false}}">
+          <div style="height:1px;background:#eef0f3;margin:2px 10px 12px"></div>
+        </sc-if>
+        <sc-if value="{{group.label}}" hint-placeholder-val="{{true}}">
+          <div style="font-size:10.5px;font-weight:700;letter-spacing:.6px;color:#9aa1ad;padding:10px 10px 6px">{{group.label}}</div>
+        </sc-if>
+        <sc-for list="{{group.items}}" as="item" hint-placeholder-count="3">
+          <div onClick="{{item.onClick}}" style="display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13.5px;font-weight:600;color:{{item.color}};background:{{item.bg}}">
+            <div style="width:16px;height:16px;flex:none;color:{{item.iconColor}}">{{item.icon}}</div>
+            {{item.label}}
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+
+    <div style="flex:1"></div>
+
+    <div style="height:1px;background:#eef0f3;margin:4px 10px 14px"></div>
+
+    <div style="position:relative;overflow:hidden;border-radius:12px;padding:14px;background:radial-gradient(120% 120% at 100% 0%,#dfe3fb 0%,#f7f0ff 60%);margin-bottom:12px">
+      <div style="position:absolute;inset:0;pointer-events:none;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%27http://www.w3.org/2000/svg%27 width=%27140%27 height=%27140%27&gt;&lt;g fill=%27white%27&gt;&lt;path d=%27M14,6L15.4,12L21,13.5L15.4,15L14,21L12.6,15L7,13.5L12.6,12Z%27/&gt;&lt;path d=%27M78,10L79.1,14.5L83.5,15.6L79.1,16.7L78,21L76.9,16.7L72.5,15.6L76.9,14.5Z%27 opacity=%270.7%27/&gt;&lt;path d=%27M112,50L113.7,56L119.5,57.7L113.7,59.4L112,65L110.3,59.4L104.5,57.7L110.3,56Z%27/&gt;&lt;path d=%27M35,68L36.1,72.5L40.5,73.6L36.1,74.7L35,79L33.9,74.7L29.5,73.6L33.9,72.5Z%27 opacity=%270.6%27/&gt;&lt;path d=%27M92,88L93.4,93L98,94.5L93.4,96L92,101L90.6,96L86,94.5L90.6,93Z%27 opacity=%270.8%27/&gt;&lt;path d=%27M55,38L56,41.7L59.7,42.7L56,43.7L55,47.4L54,43.7L50.3,42.7L54,41.7Z%27 opacity=%270.5%27/&gt;&lt;/g&gt;&lt;/svg&gt;');background-size:140px 140px;-webkit-mask-image:radial-gradient(120% 120% at 100% 0%,#000 0%,transparent 80%);mask-image:radial-gradient(120% 120% at 100% 0%,#000 0%,transparent 80%)"></div>
+      <div style="position:relative;display:flex;align-items:center;gap:7px;margin-bottom:10px">
+        <div style="width:18px;height:18px;border-radius:6px;background:{{accentColor}};box-shadow:0 3px 6px {{accentColor}}55;display:flex;align-items:center;justify-content:center"><svg width="9" height="9" viewBox="0 0 9 9"><rect width="9" height="9" rx="1.5" fill="#fff"/></svg></div>
+        <span style="font-size:12px;font-weight:700;color:#161a22">Meeting Credits</span>
+      </div>
+      <div style="position:relative;font-size:11px;color:#8b93a1;margin-bottom:2px">Available</div>
+      <div style="position:relative;font-size:22px;font-weight:800;color:#161a22;margin-bottom:10px">{{credits.available}}<span style="font-size:13px;font-weight:600;color:#9aa1ad">/{{credits.total}}</span></div>
+      <div style="position:relative;display:flex;justify-content:space-between;font-size:10px;color:#9aa1ad;margin-bottom:6px">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:{{accentColor}};display:inline-block"></span>Used</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:#c7cbd6;display:inline-block"></span>Available</span>
+      </div>
+      <div style="position:relative;display:flex;gap:2px">
+        <sc-for list="{{credits.segments}}" as="seg" hint-placeholder-count="24">
+          <div style="height:20px;flex:1;border-radius:3px;background:{{seg.color}}"></div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="height:1px;background:#eef0f3;margin:0 10px 12px"></div>
+
+    <div style="padding:0 8px;margin-bottom:12px">
+      <div style="font-size:22px;font-weight:800;color:#1f8a5f;margin-bottom:2px">$1,837.90</div>
+      <div style="font-size:11.5px;color:#9aa1ad">Total account Balance</div>
+    </div>
+
+    <div style="height:1px;background:#eef0f3;margin:0 10px 10px"></div>
+
+    <div style="display:flex;align-items:center;gap:9px;padding:9px 10px;font-size:13px;font-weight:600;color:#4a5160;cursor:pointer">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.5" stroke="#9aa1ad" stroke-width="1.3"/><path d="M7.5 5V7.7L9.2 9" stroke="#9aa1ad" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Help &amp; Support
+    </div>
+    <div style="display:flex;align-items:center;gap:9px;padding:9px 10px;font-size:13px;font-weight:600;color:#e0554f;cursor:pointer" onClick="{{logout}}">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M6 2H3.5C2.7 2 2 2.7 2 3.5V11.5C2 12.3 2.7 13 3.5 13H6" stroke="#e0554f" stroke-width="1.3" stroke-linecap="round"/><path d="M9.5 10.5L13 7.5L9.5 4.5" stroke="#e0554f" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 7.5H6" stroke="#e0554f" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Log Out
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;background:#fbfbfc">
+    <div style="display:flex;align-items:center;gap:14px;padding:18px 28px;border-bottom:1px solid #eef0f3">
+      <div style="width:30px;height:30px;border-radius:8px;border:1px solid #e7e9ee;display:flex;align-items:center;justify-content:center;cursor:pointer">
+        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M8 1L2 6L8 11" stroke="#4a5160" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </div>
+      <div style="font-size:14.5px;font-weight:700;color:#161a22">Vendor workspace</div>
+      <div style="flex:1"></div>
+      <div style="position:relative;width:230px">
+        <svg width="13" height="13" viewBox="0 0 13 13" style="position:absolute;left:11px;top:50%;transform:translateY(-50%)" fill="none"><circle cx="5.5" cy="5.5" r="4.3" stroke="#aab1bd" stroke-width="1.3"/><path d="M8.6 8.6L12 12" stroke="#aab1bd" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <input value="{{searchQuery}}" onChange="{{onSearch}}" placeholder="Search" style="width:100%;box-sizing:border-box;padding:8px 10px 8px 32px;border-radius:8px;border:1px solid #e7e9ee;background:#fbfbfc;font-size:13px;font-family:inherit;outline:none"/>
+      </div>
+      <div style="position:relative">
+        <div onClick="{{toggleNotif}}" style="width:34px;height:34px;border-radius:9px;border:1px solid #e7e9ee;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5C5.6 1.5 4 3.1 4 5V7.3L2.8 9.7C2.6 10.1 2.9 10.5 3.3 10.5H11.7C12.1 10.5 12.4 10.1 12.2 9.7L11 7.3V5C11 3.1 9.4 1.5 7.5 1.5Z" stroke="#4a5160" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 12.2C6.2 12.9 6.8 13.3 7.5 13.3C8.2 13.3 8.8 12.9 9 12.2" stroke="#4a5160" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <sc-if value="{{hasNotif}}" hint-placeholder-val="{{true}}"><div style="position:absolute;top:6px;right:7px;width:6px;height:6px;border-radius:50%;background:#e0554f"></div></sc-if>
+        </div>
+        <sc-if value="{{notifOpen}}" hint-placeholder-val="{{false}}">
+          <div style="position:absolute;right:0;top:42px;width:260px;background:#fff;border:1px solid #eef0f3;border-radius:10px;box-shadow:0 10px 30px rgba(20,30,60,.12);padding:8px;z-index:20;animation:fadeIn .15s ease">
+            <div style="font-size:12px;font-weight:700;color:#161a22;padding:6px 8px 8px">Notifications</div>
+            <div style="padding:8px;border-radius:8px;font-size:12.5px;color:#4a5160">Marketing meeting request submitted, 10 min ago.</div>
+            <div style="padding:8px;border-radius:8px;font-size:12.5px;color:#4a5160">Sales request expired, 13 min ago.</div>
+          </div>
+        </sc-if>
+      </div>
+      <div style="position:relative">
+        <div onClick="{{toggleAvatar}}" style="width:34px;height:34px;border-radius:9px;background:{{accentColor}};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;cursor:pointer">{{avatarInitial}}</div>
+        <sc-if value="{{avatarOpen}}" hint-placeholder-val="{{false}}">
+          <div style="position:absolute;right:0;top:42px;width:170px;background:#fff;border:1px solid #eef0f3;border-radius:10px;box-shadow:0 10px 30px rgba(20,30,60,.12);padding:6px;z-index:20;animation:fadeIn .15s ease">
+            <div style="padding:8px 10px;font-size:13px;font-weight:600;color:#4a5160;border-radius:7px;cursor:pointer">Profile settings</div>
+            <div onClick="{{logout}}" style="padding:8px 10px;font-size:13px;font-weight:600;color:#e0554f;border-radius:7px;cursor:pointer">Log out</div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <div style="flex:1;overflow:auto;padding:20px">
+
+      <sc-if value="{{isDashboard}}" hint-placeholder-val="{{true}}">
+      <div style="animation:fadeIn .2s ease;background:#fff;border:1px solid #eef0f3;border-radius:16px;box-shadow:0 1px 2px rgba(20,30,60,.03);padding:{{pad.outer}}">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;border:1px solid #eef0f3;border-radius:12px;padding:{{pad.card}};margin-bottom:20px">
+        <div>
+          <div style="font-size:12.5px;color:#9aa1ad;font-weight:600;margin-bottom:4px">My workspace</div>
+          <div style="font-size:24px;font-weight:800;color:#161a22;letter-spacing:-.3px">Good evening, {{greetingName}}</div>
+        </div>
+        <div onClick="{{openCreateModal}}" style="display:flex;align-items:center;gap:7px;background:{{accentColor}};color:#fff;font-size:13.5px;font-weight:700;padding:11px 18px;border-radius:9px;cursor:pointer;box-shadow:0 6px 16px -6px {{accentColor}}">
+          <svg width="13" height="13" viewBox="0 0 13 13"><path d="M6.5 1V12M1 6.5H12" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+          Create campaign
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px">
+        <sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
+          <div style="position:relative">
+            <div style="position:relative;z-index:2;border:1px solid #eef0f3;border-radius:12px;overflow:hidden;padding:{{pad.card}};background:radial-gradient(130% 130% at 100% 0%,{{s.tint}} 0%,#fff 65%)">
+              <div style="position:absolute;inset:0;pointer-events:none;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%27http://www.w3.org/2000/svg%27 width=%27140%27 height=%27140%27&gt;&lt;g fill=%27white%27&gt;&lt;path d=%27M14,6L15.4,12L21,13.5L15.4,15L14,21L12.6,15L7,13.5L12.6,12Z%27/&gt;&lt;path d=%27M78,10L79.1,14.5L83.5,15.6L79.1,16.7L78,21L76.9,16.7L72.5,15.6L76.9,14.5Z%27 opacity=%270.7%27/&gt;&lt;path d=%27M112,50L113.7,56L119.5,57.7L113.7,59.4L112,65L110.3,59.4L104.5,57.7L110.3,56Z%27/&gt;&lt;path d=%27M35,68L36.1,72.5L40.5,73.6L36.1,74.7L35,79L33.9,74.7L29.5,73.6L33.9,72.5Z%27 opacity=%270.6%27/&gt;&lt;path d=%27M92,88L93.4,93L98,94.5L93.4,96L92,101L90.6,96L86,94.5L90.6,93Z%27 opacity=%270.8%27/&gt;&lt;path d=%27M55,38L56,41.7L59.7,42.7L56,43.7L55,47.4L54,43.7L50.3,42.7L54,41.7Z%27 opacity=%270.5%27/&gt;&lt;path d=%27M8,95L8.9,98.2L12,99L8.9,99.8L8,103L7.1,99.8L4,99L7.1,98.2Z%27 opacity=%270.55%27/&gt;&lt;/g&gt;&lt;/svg&gt;');background-size:140px 140px;-webkit-mask-image:radial-gradient(130% 130% at 100% 0%,#000 0%,transparent 85%);mask-image:radial-gradient(130% 130% at 100% 0%,#000 0%,transparent 85%)"></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px">
+                <div style="display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden">
+                  <div style="width:28px;height:28px;flex:none;border-radius:9px;background:{{s.iconBg}};box-shadow:0 4px 8px {{s.iconShadow}};display:flex;align-items:center;justify-content:center">{{s.icon}}</div>
+                  <span style="font-size:12.5px;font-weight:700;color:#161a22;line-height:1.25">{{s.label}}</span>
+                </div>
+                <span style="font-size:10.5px;font-weight:700;color:#4a5160;background:#fff;border:1px solid #eef0f3;padding:5px 10px;border-radius:8px;cursor:pointer;white-space:nowrap;flex:none">View All</span>
+              </div>
+              <div style="font-size:26px;font-weight:800;color:#161a22;margin-bottom:4px">{{s.value}}</div>
+              <div style="font-size:11.5px;color:#9aa1ad">{{s.sub}}</div>
+            </div>
+            <div style="position:relative;z-index:1;margin:-10px 1.5px 0;border:1px solid #eef0f3;border-radius:0 0 12px 12px;padding:18px calc({{pad.card}} - 1.5px) 10px;background:#eef0f2;font-size:11.5px;font-weight:700;color:#1f9d5c;display:flex;align-items:center;justify-content:space-between">
+              <span style="display:flex;align-items:center;gap:4px"><svg width="8" height="8" viewBox="0 0 8 8"><path d="M4 1L7 6H1L4 1Z" fill="#1f9d5c"/></svg>+0.28%</span>
+              <span style="color:#9aa1ad;font-weight:500">vs. last week</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:grid;grid-template-columns:minmax(320px,2.15fr) minmax(260px,1fr);gap:16px;margin-bottom:20px">
+        <div style="border:1px solid #eef0f3;border-radius:12px;padding:{{pad.card}}">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <span style="font-size:14px;font-weight:700;color:#161a22">Recent Meeting Request</span>
+            <span style="font-size:11px;font-weight:700;color:#4a5160;background:#fff;border:1px solid #eef0f3;padding:5px 12px;border-radius:8px;cursor:pointer;white-space:nowrap">View All</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(90px,1.5fr) minmax(70px,1.3fr) minmax(70px,1.3fr) minmax(70px,1.1fr);padding:8px 10px;border-bottom:1px solid #f0f1f4">
+            <div onClick="{{sortBy('title')}}" style="font-size:11.5px;font-weight:600;color:#9aa1ad;cursor:pointer;display:flex;align-items:center;gap:4px">Title {{sortArrow.title}}</div>
+            <div onClick="{{sortBy('company')}}" style="font-size:11.5px;font-weight:600;color:#9aa1ad;cursor:pointer;display:flex;align-items:center;gap:4px">Company {{sortArrow.company}}</div>
+            <div onClick="{{sortBy('status')}}" style="font-size:11.5px;font-weight:600;color:#9aa1ad;cursor:pointer;display:flex;align-items:center;gap:4px">Status {{sortArrow.status}}</div>
+            <div onClick="{{sortBy('requested')}}" style="font-size:11.5px;font-weight:600;color:#9aa1ad;cursor:pointer;display:flex;align-items:center;gap:4px">Requested {{sortArrow.requested}}</div>
+          </div>
+          <sc-for list="{{filteredRequests}}" as="r" hint-placeholder-count="5">
+            <div style="display:grid;grid-template-columns:minmax(90px,1.5fr) minmax(70px,1.3fr) minmax(70px,1.3fr) minmax(70px,1.1fr);padding:{{pad.row}};align-items:center;border-bottom:1px solid #f6f7f9">
+              <div style="font-size:13px;font-weight:600;color:#161a22">{{r.title}}</div>
+              <div style="font-size:13px;color:#4a5160">{{r.company}}</div>
+              <div><span style="font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:6px;background:{{r.badgeBg}};color:{{r.badgeColor}}">{{r.status}}</span></div>
+              <div style="font-size:12.5px;color:#9aa1ad">{{r.requestedLabel}}</div>
+            </div>
+          </sc-for>
+          <sc-if value="{{noResults}}" hint-placeholder-val="{{false}}">
+            <div style="padding:24px;text-align:center;font-size:13px;color:#9aa1ad">No results for "{{searchQuery}}"</div>
+          </sc-if>
+        </div>
+
+        <div style="border:1px solid #eef0f3;border-radius:12px;padding:{{pad.card}}">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <span style="font-size:14px;font-weight:700;color:#161a22">Upcoming Meetings</span>
+            <span style="font-size:11px;font-weight:700;color:#4a5160;background:#fff;border:1px solid #eef0f3;padding:5px 12px;border-radius:8px;cursor:pointer;white-space:nowrap">View All</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{upcomingMeetings}}" as="m" hint-placeholder-count="2">
+              <div style="border:1px solid #eef0f3;border-radius:10px;padding:12px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                  <span style="font-size:13px;font-weight:700;color:#161a22">{{m.title}}</span>
+                  <span style="font-size:11.5px;color:#9aa1ad;font-weight:600">{{m.company}}</span>
+                </div>
+                <div style="display:flex;gap:6px;margin-bottom:10px">
+                  <span style="font-size:11px;font-weight:600;color:#4a5160;background:#f3f4f7;padding:4px 8px;border-radius:6px">{{m.date}}</span>
+                  <span style="font-size:11px;font-weight:600;color:#4a5160;background:#f3f4f7;padding:4px 8px;border-radius:6px">{{m.duration}}</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between">
+                  <span style="font-size:12px;color:#9aa1ad;font-weight:600">{{m.time}}</span>
+                  <div style="display:flex">
+                    <div style="width:22px;height:22px;border-radius:50%;background:#dbe4f5;border:2px solid #fff;margin-left:-6px"></div>
+                    <div style="width:22px;height:22px;border-radius:50%;background:{{accentColor}};border:2px solid #fff;margin-left:-6px"></div>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="border:1px solid #eef0f3;border-radius:12px;padding:{{pad.card}}">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <span style="font-size:14px;font-weight:700;color:#161a22">Active Campaigns</span>
+          <span style="font-size:11px;font-weight:700;color:#4a5160;background:#fff;border:1px solid #eef0f3;padding:5px 12px;border-radius:8px;cursor:pointer;white-space:nowrap">View All</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+          <sc-for list="{{campaigns}}" as="c" hint-placeholder-count="4">
+            <div style="position:relative">
+              <div style="position:relative;z-index:2;border:1px solid #eef0f3;border-radius:10px;overflow:hidden;padding:14px;background:#fff">
+                <div style="position:absolute;left:-20%;bottom:-40%;width:140%;height:80%;background:radial-gradient(closest-side,{{c.tint}}aa,transparent 75%);pointer-events:none"></div>
+                <div style="position:relative;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                  <span style="font-size:10.5px;font-weight:600;padding:3px 9px 3px 7px;border-radius:20px;background:#fff;border:1px solid {{c.badgeColor}}33;color:{{c.badgeColor}};display:flex;align-items:center;gap:4px">
+                    <svg width="10" height="10" viewBox="0 0 11 11"><circle cx="5.5" cy="5.5" r="5" stroke="{{c.badgeColor}}" stroke-width="1.1" fill="none"/><path d="M3.3 5.6L4.8 7L7.7 4" stroke="{{c.badgeColor}}" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                    {{c.status}}
+                  </span>
+                  <span style="font-size:11px;color:#9aa1ad;font-weight:500">{{c.date}}</span>
+                </div>
+                <div style="position:relative;font-size:13px;font-weight:600;color:#161a22;margin-bottom:5px">{{c.title}}</div>
+                <div style="position:relative;font-size:11.5px;color:#9aa1ad;line-height:1.4;margin-bottom:12px;min-height:32px">{{c.desc}}</div>
+                <div style="position:relative;display:flex;gap:6px;flex-wrap:wrap">
+                  <sc-for list="{{c.tags}}" as="tag" hint-placeholder-count="2">
+                    <span style="font-size:10px;font-weight:500;color:#4a5160;background:#fff;border:1px solid #eef0f3;padding:3px 11px;border-radius:20px">{{tag}}</span>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="position:relative;z-index:1;margin:-10px 1.5px 0;display:flex;align-items:center;justify-content:space-between;border:1px solid #eef0f3;border-radius:0 0 10px 10px;padding:18px 12.5px 10px;background:#eef0f2;font-size:12px;font-weight:700;color:#4a5160;cursor:pointer">
+                View All <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5H8M8 5L5.5 2.5M8 5L5.5 7.5" stroke="#4a5160" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{isDashboard}}" hint-placeholder-val="{{false}}">
+        <div style="display:none"></div>
+      </sc-if>
+      <sc-if value="{{activeNav}}" hint-placeholder-val="{{false}}">
+      </sc-if>
+
+      <sc-if value="{{showPlaceholder}}" hint-placeholder-val="{{false}}">
+        <div style="height:100%;min-height:400px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;animation:fadeIn .2s ease">
+          <div style="width:56px;height:56px;border-radius:14px;background:#f0f1f4;display:flex;align-items:center;justify-content:center">
+            <svg width="24" height="24" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4" stroke="#aab1bd" stroke-width="1.6" fill="none"/><path d="M8 12H16" stroke="#aab1bd" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <div style="font-size:15px;font-weight:700;color:#161a22">{{activePageLabel}}</div>
+          <div style="font-size:13px;color:#9aa1ad">This section is coming soon.</div>
+          <div onClick="{{goDashboard}}" style="margin-top:6px;font-size:13px;font-weight:700;color:{{accentColor}};cursor:pointer">← Back to Dashboard</div>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<sc-if value="{{createModalOpen}}" hint-placeholder-val="{{false}}">
+  <div onClick="{{closeCreateModal}}" style="position:fixed;inset:0;background:rgba(20,25,40,.4);display:flex;align-items:center;justify-content:center;z-index:50;animation:fadeIn .15s ease">
+    <div onClick="{{stop}}" style="width:400px;background:#fff;border-radius:14px;padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.25)">
+      <div style="font-size:16px;font-weight:800;color:#161a22;margin-bottom:6px">Create campaign</div>
+      <div style="font-size:13px;color:#9aa1ad;margin-bottom:18px">Give your campaign a name to get started.</div>
+      <input value="{{newCampaignName}}" onChange="{{onCampaignName}}" placeholder="Campaign name" style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:9px;border:1px solid #e7e9ee;font-size:13.5px;font-family:inherit;outline:none;margin-bottom:16px"/>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <div onClick="{{closeCreateModal}}" style="padding:9px 16px;border-radius:8px;font-size:13px;font-weight:700;color:#4a5160;cursor:pointer">Cancel</div>
+        <div onClick="{{submitCampaign}}" style="padding:9px 16px;border-radius:8px;font-size:13px;font-weight:700;color:#fff;background:{{accentColor}};cursor:pointer">Create</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2f6fed&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#2f6fed&quot;,&quot;#7c3aed&quot;,&quot;#0f9d58&quot;,&quot;#e0554f&quot;]},&quot;greetingName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Farhan&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;comfortable&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;comfortable&quot;,&quot;compact&quot;]}}">
+class Component extends DCLogic {
+  state = {
+    activeNav: 'dashboard',
+    searchQuery: '',
+    sortCol: null,
+    sortDir: 'asc',
+    notifOpen: false,
+    avatarOpen: false,
+    createModalOpen: false,
+    newCampaignName: '',
+  };
+
+  requests = [
+    { id:1, title:'Director of IT Infrastructur', company:'Tech Systems', status:'Under review', minutesAgo:5 },
+    { id:2, title:'Marketing', company:'Debox Agency', status:'Submitted', minutesAgo:10 },
+    { id:3, title:'Sales', company:'Cloves co', status:'Expired', minutesAgo:13 },
+    { id:4, title:'Lead of Sales', company:'Desktive', status:'Schedule', minutesAgo:20 },
+    { id:5, title:'Creative', company:'Advance', status:'Pending Schedule', minutesAgo:45 },
+  ];
+
+  statusColors = {
+    'Under review': { bg:'#fdf1dd', color:'#b3791a' },
+    'Submitted': { bg:'#e5f6ea', color:'#1f9d5c' },
+    'Expired': { bg:'#fdeaea', color:'#d8514b' },
+    'Schedule': { bg:'#e6effd', color:'#2f6fed' },
+    'Pending Schedule': { bg:'#fdf1dd', color:'#b3791a' },
+    'Live Now': { bg:'#e5f6ea', color:'#1f9d5c' },
+  };
+
+  navLabels = {
+    dashboard:'Dashboard', profile:'Business Profile', campaigns:'Campaigns', availability:'Availability',
+    request:'Request', schedule:'Schedule', completed:'Completed', credits:'Meeting Credits',
+  };
+
+  setNav(id){ this.setState({ activeNav:id, notifOpen:false, avatarOpen:false }); }
+
+  sortBy(col){
+    return () => {
+      this.setState(s => ({
+        sortCol: col,
+        sortDir: s.sortCol === col && s.sortDir === 'asc' ? 'desc' : 'asc',
+      }));
+    };
+  }
+
+  icon(paths){ return React.createElement('div', { style:{width:'100%',height:'100%',display:'flex',alignItems:'center',justifyContent:'center'}, dangerouslySetInnerHTML:{__html:paths} }); }
+
+  renderVals(){
+    const accentColor = this.props.accentColor ?? '#2f6fed';
+    const density = this.props.density ?? 'comfortable';
+    const compact = density === 'compact';
+    const pad = {
+      outer: compact ? '16px 18px' : '20px 22px',
+      card: compact ? '14px' : '18px',
+      row: compact ? '9px 10px' : '13px 10px',
+    };
+
+    const q = (this.state.searchQuery || '').toLowerCase();
+    let rows = this.requests.filter(r => !q || r.title.toLowerCase().includes(q) || r.company.toLowerCase().includes(q));
+    if (this.state.sortCol) {
+      const col = this.state.sortCol;
+      rows = [...rows].sort((a,b) => {
+        let av, bv;
+        if (col === 'requested') { av = a.minutesAgo; bv = b.minutesAgo; }
+        else { av = a[col]; bv = b[col]; }
+        if (typeof av === 'string') { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+        const cmp = av < bv ? -1 : av > bv ? 1 : 0;
+        return this.state.sortDir === 'asc' ? cmp : -cmp;
+      });
+    }
+    const filteredRequests = rows.map(r => ({
+      ...r,
+      requestedLabel: `${r.minutesAgo} min ago`,
+      badgeBg: this.statusColors[r.status].bg,
+      badgeColor: this.statusColors[r.status].color,
+    }));
+
+    const arrow = (col) => this.state.sortCol === col ? (this.state.sortDir === 'asc' ? '↑' : '↓') : '';
+
+    const navGroups = [
+      { label:null, items:[
+        { label:'Dashboard', icon: this.icon('<svg width="16" height="16" viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".4"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".4"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor"/></svg>'),
+          bg: this.state.activeNav==='dashboard' ? accentColor+'1a' : 'transparent', color: this.state.activeNav==='dashboard' ? accentColor : '#4a5160', iconColor: this.state.activeNav==='dashboard' ? accentColor : '#9aa1ad',
+          onClick: () => this.setNav('dashboard') },
+      ]},
+      { label:'BUSINESS', divider:true, items:[
+        { label:'Business Profile', icon: this.icon('<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.2" r="2.6" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14C2.5 11 5 9.3 8 9.3C11 9.3 13.5 11 13.5 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'),
+          bg: this.state.activeNav==='profile' ? accentColor+'1a' : 'transparent', color: this.state.activeNav==='profile' ? accentColor : '#4a5160', iconColor: this.state.activeNav==='profile' ? accentColor : '#9aa1ad',
+          onClick: () => this.setNav('profile') },
+        { label:'Campaigns', icon: this.icon('<svg width="16" height="16" viewBox="0 0 16 16"><rect x="1.5" y="9" width="3" height="5.5" rx="1" fill="currentColor"/><rect x="6.5" y="5" width="3" height="9.5" rx="1" fill="currentColor" opacity=".65"/><rect x="11.5" y="1.5" width="3" height="13" rx="1" fill="currentColor" opacity=".4"/></svg>'),
+          bg: this.state.activeNav==='campaigns' ? accentColor+'1a' : 'transparent', color: this.state.activeNav==='campaigns' ? accentColor : '#4a5160', iconColor: this.state.activeNav==='campaigns' ? accentColor : '#9aa1ad',
+          onClick: () => this.setNav('campaigns') },
+        { label:'Availability', icon: this.icon('<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.3" stroke="currentColor" stroke-width="1.4"/><path d="M8 4.5V8L10.5 9.7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'),
+          bg: this.state.activeNav==='availability' ? accentColor+'1a' : 'transparent', color: this.state.activeNav==='availability' ? accentColor : '#4a5160', iconColor: this.state.activeNav==='availability' ? accentColor : '#9aa1ad',
+          onClick: () => this.setNav('availability') },
+      ]},
+      { label:'MEETINGS', divider:true, items:[
+        { label:'Request', icon: this.icon('<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="1.5" width="10" height="13" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 5.5H10.5M5.5 8.5H10.5M5.5 11.5H8.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>'),
+          bg: this.state.activeNav==='request' ? accentColor+'1a' : 'transparent', color: this.state.activeNav==='request' ? accentColor : '#4a5160', iconColor: this.state.activeNav==='request' ? accentColor : '#9aa1ad',
+          onClick: () => this.setNav('request') },
+        { label:'Schedule', icon: this.icon('<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 6.5H14" stroke="currentColor" stroke-width="1.3"/><path d="M5.2 1.5V4.2M10.8 1.5V4.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>'),
+          bg: this.state.activeNav==='schedule' ? accentColor+'1a' : 'transparent', color: this.state.activeNav==='schedule' ? accentColor : '#4a5160', iconColor: this.state.activeNav==='schedule' ? accentColor : '#9aa1ad',
+          onClick: () => this.setNav('schedule') },
+        { label:'Completed', icon: this.icon('<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.3" stroke="currentColor" stroke-width="1.3"/><path d="M5.3 8.2L7.2 10L10.7 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'),
+          bg: this.state.activeNav==='completed' ? accentColor+'1a' : 'transparent', color: this.state.activeNav==='completed' ? accentColor : '#4a5160', iconColor: this.state.activeNav==='completed' ? accentColor : '#9aa1ad',
+          onClick: () => this.setNav('completed') },
+      ]},
+      { label:'ACCOUNT', divider:true, items:[
+        { label:'Meeting Credits', icon: this.icon('<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="4" width="13" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 7H14.5" stroke="currentColor" stroke-width="1.3"/></svg>'),
+          bg: this.state.activeNav==='credits' ? accentColor+'1a' : 'transparent', color: this.state.activeNav==='credits' ? accentColor : '#4a5160', iconColor: this.state.activeNav==='credits' ? accentColor : '#9aa1ad',
+          onClick: () => this.setNav('credits') },
+      ]},
+    ];
+
+    return {
+      accentColor,
+      pad,
+      isDashboard: this.state.activeNav === 'dashboard',
+      showPlaceholder: this.state.activeNav !== 'dashboard',
+      activePageLabel: this.navLabels[this.state.activeNav],
+      goDashboard: () => this.setNav('dashboard'),
+      navGroups,
+      credits: (() => {
+        const total = 50, available = 24, pct = Math.round(available/total*100);
+        const segCount = 24, filled = Math.round(segCount * pct / 100);
+        const segments = Array.from({length:segCount}, (_,i) => ({ color: i < filled ? `linear-gradient(180deg, ${accentColor}, color-mix(in srgb, ${accentColor} 55%, #fff))` : '#dfe3ee' }));
+        return { available, total, pct, segments };
+      })(),
+      greetingName: this.props.greetingName ?? 'Farhan',
+      hasNotif: true,
+      notifOpen: this.state.notifOpen,
+      avatarOpen: this.state.avatarOpen,
+      toggleNotif: () => this.setState(s => ({ notifOpen: !s.notifOpen, avatarOpen:false })),
+      toggleAvatar: () => this.setState(s => ({ avatarOpen: !s.avatarOpen, notifOpen:false })),
+      avatarInitial: (this.props.greetingName ?? 'Farhan').charAt(0).toUpperCase(),
+      logout: () => alert('Logged out (demo)'),
+      searchQuery: this.state.searchQuery,
+      onSearch: (e) => this.setState({ searchQuery: e.target.value }),
+      sortBy: (col) => this.sortBy(col),
+      sortArrow: { title: arrow('title'), company: arrow('company'), status: arrow('status'), requested: arrow('requested') },
+      filteredRequests,
+      noResults: filteredRequests.length === 0,
+      stats: [
+        { label:'New Request', value:1, sub:'Pending Review', iconBg:'linear-gradient(135deg,#f2726c,#d8433d)', iconShadow:'rgba(216,67,61,.4)', tint:'#fbd2ce', icon: this.icon('<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="1.5" width="10" height="11" rx="1.5" stroke="#fff" stroke-width="1.3"/><path d="M4.5 5H9.5M4.5 7.5H9.5M4.5 10H7.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/></svg>') },
+        { label:'New Feedback', value:0, sub:'This week', iconBg:'linear-gradient(135deg,#f3bb5c,#dc9420)', iconShadow:'rgba(220,148,32,.4)', tint:'#fbe3b8', icon: this.icon('<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="2.5" width="11" height="8" rx="2" stroke="#fff" stroke-width="1.3"/><path d="M4.5 12.5L6.5 10.5H9" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>') },
+        { label:'Meeting Request', value:2, sub:'Total Active', iconBg:'linear-gradient(135deg,#f2726c,#d8433d)', iconShadow:'rgba(216,67,61,.4)', tint:'#fbd2ce', icon: this.icon('<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="2.5" width="11" height="10" rx="1.5" stroke="#fff" stroke-width="1.3"/><path d="M1.5 5.5H12.5" stroke="#fff" stroke-width="1.3"/><path d="M4.2 1V3.2M9.8 1V3.2" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>') },
+        { label:'Schedule', value:1, sub:'Upcoming', iconBg:'linear-gradient(135deg,#4cc487,#1f9155)', iconShadow:'rgba(31,145,85,.4)', tint:'#c9f0d3', icon: this.icon('<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="2.5" width="11" height="10" rx="1.5" stroke="#fff" stroke-width="1.3"/><path d="M1.5 5.5H12.5" stroke="#fff" stroke-width="1.3"/><path d="M4.2 1V3.2M9.8 1V3.2" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>') },
+      ],
+      upcomingMeetings: [
+        { title:'Director of IT', company:'Debox Agency', date:'Apr 14, 2026', duration:'30 minute', time:'10:00 AM' },
+        { title:'Director of IT', company:'Debox Agency', date:'Apr 14, 2026', duration:'30 minute', time:'10:00 AM' },
+      ],
+      campaigns: [
+        { status:'Live Now', badgeBg:this.statusColors['Live Now'].bg, badgeColor:this.statusColors['Live Now'].color, date:'Apr 14, 2026', title:'Quarterly Marketing Planning', desc:'Plan upcoming campaigns and growth opportunities.', tags:['Marketing','Growth'], tint:'#eefaf1' },
+        { status:'Under review', badgeBg:this.statusColors['Under review'].bg, badgeColor:this.statusColors['Under review'].color, date:'Apr 14, 2026', title:'Revenue Performance Review', desc:'Evaluate sales performance and business growth metrics.', tags:['Sales Report','Perfomance'], tint:'#fdf6ec' },
+        { status:'Live Now', badgeBg:this.statusColors['Live Now'].bg, badgeColor:this.statusColors['Live Now'].color, date:'Apr 14, 2026', title:'Budget & Finance Review', desc:'Review spending, forecasts, and financial objectives.', tags:['Manage Finance','Financial'], tint:'#eef4fc' },
+        { status:'Schedule', badgeBg:this.statusColors['Schedule'].bg, badgeColor:this.statusColors['Schedule'].color, date:'Apr 14, 2026', title:'Digital Innovation Meeting', desc:'Discuss digital projects and strategic technology initiatives.', tags:['Digital Planner','Strategic'], tint:'#eef4fc' },
+      ],
+      createModalOpen: this.state.createModalOpen,
+      openCreateModal: () => this.setState({ createModalOpen:true, newCampaignName:'' }),
+      closeCreateModal: () => this.setState({ createModalOpen:false }),
+      stop: (e) => e.stopPropagation(),
+      newCampaignName: this.state.newCampaignName,
+      onCampaignName: (e) => this.setState({ newCampaignName: e.target.value }),
+      submitCampaign: () => { alert(`Campaign "${this.state.newCampaignName || 'Untitled'}" created (demo)`); this.setState({ createModalOpen:false }); },
+    };
+  }
+}
+</script>
+</body>
+</html>
