@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLanguage } from "../../i18n/LanguageContext.jsx";
 import { C, SimShell, ToggleBadge, RunButton, SvgNode, SvgText, Wire, useParticles, useTimers } from "../../illustrations/simKit.jsx";
 
@@ -18,6 +18,16 @@ export default function CapTheoremIllustration() {
   const [valA, setValA] = useState("v1");
   const [valB, setValB] = useState("v1");
   const [readResult, setReadResult] = useState(null); // null | "stale" | "error" | "ok"
+
+  useEffect(() => {
+    timers.clear();
+    setRunning(false);
+    setPhase("idle");
+    setValA("v1");
+    setValB("v1");
+    setReadResult(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cp]);
 
   function run() {
     if (running) return;

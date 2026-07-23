@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLanguage } from "../../i18n/LanguageContext.jsx";
 import { C, SimShell, ToggleBadge, RunButton, SvgNode, SvgText, Wire, useTimers } from "../../illustrations/simKit.jsx";
 
@@ -18,6 +18,15 @@ export default function DatabaseIndexIllustration() {
   const [visited, setVisited] = useState([]); // row indices touched
   const [treeStep, setTreeStep] = useState(0); // 0 none, 1 root, 2 leaf, 3 row
   const [steps, setSteps] = useState(null);
+
+  useEffect(() => {
+    timers.clear();
+    setRunning(false);
+    setVisited([]);
+    setTreeStep(0);
+    setSteps(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [indexed]);
 
   function run() {
     if (running) return;

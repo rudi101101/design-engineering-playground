@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLanguage } from "../../i18n/LanguageContext.jsx";
 import { C, SimShell, ToggleBadge, RunButton, SvgNode, SvgText, Wire, useParticles, useTimers } from "../../illustrations/simKit.jsx";
 
@@ -21,6 +21,16 @@ export default function ConnectionPoolingIllustration() {
   const [rejected, setRejected] = useState(0);
   const [openConns, setOpenConns] = useState(0);
   const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    timers.clear();
+    setRunning(false);
+    setServed(0);
+    setRejected(0);
+    setOpenConns(0);
+    setDone(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pooled]);
 
   const clientY = (i) => 30 + i * 26;
 

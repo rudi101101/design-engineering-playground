@@ -55,7 +55,18 @@ export default function SurrogateKeyIllustration() {
       header={s.header}
       controls={
         <>
-          <ToggleBadge on={surrogate} onClick={() => !running && setSurrogate((v) => !v)} labelOn={isId ? "SURROGATE KEY (id)" : "SURROGATE KEY (id)"} labelOff={isId ? "NATURAL KEY (email)" : "NATURAL KEY (email)"} tagOn={isId ? "tidak pernah berubah" : "never changes"} tagOff={isId ? "bisa berubah" : "can change"} />
+          <ToggleBadge
+            on={surrogate}
+            onClick={() => {
+              if (running) return;
+              setSurrogate((v) => !v);
+              setPhase("idle");
+            }}
+            labelOn={isId ? "SURROGATE KEY (id)" : "SURROGATE KEY (id)"}
+            labelOff={isId ? "NATURAL KEY (email)" : "NATURAL KEY (email)"}
+            tagOn={isId ? "tidak pernah berubah" : "never changes"}
+            tagOff={isId ? "bisa berubah" : "can change"}
+          />
           <RunButton onClick={run} disabled={running}>
             {running ? s.running : s.run}
           </RunButton>

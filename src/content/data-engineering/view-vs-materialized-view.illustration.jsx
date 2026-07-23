@@ -90,7 +90,7 @@ export default function ViewVsMaterializedViewIllustration() {
         </>
       }
       badge={latency ? `${isId ? "LATENSI" : "LATENCY"}: ${latency}` : null}
-      badgeColor={materialized ? C.green : C.amber}
+      badgeColor={latency === "~4ms" ? C.green : C.amber}
       caption={caption}
       cells={[
         { l: "TYPE", v: materialized ? "materialized" : "regular" },

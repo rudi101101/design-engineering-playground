@@ -92,7 +92,20 @@ export default function SequenceAutoIncrementIllustration() {
       header={s.header}
       controls={
         <>
-          <ToggleBadge on={useSeq} onClick={() => !running && setUseSeq((v) => !v)} labelOn="SEQUENCE" labelOff="MAX(id) + 1" tagOn={isId ? "atomik" : "atomic"} tagOff={isId ? "rawan race" : "race-prone"} />
+          <ToggleBadge
+            on={useSeq}
+            onClick={() => {
+              if (running) return;
+              setUseSeq((v) => !v);
+              setIds([]);
+              setConflict(false);
+              setSeqVal(4);
+            }}
+            labelOn="SEQUENCE"
+            labelOff="MAX(id) + 1"
+            tagOn={isId ? "atomik" : "atomic"}
+            tagOff={isId ? "rawan race" : "race-prone"}
+          />
           <RunButton onClick={run} disabled={running}>
             {running ? s.running : s.run}
           </RunButton>

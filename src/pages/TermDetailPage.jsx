@@ -140,10 +140,10 @@ export default function TermDetailPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[1440px] px-5 py-5 sm:px-7">
-        <div className="flex flex-col gap-6 lg:flex-row">
-          {/* Left: continuous scroll narrative inside one outer card, Dashboard body pattern */}
-          <div className="min-w-0 flex-1">
+      <div className="flex flex-col lg:flex-row">
+        {/* Left: continuous scroll narrative inside one outer card, Dashboard body pattern */}
+        <div className="min-w-0 flex-1 lg:mr-[460px] xl:mr-[560px]">
+          <div className="mx-auto max-w-[860px] px-5 py-5 sm:px-7">
             <div className="rounded-[16px] border border-hairline-border bg-pure-white p-4 shadow-[var(--shadow-card)] sm:p-[22px]">
               <div className="relative mb-4">
                 <div
@@ -252,20 +252,17 @@ export default function TermDetailPage() {
               </div>
             )}
           </div>
-            </div>
           </div>
+          </div>
+        </div>
 
-          {/* Right: diagram pinned while the narrative scrolls */}
-          <div className="w-full shrink-0 lg:sticky lg:top-6 lg:h-fit lg:w-[560px]">
-            {CustomIllustration ? (
-              <CustomIllustration term={term} />
-            ) : (
-              <Illustration simKey={term.simulation} color={term.color} label={term.name[lang] || term.name.id} />
-            )}
-            {activeSection && (
-              <p className="mt-3 text-center text-[10.5px] font-bold uppercase tracking-[0.6px] text-faint-gray">{activeSection}</p>
-            )}
-          </div>
+        {/* Right: diagram docked full-bleed and full-height — truly fixed to the viewport, never scrolls */}
+        <div className="w-full shrink-0 lg:fixed lg:right-0 lg:top-0 lg:h-screen lg:w-[460px] xl:w-[560px]">
+          {CustomIllustration ? (
+            <CustomIllustration term={term} />
+          ) : (
+            <Illustration simKey={term.simulation} color={term.color} label={term.name[lang] || term.name.id} footer={activeSection} />
+          )}
         </div>
       </div>
     </div>

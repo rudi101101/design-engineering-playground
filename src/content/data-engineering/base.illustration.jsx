@@ -131,33 +131,31 @@ export default function BaseIllustration() {
   if (writeState !== "idle") caption = strong ? strings.strongCaption : strings.baseCaption;
 
   return (
-    <div className="rounded-[20px] border border-hairline-border bg-pure-white p-4 shadow-[var(--shadow-card)] sm:p-5">
-      <div className="mb-3 flex items-center gap-2">
-        <span className="h-1.5 w-1.5 rounded-full bg-indigo-primary" style={{ animation: "dep-pulse 2s ease-in-out infinite" }} />
-        <span className="text-caption font-semibold uppercase tracking-wide text-faint-gray">{strings.header}</span>
+    <div className="flex h-full w-full flex-col overflow-y-auto bg-ink px-6 py-6">
+      <div className="mb-4 flex items-center gap-2">
+        <span className="h-1.5 w-1.5 rounded-full bg-[#4fd1ff]" style={{ animation: "dep-pulse 2s ease-in-out infinite" }} />
+        <span className="text-[10.5px] font-bold uppercase tracking-[0.6px] text-white/40">{strings.header}</span>
       </div>
 
-      <div className="mb-3 flex flex-wrap items-center justify-center gap-2">
+      <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
         <button
           type="button"
           onClick={() => setStrong((v) => !v)}
-          className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-caption font-bold tracking-wide transition"
+          className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[11px] font-bold tracking-wide transition"
           style={
             strong
-              ? { color: "#2f6fed", borderColor: "#2f6fed55", background: "#e6effd", boxShadow: "0 0 18px -6px #2f6fed55" }
-              : { color: "#1f9d5c", borderColor: "#1f9d5c55", background: "#e5f6ea", boxShadow: "0 0 18px -6px #1f9d5c55" }
+              ? { color: "#7c9dff", borderColor: "#2f6fed55", background: "#2f6fed22", boxShadow: "0 0 18px -6px #2f6fed88" }
+              : { color: "#4ade80", borderColor: "#1f9d5c55", background: "#1f9d5c22", boxShadow: "0 0 18px -6px #1f9d5c88" }
           }
         >
           {strong ? strings.strongLabel : strings.baseLabel}
-          <span className="font-medium" style={{ color: strong ? "#2f6fed99" : "#1f9d5c99" }}>
-            {strong ? strings.strongTag : strings.baseTag}
-          </span>
+          <span className="font-medium opacity-80">{strong ? strings.strongTag : strings.baseTag}</span>
         </button>
         <button
           type="button"
           onClick={write}
           disabled={writeState === "waiting"}
-          className="rounded-full border px-4 py-1.5 text-caption font-bold tracking-wide text-white transition disabled:opacity-50"
+          className="rounded-full border px-4 py-1.5 text-[11px] font-bold tracking-wide text-white transition disabled:opacity-50"
           style={{ background: "#2f6fed", borderColor: "#2f6fed" }}
         >
           {strings.write}
@@ -165,19 +163,19 @@ export default function BaseIllustration() {
         <button
           type="button"
           onClick={readRandomReplica}
-          className="rounded-full border border-hairline-border px-4 py-1.5 text-caption font-bold tracking-wide text-slate-gray transition hover:border-indigo-primary"
+          className="rounded-full border border-white/15 px-4 py-1.5 text-[11px] font-bold tracking-wide text-white/70 transition hover:border-[#4fd1ff]"
         >
           {strings.read}
         </button>
       </div>
 
-      <div className="relative overflow-hidden rounded-xl bg-ink p-3">
-        <div className="mb-1 flex justify-center px-1 text-caption font-semibold">
-          {writeState === "waiting" && <span style={{ color: "#b3791a" }}>{strings.waiting}</span>}
-          {writeState === "acked" && <span style={{ color: allSynced ? "#1f9d5c" : "#b3791a" }}>{strings.acked}</span>}
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-center">
+        <div className="mb-1 flex justify-center px-1 text-[11px] font-semibold">
+          {writeState === "waiting" && <span style={{ color: "#e0a13d" }}>{strings.waiting}</span>}
+          {writeState === "acked" && <span style={{ color: allSynced ? "#4ade80" : "#e0a13d" }}>{strings.acked}</span>}
           {writeState === "idle" && <span>&nbsp;</span>}
         </div>
-        <svg viewBox="0 0 420 190" className="h-[170px] w-full">
+        <svg viewBox="0 0 420 190" className="h-auto w-full max-w-[460px]">
           {REPLICAS.map((r, i) => (
             <line key={i} x1={PRIMARY.x + 34} y1={PRIMARY.y} x2={r.x - 30} y2={r.y} stroke="#ffffff22" strokeWidth="1.3" strokeDasharray="4 6" />
           ))}
@@ -219,27 +217,27 @@ export default function BaseIllustration() {
 
           <g ref={particleLayerRef} />
         </svg>
-        <p className="mt-1 px-1 text-center text-caption text-faint-gray">{caption}</p>
+        <p className="mt-3 max-w-[440px] px-1 text-center text-[11px] text-white/50">{caption}</p>
         {lastRead && (
-          <p className="text-center text-caption font-semibold" style={{ color: lastRead.stale ? "#d8514b" : "#1f9d5c" }}>
+          <p className="text-center text-[11px] font-semibold" style={{ color: lastRead.stale ? "#f47872" : "#4ade80" }}>
             {isId ? `Baca dari Replica ${lastRead.idx + 1}: v${lastRead.version}` : `Read from Replica ${lastRead.idx + 1}: v${lastRead.version}`}
             {lastRead.stale ? (isId ? " — BASI (stale)" : " — STALE") : isId ? " — segar" : " — fresh"}
           </p>
         )}
       </div>
 
-      <div className="mt-3 grid grid-cols-3 gap-2">
-        <div className="rounded-lg border border-hairline-border bg-lavender-canvas px-2.5 py-2">
-          <p className="text-[10px] font-bold tracking-wide text-indigo-primary">{isId ? "MODE" : "MODE"}</p>
-          <p className="mt-0.5 truncate text-label font-semibold text-ink">{strong ? (isId ? "strong" : "strong") : "BASE"}</p>
+      <div className="mt-4 grid grid-cols-3 gap-2">
+        <div className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-2">
+          <p className="text-[10px] font-bold tracking-wide text-[#7c93ff]">{isId ? "MODE" : "MODE"}</p>
+          <p className="mt-0.5 truncate text-[12px] font-semibold text-white">{strong ? (isId ? "strong" : "strong") : "BASE"}</p>
         </div>
-        <div className="rounded-lg border border-hairline-border bg-lavender-canvas px-2.5 py-2">
-          <p className="text-[10px] font-bold tracking-wide text-indigo-primary">{isId ? "WRITE ACK" : "WRITE ACK"}</p>
-          <p className="mt-0.5 truncate text-label font-semibold text-ink">{strong ? (isId ? "lambat" : "slow") : (isId ? "instan" : "instant")}</p>
+        <div className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-2">
+          <p className="text-[10px] font-bold tracking-wide text-[#7c93ff]">{isId ? "WRITE ACK" : "WRITE ACK"}</p>
+          <p className="mt-0.5 truncate text-[12px] font-semibold text-white">{strong ? (isId ? "lambat" : "slow") : (isId ? "instan" : "instant")}</p>
         </div>
-        <div className="rounded-lg border border-hairline-border bg-lavender-canvas px-2.5 py-2">
-          <p className="text-[10px] font-bold tracking-wide text-indigo-primary">{isId ? "BACA BASI" : "STALE READS"}</p>
-          <p className="mt-0.5 truncate text-label font-semibold" style={{ color: staleReads > 0 ? "#d8514b" : "#161a22" }}>
+        <div className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-2">
+          <p className="text-[10px] font-bold tracking-wide text-[#7c93ff]">{isId ? "BACA BASI" : "STALE READS"}</p>
+          <p className="mt-0.5 truncate text-[12px] font-semibold" style={{ color: staleReads > 0 ? "#f47872" : "#f1f2f4" }}>
             {staleReads}
           </p>
         </div>
@@ -247,8 +245,8 @@ export default function BaseIllustration() {
 
       <style>{`
         @keyframes dep-pulse {
-          0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(62, 94, 234, 0.4); }
-          50% { opacity: 0.6; box-shadow: 0 0 0 4px rgba(62, 94, 234, 0); }
+          0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(79, 209, 255, 0.4); }
+          50% { opacity: 0.6; box-shadow: 0 0 0 4px rgba(79, 209, 255, 0); }
         }
       `}</style>
     </div>

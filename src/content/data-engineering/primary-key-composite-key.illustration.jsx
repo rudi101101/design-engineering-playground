@@ -70,7 +70,12 @@ export default function PrimaryKeyIllustration() {
         <>
           <ToggleBadge
             on={pkOn}
-            onClick={() => !running && setPkOn((v) => !v)}
+            onClick={() => {
+              if (running) return;
+              setPkOn((v) => !v);
+              setPhase("idle");
+              setDups(0);
+            }}
             labelOn={isId ? "COMPOSITE PK AKTIF" : "COMPOSITE PK ON"}
             labelOff={isId ? "TANPA PRIMARY KEY" : "NO PRIMARY KEY"}
             tagOn="(order_id, product_id)"

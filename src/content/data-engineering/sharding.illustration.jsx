@@ -89,7 +89,13 @@ export default function ShardingIllustration() {
         <>
           <ToggleBadge
             on={sharded}
-            onClick={() => !running && setSharded((v) => !v)}
+            onClick={() => {
+              if (running) return;
+              setSharded((v) => !v);
+              setLoad([0, 0, 0]);
+              setSingleLoad(0);
+              setDone(false);
+            }}
             labelOn={isId ? "3 SHARD" : "3 SHARDS"}
             labelOff={isId ? "SATU DATABASE" : "SINGLE DATABASE"}
             tagOn="user_id % 3"

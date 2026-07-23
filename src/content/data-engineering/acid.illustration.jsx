@@ -84,7 +84,10 @@ export default function AcidIllustration() {
     setRuns((r) => r + 1);
     setPhase("debiting");
 
-    const willCrash = Math.random() < 0.5;
+    // Always crash mid-transfer so toggling ATOMIC/NON-ATOMIC always shows a clear,
+    // deterministic contrast — a random crash chance made the two modes look identical
+    // whenever no crash happened to occur.
+    const willCrash = true;
 
     // leg 1: A -> midpoint (debit happens)
     const mid = { x: (NODES.a.x + NODES.b.x) / 2, y: 60 };
@@ -173,93 +176,91 @@ export default function AcidIllustration() {
   const crashIsFatal = !atomic && (phase === "crashed" || phase === "done-lost");
 
   return (
-    <div className="rounded-[20px] border border-hairline-border bg-pure-white p-4 shadow-[var(--shadow-card)] sm:p-5">
-      <div className="mb-3 flex items-center gap-2">
-        <span className="h-1.5 w-1.5 rounded-full bg-indigo-primary" style={{ animation: "dep-pulse 2s ease-in-out infinite" }} />
-        <span className="text-caption font-semibold uppercase tracking-wide text-faint-gray">{strings.header}</span>
+    <div className="flex h-full w-full flex-col overflow-y-auto bg-ink px-6 py-6">
+      <div className="mb-4 flex items-center gap-2">
+        <span className="h-1.5 w-1.5 rounded-full bg-[#4fd1ff]" style={{ animation: "dep-pulse 2s ease-in-out infinite" }} />
+        <span className="text-[10.5px] font-bold uppercase tracking-[0.6px] text-white/40">{strings.header}</span>
       </div>
 
-      <div className="mb-3 flex flex-wrap items-center justify-center gap-2">
+      <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
         <button
           type="button"
           onClick={() => setAtomic((v) => !v)}
-          className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-caption font-bold tracking-wide transition"
+          className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[11px] font-bold tracking-wide transition"
           style={
             atomic
-              ? { color: "#1f9d5c", borderColor: "#1f9d5c55", background: "#e5f6ea", boxShadow: "0 0 18px -6px #1f9d5c55" }
-              : { color: "#d8514b", borderColor: "#d8514b55", background: "#fdeaea", boxShadow: "0 0 18px -6px #d8514b55" }
+              ? { color: "#4ade80", borderColor: "#1f9d5c55", background: "#1f9d5c22", boxShadow: "0 0 18px -6px #1f9d5c88" }
+              : { color: "#f47872", borderColor: "#d8514b55", background: "#d8514b22", boxShadow: "0 0 18px -6px #d8514b88" }
           }
         >
           {atomic ? strings.acidLabel : strings.nonAtomic}
-          <span className="font-medium" style={{ color: atomic ? "#1f9d5c99" : "#d8514b99" }}>
-            {atomic ? strings.acidTag : strings.nonAtomicTag}
-          </span>
+          <span className="font-medium opacity-80">{atomic ? strings.acidTag : strings.nonAtomicTag}</span>
         </button>
 
         <button
           type="button"
           onClick={runTransfer}
           disabled={running}
-          className="inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-caption font-bold tracking-wide text-white transition disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-[11px] font-bold tracking-wide text-white transition disabled:opacity-50"
           style={{ background: "#2f6fed", borderColor: "#2f6fed" }}
         >
           {running ? strings.running : strings.run}
         </button>
       </div>
 
-      <div className="relative overflow-hidden rounded-xl bg-ink p-3">
-        <div className="mb-1 flex justify-center px-1 text-caption text-faint-gray">
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-center">
+        <div className="mb-1 flex justify-center px-1 text-[11px]">
           {showCrashBadge ? (
-            <span className="font-bold" style={{ color: crashIsFatal ? "#d8514b" : "#1f9d5c" }}>
+            <span className="font-bold" style={{ color: crashIsFatal ? "#f47872" : "#4ade80" }}>
               {crashIsFatal ? strings.crashed : strings.rolledBack}
             </span>
           ) : (
             <span>&nbsp;</span>
           )}
         </div>
-        <svg viewBox="0 0 600 190" className="h-[170px] w-full">
+        <svg viewBox="0 0 600 190" className="h-auto w-full max-w-[520px]">
           <line x1={NODES.a.x + 46} y1={NODES.a.y} x2={NODES.b.x - 46} y2={NODES.b.y} stroke="#ffffff22" strokeWidth="1.5" strokeDasharray="4 6" />
 
           <g>
-            <rect x={NODES.a.x - 46} y={NODES.a.y - 26} rx="10" width="92" height="52" fill="#0e1218" stroke={phase === "crashed" || phase === "rollback" ? "#d8514b" : "#3a4552"} strokeWidth="1.3" />
+            <rect x={NODES.a.x - 46} y={NODES.a.y - 26} rx="10" width="92" height="52" fill="#12161d" stroke={phase === "crashed" || phase === "rollback" ? "#d8514b" : "#3a4552"} strokeWidth="1.3" />
             <text x={NODES.a.x} y={NODES.a.y - 6} textAnchor="middle" fontSize="10" fontWeight="700" fill="#cfd6dd" fontFamily="'Inter',sans-serif">
               {isId ? "AKUN A" : "ACCOUNT A"}
             </text>
-            <text x={NODES.a.x} y={NODES.a.y + 14} textAnchor="middle" fontSize="13" fontWeight="800" fill={balA < START_A ? "#b3791a" : "#8b96a1"} fontFamily="'Inter',sans-serif">
+            <text x={NODES.a.x} y={NODES.a.y + 14} textAnchor="middle" fontSize="13" fontWeight="800" fill={balA < START_A ? "#e0a13d" : "#c3c9d1"} fontFamily="'Inter',sans-serif">
               {balA}
             </text>
           </g>
 
           <g>
-            <rect x={NODES.b.x - 46} y={NODES.b.y - 26} rx="10" width="92" height="52" fill="#0e1218" stroke={phase === "crashed" || phase === "rollback" ? "#d8514b" : "#3a4552"} strokeWidth="1.3" />
+            <rect x={NODES.b.x - 46} y={NODES.b.y - 26} rx="10" width="92" height="52" fill="#12161d" stroke={phase === "crashed" || phase === "rollback" ? "#d8514b" : "#3a4552"} strokeWidth="1.3" />
             <text x={NODES.b.x} y={NODES.b.y - 6} textAnchor="middle" fontSize="10" fontWeight="700" fill="#cfd6dd" fontFamily="'Inter',sans-serif">
               {isId ? "AKUN B" : "ACCOUNT B"}
             </text>
-            <text x={NODES.b.x} y={NODES.b.y + 14} textAnchor="middle" fontSize="13" fontWeight="800" fill={balB > START_B ? "#1f9d5c" : "#8b96a1"} fontFamily="'Inter',sans-serif">
+            <text x={NODES.b.x} y={NODES.b.y + 14} textAnchor="middle" fontSize="13" fontWeight="800" fill={balB > START_B ? "#4ade80" : "#c3c9d1"} fontFamily="'Inter',sans-serif">
               {balB}
             </text>
           </g>
 
-          <text x="300" y="175" textAnchor="middle" fontSize="10" fontWeight="700" fill={totalOk ? "#1f9d5c" : "#d8514b"} fontFamily="'Inter',sans-serif">
+          <text x="300" y="175" textAnchor="middle" fontSize="10" fontWeight="700" fill={totalOk ? "#4ade80" : "#f47872"} fontFamily="'Inter',sans-serif">
             {strings.totalLabel} = {total}
           </text>
 
           <g ref={particleLayerRef} />
         </svg>
-        <p className="mt-1 px-1 text-center text-caption text-faint-gray">{caption}</p>
+        <p className="mt-3 max-w-[440px] px-1 text-center text-[11px] text-white/50">{caption}</p>
       </div>
 
-      <div className="mt-3 grid grid-cols-3 gap-2">
+      <div className="mt-4 grid grid-cols-3 gap-2">
         {[
           { l: strings.mode, v: strings.modeVal },
           { l: strings.totalLabel, v: total, ok: totalOk },
           { l: strings.result, v: resultVal },
         ].map((cell) => (
-          <div key={cell.l} className="rounded-lg border border-hairline-border bg-lavender-canvas px-2.5 py-2">
-            <p className="text-[10px] font-bold tracking-wide text-indigo-primary">{cell.l}</p>
+          <div key={cell.l} className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-2">
+            <p className="text-[10px] font-bold tracking-wide text-[#7c93ff]">{cell.l}</p>
             <p
-              className="mt-0.5 truncate text-label font-semibold"
-              style={cell.l === strings.totalLabel ? { color: cell.ok ? "#1f9d5c" : "#d8514b" } : { color: "#161a22" }}
+              className="mt-0.5 truncate text-[12px] font-semibold"
+              style={cell.l === strings.totalLabel ? { color: cell.ok ? "#4ade80" : "#f47872" } : { color: "#f1f2f4" }}
             >
               {cell.v}
             </p>
@@ -269,8 +270,8 @@ export default function AcidIllustration() {
 
       <style>{`
         @keyframes dep-pulse {
-          0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(62, 94, 234, 0.4); }
-          50% { opacity: 0.6; box-shadow: 0 0 0 4px rgba(62, 94, 234, 0); }
+          0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(79, 209, 255, 0.4); }
+          50% { opacity: 0.6; box-shadow: 0 0 0 4px rgba(79, 209, 255, 0); }
         }
       `}</style>
     </div>

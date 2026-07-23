@@ -64,7 +64,13 @@ export default function TransactionSavepointIllustration() {
         <>
           <ToggleBadge
             on={useSavepoint}
-            onClick={() => !running && setUseSavepoint((v) => !v)}
+            onClick={() => {
+              if (running) return;
+              setUseSavepoint((v) => !v);
+              setStep(0);
+              setFailed(false);
+              setRolledAll(false);
+            }}
             labelOn={isId ? "DENGAN SAVEPOINT" : "WITH SAVEPOINT"}
             labelOff={isId ? "TANPA SAVEPOINT" : "NO SAVEPOINT"}
             tagOn={isId ? "rollback parsial" : "partial rollback"}

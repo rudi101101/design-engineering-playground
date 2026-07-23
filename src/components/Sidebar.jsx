@@ -47,7 +47,7 @@ const HOME_ICON = "M3 12l9-9 9 9M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V
 
 function Logo({ appName }) {
   return (
-    <Link to="/" className="flex items-center gap-2">
+    <Link to="/dashboard" className="flex items-center gap-2">
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] bg-indigo-primary text-[15px] font-extrabold text-white">
         D
       </span>
@@ -123,7 +123,7 @@ export default function Sidebar() {
   const level = Math.floor(xp / 500) + 1;
   const levelProgress = Math.round(((xp % 500) / 500) * 100);
   const isId = lang === "id";
-  const isHome = location.pathname === "/";
+  const isHome = location.pathname === "/dashboard";
 
   const currentTerm = termSlug ? getTermById(termSlug) : null;
   const categoryTerms =
@@ -143,7 +143,7 @@ export default function Sidebar() {
           {isId ? "Belajar" : "Learn"}
         </p>
         <nav className="flex flex-col gap-0.5">
-          <NavItem to="/" icon={HOME_ICON} label={isId ? "Beranda" : "Home"} active={isHome} />
+          <NavItem to="/dashboard" icon={HOME_ICON} label={isId ? "Beranda" : "Home"} active={isHome} />
           {trackList.map((track) => (
             <NavItem
               key={track.slug}

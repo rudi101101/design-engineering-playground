@@ -14,6 +14,7 @@ export default function TableBloatIllustration() {
   const [running, setRunning] = useState(false);
   const [tick, setTick] = useState(0);
   const [vacuumed, setVacuumed] = useState(false);
+  const [done, setDone] = useState(false);
   const totalCells = COLS * ROWS;
 
   function run() {
@@ -22,13 +23,18 @@ export default function TableBloatIllustration() {
     timers.clear();
     setTick(0);
     setVacuumed(false);
+    setDone(false);
 
     const maxTicks = totalCells;
+    // With autovacuum on, the table plateaus at this steady-state level once it
+    // reclaims space instead of growing all the way back to fully bloated —
+    // otherwise both toggle states end the run looking identically 100% dead.
+    const steadyState = Math.floor(maxTicks * 0.6);
     let i = 0;
     function step() {
       i += 1;
       setTick(i);
-      if (autovacuum && i === Math.floor(maxTicks * 0.6)) {
+      if (autovacuum && i === steadyState) {
         timers.after(500, () => {
           setVacuumed(true);
           timers.after(500, () => {
@@ -40,15 +46,21 @@ export default function TableBloatIllustration() {
         return;
       }
       if (i < maxTicks) timers.after(110, step);
-      else setRunning(false);
+      else {
+        setRunning(false);
+        setDone(true);
+      }
     }
     function continueTicks(from) {
       let j = from;
       function s2() {
         j += 1;
         setTick(j);
-        if (j < maxTicks) timers.after(110, s2);
-        else setRunning(false);
+        if (j < steadyState) timers.after(110, s2);
+        else {
+          setRunning(false);
+          setDone(true);
+        }
       }
       timers.after(110, s2);
     }
@@ -77,15 +89,28 @@ export default function TableBloatIllustration() {
 
   let caption = s.idle;
   if (vacuumed) caption = s.vacuuming;
-  else if (tick > 0 && tick < totalCells) caption = s.growing;
-  else if (tick >= totalCells) caption = autovacuum ? s.doneOn : s.doneOff;
+  else if (done) caption = autovacuum ? s.doneOn : s.doneOff;
+  else if (tick > 0) caption = s.growing;
 
   return (
     <SimShell
       header={s.header}
       controls={
         <>
-          <ToggleBadge on={autovacuum} onClick={() => !running && setAutovacuum((v) => !v)} labelOn="AUTOVACUUM ON" labelOff="AUTOVACUUM OFF" tagOn={isId ? "ruang dipakai ulang" : "space reclaimed"} tagOff={isId ? "terus menggemuk" : "keeps bloating"} />
+          <ToggleBadge
+          on={autovacuum}
+          onClick={() => {
+            if (running) return;
+            setAutovacuum((v) => !v);
+            setTick(0);
+            setVacuumed(false);
+            setDone(false);
+          }}
+          labelOn="AUTOVACUUM ON"
+          labelOff="AUTOVACUUM OFF"
+          tagOn={isId ? "ruang dipakai ulang" : "space reclaimed"}
+          tagOff={isId ? "terus menggemuk" : "keeps bloating"}
+        />
           <RunButton onClick={run} disabled={running}>
             {running ? s.running : s.run}
           </RunButton>
@@ -97,7 +122,7 @@ export default function TableBloatIllustration() {
       cells={[
         { l: isId ? "DEAD TUPLES" : "DEAD TUPLES", v: `${pctDead}%`, color: pctDead > 60 && !autovacuum ? C.red : undefined },
         { l: isId ? "AUTOVACUUM" : "AUTOVACUUM", v: autovacuum ? "ON" : "OFF", color: autovacuum ? C.green : C.red },
-        { l: isId ? "UKURAN TABEL" : "TABLE SIZE", v: autovacuum ? (isId ? "stabil" : "stable") : tick >= totalCells ? (isId ? "membengkak" : "swollen") : "-", color: autovacuum ? C.green : tick >= totalCells ? C.red : undefined },
+        { l: isId ? "UKURAN TABEL" : "TABLE SIZE", v: !done ? "-" : autovacuum ? (isId ? "stabil" : "stable") : (isId ? "membengkak" : "swollen"), color: !done ? undefined : autovacuum ? C.green : C.red },
       ]}
     >
       <svg viewBox="0 0 600 190" className="h-[170px] w-full">

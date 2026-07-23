@@ -92,7 +92,14 @@ export default function ReplicationIllustration() {
         <>
           <ToggleBadge
             on={sync}
-            onClick={() => !running && setSync((v) => !v)}
+            onClick={() => {
+              if (running) return;
+              setSync((v) => !v);
+              setPhase("idle");
+              setPrimaryVal(100);
+              setReplicaVal(100);
+              setReadStale(false);
+            }}
             labelOn={isId ? "REPLIKASI SYNC" : "SYNC REPLICATION"}
             labelOff={isId ? "REPLIKASI ASYNC" : "ASYNC REPLICATION"}
             tagOn={isId ? "tunggu replica" : "waits for replica"}

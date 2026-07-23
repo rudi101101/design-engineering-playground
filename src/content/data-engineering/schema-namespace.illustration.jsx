@@ -47,7 +47,18 @@ export default function SchemaNamespaceIllustration() {
       header={s.header}
       controls={
         <>
-          <ToggleBadge on={namespaced} onClick={() => !running && setNamespaced((v) => !v)} labelOn={isId ? "DENGAN SCHEMA" : "WITH SCHEMAS"} labelOff={isId ? "SATU NAMESPACE (public)" : "ONE NAMESPACE (public)"} tagOn="team_a. / team_b." tagOff={isId ? "semua rata" : "everything flat"} />
+          <ToggleBadge
+            on={namespaced}
+            onClick={() => {
+              if (running) return;
+              setNamespaced((v) => !v);
+              setPhase("idle");
+            }}
+            labelOn={isId ? "DENGAN SCHEMA" : "WITH SCHEMAS"}
+            labelOff={isId ? "SATU NAMESPACE (public)" : "ONE NAMESPACE (public)"}
+            tagOn="team_a. / team_b."
+            tagOff={isId ? "semua rata" : "everything flat"}
+          />
           <RunButton onClick={run} disabled={running}>
             {running ? s.running : s.run}
           </RunButton>

@@ -73,7 +73,12 @@ export default function StoredProcedureIllustration() {
         <>
           <ToggleBadge
             on={useProc}
-            onClick={() => !running && setUseProc((v) => !v)}
+            onClick={() => {
+              if (running) return;
+              setUseProc((v) => !v);
+              setRoundTrips(0);
+              setDone(false);
+            }}
             labelOn={isId ? "STORED PROCEDURE" : "STORED PROCEDURE"}
             labelOff={isId ? "3 QUERY DARI APP" : "3 QUERIES FROM APP"}
             tagOn="1 round-trip"
